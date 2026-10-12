@@ -19,6 +19,7 @@ class Analisis extends CI_Controller {
         $this->load->model('model_prk_audit');
         $this->load->model('model_prk_pelamar');
         $this->load->model('model_prk_penempatan');
+        $this->load->model('model_prk_notifikasi');
 
         if (!$this->config->item('analisis_aktif')) {
             show_404();
@@ -117,6 +118,12 @@ class Analisis extends CI_Controller {
             $sebelum ? array('id_divisi' => $sebelum->id_divisi) : null,
             array('id_divisi' => $id_divisi, 'alasan_ubah' => $alasan_ubah ?: null)
         );
+        $this->model_prk_notifikasi->buat(
+            'status_otomatis', $id, "Pelamar diterima: {$pelamar->nama}",
+            "{$pelamar->nama} diterima dan ditempatkan.",
+            base_url() . 'analisis/peserta/' . $id,
+            'terima:' . $id . ':' . date('Y-m-d H:i:s')
+        );
 
         $this->session->set_flashdata('sukses', 'Pelamar diterima dan penempatan tersimpan.');
         redirect(base_url() . 'analisis/peserta/' . $id);
@@ -135,6 +142,12 @@ class Analisis extends CI_Controller {
             'hr:' . $auth_user, 'pelamar', $id, 'tolak',
             array('status' => $pelamar->status), array('status' => 'Reject')
         );
+        $this->model_prk_notifikasi->buat(
+            'status_otomatis', $id, "Pelamar ditolak: {$pelamar->nama}",
+            "{$pelamar->nama} ditolak.",
+            base_url() . 'analisis/peserta/' . $id,
+            'tolak:' . $id . ':' . date('Y-m-d H:i:s')
+        );
 
         $this->session->set_flashdata('sukses', 'Pelamar ditolak.');
         redirect(base_url() . 'analisis/pelamar');
@@ -152,6 +165,25 @@ class Analisis extends CI_Controller {
         $data['nama_user'] = $this->session->userdata('SES_USERNAME');
         $data['daftar_agenda'] = $this->model_prk_pelamar->listAgenda(30);
         $this->load->view('analisis/kalender', $data);
+    }
+
+    // GET /analisis/jalankan_pengingat — generate notifikasi H-7/H-3 kontrak.
+    // Dipanggil berkala lewat Windows Task Scheduler/cron (curl ke URL ini),
+    // bukan proses background bawaan app. Aman dipanggil berkali-kali sehari
+    // karena dedupe_key per tanggal mencegah notifikasi dobel.
+    function jalankan_pengingat() {
+        $jumlah = $this->model_prk_notifikasi->generatePengingatKontrak();
+        echo json_encode(array('ok' => true, 'notifikasi_dibuat' => $jumlah));
+    }
+
+    // POST /analisis/notifikasi_baca — tandai satu notifikasi sudah dibaca user ini.
+    function notifikasi_baca() {
+        $id_notifikasi = (int) $this->input->post('id_notifikasi');
+        $auth_user = $this->session->userdata('SES_ID');
+        if ($id_notifikasi) {
+            $this->model_prk_notifikasi->tandaiDibaca($id_notifikasi, $auth_user);
+        }
+        echo json_encode(array('ok' => true));
     }
 
     // GET /analisis/kuota

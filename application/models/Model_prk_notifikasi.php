@@ -19,7 +19,7 @@ class Model_prk_notifikasi extends CI_Model {
     function buat($jenis, $id_transaksi, $judul, $isi, $tautan, $dedupe_key, $id_kontrak = null) {
         $ada = $this->db->where('dedupe_key', $dedupe_key)->get('prk_notifikasi')->row();
         if ($ada) {
-            return;
+            return false;
         }
         $this->db->insert('prk_notifikasi', array(
             'jenis' => $jenis,
@@ -31,6 +31,7 @@ class Model_prk_notifikasi extends CI_Model {
             'dedupe_key' => $dedupe_key,
             'dibuat_pada' => date('Y-m-d H:i:s'),
         ));
+        return true;
     }
 
     function hitungBelumDibaca($id_user) {
@@ -77,14 +78,16 @@ class Model_prk_notifikasi extends CI_Model {
                 ->where('tgl_selesai', $tanggal)
                 ->get()->result();
             foreach ($peserta as $p) {
-                $this->buat(
+                $baru = $this->buat(
                     $jenis, $p->id,
                     "Kontrak H-{$h}: {$p->nama}",
                     "{$p->nama} akan menyelesaikan magang pada " . date('d M Y', strtotime($p->tgl_selesai)) . ". Segera tinjau kontrak.",
                     base_url() . 'analisis/peserta/' . $p->id,
                     "{$jenis}:{$p->id}:{$tanggal}"
                 );
-                $dibuat++;
+                if ($baru) {
+                    $dibuat++;
+                }
             }
         }
         return $dibuat;
