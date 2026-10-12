@@ -24,7 +24,7 @@ $halaman_aktif = isset($halaman_aktif) ? $halaman_aktif : '';
         <a class="nav-item <?php echo $halaman_aktif === 'pelamar' ? 'active' : ''; ?>" href="<?php echo base_url(); ?>analisis/pelamar">
             <?php icon_analisis('users-round', 18); ?> Pelamar
         </a>
-        <a class="nav-item <?php echo $halaman_aktif === 'kalender' ? 'active' : ''; ?>" href="#">
+        <a class="nav-item <?php echo $halaman_aktif === 'kalender' ? 'active' : ''; ?>" href="<?php echo base_url(); ?>analisis/kalender">
             <?php icon_analisis('calendar-days', 18); ?> Kalender magang
         </a>
         <a class="nav-item <?php echo $halaman_aktif === 'kuota' ? 'active' : ''; ?>" href="<?php echo base_url(); ?>analisis/kuota">

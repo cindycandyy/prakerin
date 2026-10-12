@@ -83,6 +83,23 @@ class Model_prk_pelamar extends CI_Model {
             ->get()->result();
     }
 
+    // Agenda magang: peserta Accept dengan tgl_mulai atau tgl_selesai di
+    // rentang [hari_ini, hari_ini+$hari]. Dipakai dashboard & halaman Kalender.
+    function listAgenda($hari = 30) {
+        $hari_ini = date('Y-m-d');
+        $batas = date('Y-m-d', strtotime("+{$hari} days"));
+        return $this->db
+            ->select('id, nama, tgl_mulai, tgl_selesai')
+            ->from('pkl_data')
+            ->where('status', 'Accept')
+            ->group_start()
+                ->group_start()->where('tgl_mulai >=', $hari_ini)->where('tgl_mulai <=', $batas)->group_end()
+                ->or_group_start()->where('tgl_selesai >=', $hari_ini)->where('tgl_selesai <=', $batas)->group_end()
+            ->group_end()
+            ->order_by('LEAST(tgl_mulai, tgl_selesai)', 'ASC', FALSE)
+            ->get()->result();
+    }
+
     // Status asli di pkl_data tidak konsisten kapitalisasinya di kode lama
     // (lihat catatan di sql/001_analisis_schema.sql); disamakan di satu tempat ini.
     private function _statusDariTab($tab) {

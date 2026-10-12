@@ -147,6 +147,13 @@ class Analisis extends CI_Controller {
         $this->load->view('analisis/riwayat', $data);
     }
 
+    // GET /analisis/kalender — peserta Accept yang mulai/selesai magang dalam 30 hari.
+    function kalender() {
+        $data['nama_user'] = $this->session->userdata('SES_USERNAME');
+        $data['daftar_agenda'] = $this->model_prk_pelamar->listAgenda(30);
+        $this->load->view('analisis/kalender', $data);
+    }
+
     // GET /analisis/kuota
     function kuota() {
         $data['divisi'] = $this->model_prk_master->listDivisiDenganDepartemen();

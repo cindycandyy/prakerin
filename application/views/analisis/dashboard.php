@@ -310,7 +310,7 @@
                 <div class="panel">
                     <div class="panel-head">
                         <h2>Agenda magang terdekat</h2>
-                        <span class="panel-head link">Buka kalender →</span>
+                        <a class="panel-head link" href="<?php echo base_url(); ?>analisis/kalender">Buka kalender →</a>
                     </div>
                     <div class="panel-sub">Oktober 2026 · mulai dan berakhir</div>
                     <div class="agenda-grid">
