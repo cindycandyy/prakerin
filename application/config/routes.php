@@ -59,3 +59,5 @@ $route['email'] = 'Email';
 // perlu rute eksplisit, bukan dibaca sebagai argumen tambahan ke peserta().
 $route['analisis/peserta/(:num)/terima'] = 'analisis/terima/$1';
 $route['analisis/peserta/(:num)/tolak'] = 'analisis/tolak/$1';
+$route['analisis/kontrak/(:num)/perpanjang'] = 'analisis/kontrak_perpanjang/$1';
+$route['analisis/kontrak/(:num)/akhiri'] = 'analisis/kontrak_akhiri/$1';
