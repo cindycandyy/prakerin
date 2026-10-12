@@ -1,0 +1,14 @@
+application/config/email_smtp.php
+application/config/analisis.php
+application/config/database.php
+gambar/
+storage/
+
+# Script uji lokal (php -S + router), bukan bagian aplikasi production.
+router_local.php
+
+# File IDE NetBeans lama (path developer sebelumnya, tidak relevan).
+nbproject/
+
+# Folder upload/arsip lama, tidak direferensikan kode.
+Files/
