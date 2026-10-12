@@ -106,7 +106,7 @@ class Model_prk_pelamar extends CI_Model {
         $peta = array(
             'pending' => 'Pending',
             'diterima' => 'Accept',
-            'ditolak' => 'Reject',
+            'ditolak' => 'Rejected',
             'tidak_aktif' => 'Inactive',
         );
         return isset($peta[$tab]) ? $peta[$tab] : $tab;

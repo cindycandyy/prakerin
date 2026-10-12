@@ -20,6 +20,8 @@ class Analisis extends CI_Controller {
         $this->load->model('model_prk_pelamar');
         $this->load->model('model_prk_penempatan');
         $this->load->model('model_prk_notifikasi');
+        $this->load->model('model_prk_kontrak');
+        $this->load->library('analisis_status');
 
         if (!$this->config->item('analisis_aktif')) {
             show_404();
@@ -74,9 +76,9 @@ class Analisis extends CI_Controller {
         $this->load->view('analisis/detail_pelamar', $data);
     }
 
-    // POST /analisis/peserta/{id}/terima — simpan penempatan (prk_penempatan)
-    // dan ubah status pkl_data jadi Accept. Validasi kuota dan kontrak otomatis
-    // belum dikerjakan (lihat DOKUMENTASI_ANALISIS.md).
+    // POST /analisis/peserta/{id}/terima — cek sisa kuota divisi (row lock, bagian 9.2),
+    // simpan penempatan (prk_penempatan), ubah status pkl_data jadi Accept lewat
+    // Analisis_status, dan buat kontrak ke-1 (bagian 6.1, baris "pending -> accept").
     function terima($id = null) {
         $pelamar = $this->model_prk_pelamar->getPelamar($id);
         if (!$pelamar) {
@@ -89,6 +91,11 @@ class Analisis extends CI_Controller {
 
         if (empty($id_divisi)) {
             $this->session->set_flashdata('error', 'Pilih divisi sebelum menetapkan penempatan.');
+            redirect(base_url() . 'analisis/peserta/' . $id);
+            return;
+        }
+        if (!$this->analisis_status->bolehUbah($pelamar->status, Analisis_status::ACCEPT)) {
+            $this->session->set_flashdata('error', 'Status pelamar saat ini tidak bisa diubah menjadi Accept.');
             redirect(base_url() . 'analisis/peserta/' . $id);
             return;
         }
@@ -109,9 +116,30 @@ class Analisis extends CI_Controller {
             return;
         }
 
-        $sebelum = $this->model_prk_penempatan->getPenempatan($id);
+        // Kunci baris prk_kuota divisi ini dalam satu transaksi DB supaya dua HR yang
+        // menerima bersamaan ke divisi dengan sisa kuota 1 tidak lolos dua-duanya
+        // (bagian 9.2, KUOTA_HABIS). Penempatan yang sudah ada (ganti divisi) tidak
+        // ikut dihitung sebagai "terisi" dua kali karena sebelum() belum di-update.
+        $this->db->trans_start();
+        $sisa_kuota = $this->model_prk_master->sisaKuotaDivisiUntukUpdate($id_divisi, $pelamar->tgl_mulai, $pelamar->tgl_selesai);
+        $penempatan_lama = $this->model_prk_penempatan->getPenempatan($id);
+        $sudah_di_divisi_ini = $penempatan_lama && (int) $penempatan_lama->id_divisi === (int) $id_divisi;
+        if ($sisa_kuota < 1 && !$sudah_di_divisi_ini) {
+            $this->db->trans_complete();
+            $this->session->set_flashdata('error', 'Kuota divisi ini sudah habis untuk periode tersebut.');
+            redirect(base_url() . 'analisis/peserta/' . $id);
+            return;
+        }
+
+        $sebelum = $penempatan_lama;
         $this->model_prk_penempatan->simpan($id, $id_divisi, $peringkat_dipilih, $alasan_ubah ?: null, $auth_user);
-        $this->model_prk_penempatan->ubahStatusPelamar($id, 'Accept');
+        $this->analisis_status->ubah($id, Analisis_status::ACCEPT, 'hr:' . $auth_user, $alasan_ubah ?: null);
+
+        $penempatan = $this->model_prk_penempatan->getPenempatan($id);
+        if ($penempatan && !$this->model_prk_kontrak->getByPenempatan($penempatan->id)) {
+            $this->model_prk_kontrak->buatPertama($penempatan->id, $pelamar->tgl_mulai, $pelamar->tgl_selesai);
+        }
+        $this->db->trans_complete();
 
         $this->model_prk_audit->catat(
             'hr:' . $auth_user, 'penempatan', $id, 'terima',
@@ -125,23 +153,31 @@ class Analisis extends CI_Controller {
             'terima:' . $id . ':' . date('Y-m-d H:i:s')
         );
 
-        $this->session->set_flashdata('sukses', 'Pelamar diterima dan penempatan tersimpan.');
+        $this->session->set_flashdata('sukses', 'Pelamar diterima, penempatan dan kontrak tersimpan.');
         redirect(base_url() . 'analisis/peserta/' . $id);
     }
 
-    // POST /analisis/peserta/{id}/tolak — ubah status pkl_data jadi Reject.
+    // POST /analisis/peserta/{id}/tolak — alasan wajib (min. 5 karakter, bagian 6.1),
+    // ubah status pkl_data jadi Rejected lewat Analisis_status.
     function tolak($id = null) {
         $pelamar = $this->model_prk_pelamar->getPelamar($id);
         if (!$pelamar) {
             show_404();
         }
 
+        $alasan = trim((string) $this->input->post('alasan'));
+        if (strlen($alasan) < 5) {
+            $this->session->set_flashdata('error', 'Alasan penolakan wajib diisi (minimal 5 karakter).');
+            redirect(base_url() . 'analisis/peserta/' . $id);
+            return;
+        }
         $auth_user = $this->session->userdata('SES_ID');
-        $this->model_prk_penempatan->ubahStatusPelamar($id, 'Reject');
-        $this->model_prk_audit->catat(
-            'hr:' . $auth_user, 'pelamar', $id, 'tolak',
-            array('status' => $pelamar->status), array('status' => 'Reject')
-        );
+        if (!$this->analisis_status->ubah($id, Analisis_status::REJECTED, 'hr:' . $auth_user, $alasan)) {
+            $this->session->set_flashdata('error', 'Status pelamar saat ini tidak bisa diubah menjadi Rejected.');
+            redirect(base_url() . 'analisis/peserta/' . $id);
+            return;
+        }
+
         $this->model_prk_notifikasi->buat(
             'status_otomatis', $id, "Pelamar ditolak: {$pelamar->nama}",
             "{$pelamar->nama} ditolak.",

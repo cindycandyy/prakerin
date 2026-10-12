@@ -25,9 +25,12 @@ E-Prakerin yang sudah ada: prefix tabel baru `prk_`, controller `Analisis.php`, 
 ## Status tahapan
 
 - [x] **Tahap 1 — Fondasi** (selesai, lihat rincian di bawah)
-- [ ] Tahap 2 — Hook integrasi & antrean (tanpa AI)
-- [ ] Tahap 3 — Layanan analisis Python (baca PDF, skor, rekomendasi)
-- [ ] Tahap 4 — Keputusan HR, kontrak, surat balasan, notifikasi
+- [x] **Tahap 2 — Hook integrasi & antrean** (selesai, lihat rincian di bawah)
+- [x] **Tahap 3 — Layanan analisis Python** (selesai — `simagang-analyzer/`, baca PDF,
+      redaksi, skor; lihat README di folder itu)
+- [~] Tahap 4 — Keputusan HR, kontrak, surat balasan, notifikasi (terima/tolak/kuota/
+      pengaturan/notifikasi/kontrak otomatis/status machine/`cli_analisis harian`
+      selesai; surat balasan belum)
 - [ ] Tahap 5 — Isolasi akses berkas, syarat foto, uji & aktivasi
 
 ---
@@ -121,28 +124,89 @@ yang bisa diakses dari sesi ini. **Sebelum menjalankan migrasi di server nyata:*
 
 ---
 
-## Tahap 2 — Hook integrasi & antrean (belum dikerjakan)
+## Tahap 2 — Hook integrasi & antrean (selesai)
 
-Tujuan: setiap kali `pkl_data` dapat baris baru atau dokumennya diganti, satu pekerjaan
-masuk ke `prk_analisis_job` — tanpa memanggil AI apa pun dulu (disiapkan untuk Tahap 3).
+Setiap kali `pkl_data` dapat baris baru atau proposal/transkrip diganti, satu pekerjaan
+masuk ke `prk_analisis_job`, lalu `cli_analisis antrean` mengambilnya dan memanggil
+layanan Python (`simagang-analyzer`, Tahap 3) langsung — tidak dipecah "antre tanpa AI
+dulu" seperti rencana awal, karena layanan Python sudah ada saat Tahap 2 dikerjakan.
 
-Rencana kerja:
-- Hook di `Transaksi::insert` (setelah sukses) dan tiap `updateDoc1`–`7` (setelah sukses):
-  hitung sha256 kedua berkas (proposal + transkrip, perlu dipastikan slot doc mana — lihat
-  "Perlu dikonfirmasi" di bawah), panggil `fungsi antrekan($id)`. Dibungkus try/catch,
-  kegagalan dicatat ke log tapi tidak menggagalkan simpan data lama.
-- `application/libraries/Analisis_queue.php`: logika antre + dedup berdasar hash.
-- `application/controllers/Cli_analisis.php`: perintah `php index.php cli_analisis antrean`
-  (placeholder, belum memanggil Python) dan `cli_analisis harian` (auto-tolak Pending mepet,
-  auto-inactive, dasar notifikasi H-7/H-3 — logika tanpa AI).
-- `Analisis_status::ubah()` sebagai satu-satunya titik ubah kolom `pkl_data.status`.
+Yang dibuat:
+- Hook `antrekanAnalisis($id)` di `application/controllers/Transaksi.php`: dipanggil
+  setelah `insert` (pendaftaran baru, pakai `$this->db->insert_id()`), `updateDoc2`, dan
+  `updateDoc3` (proposal/transkrip diganti). Dibungkus try/catch + cek
+  `analisis_aktif` — kegagalan di sini ditulis ke log tapi **tidak pernah** menggagalkan
+  alur pendaftaran/unggah lama.
+- `application/libraries/Analisis_queue.php`: `enqueue($id_transaksi)` — hash sha256
+  `doc_2`+`doc_3`, lewati bila salah satu belum ada, lewati bila hash sama dengan job
+  `selesai` terakhir (bagian 3 spesifikasi, "proposal/transkrip tidak berubah").
+- `application/models/Model_prk_job.php`: CRUD `prk_analisis_job` (enqueue, klaim atomik,
+  tandai selesai/gagal/gagal-sementara-dengan-retry, pulihkan job macet >10 menit) +
+  `simpanHasil()` (tulis `prk_profil` versi baru + `prk_rekomendasi`, satu transaksi DB).
+- `application/models/Model_prk_master.php` ditambah: `sisaKuotaSemuaDivisi()` (rumus
+  irisan periode bagian 2 spesifikasi), `listSinyalDivisi()`/`listPemetaanJurusan()`/
+  `listMapelRelevan()`/`bobotDanAmbang()` — semua dipakai menyusun payload `master` untuk
+  `/v1/analisis`.
+- `application/controllers/Cli_analisis.php`: `php index.php cli_analisis antrean` —
+  ambil sampai 5 job `antre`, panggil `POST /v1/analisis` lewat `file_get_contents` +
+  stream context (tanpa ekstensi curl), tangani sukses/422/5xx-timeout sesuai tabel
+  bagian 3 & 9.1 spesifikasi, buat notifikasi (`analisis_selesai`/`perlu_tinjau`/`gagal`).
 
-**Perlu dikonfirmasi sebelum Tahap 2 dimulai** (tidak bisa ditebak dari kode):
-- Pemetaan slot `doc_1`..`doc_7` ke 7 jenis dokumen (surat pengantar, proposal, transkrip,
-  foto terpisah, kartu asuransi, kartu pelajar, surat pernyataan). Form `view` pendaftaran
-  lama (`application/views/transaksi/`) perlu dibaca urutan labelnya untuk memastikan slot
-  mana "proposal" dan mana "transkrip" — **ini blocker** karena seluruh analisis Tahap 3
-  bergantung pada pemetaan yang benar.
+Nilai `status` yang dipakai dikonfirmasi dari dropdown manual di `v_transaksi.php`:
+**`Pending`, `Accept`, `Rejected`, `Inactive`** (bukan `Reject` — dua bug ditemukan dan
+diperbaiki memakai nilai salah ini sebelum `Analisis_status` dibuat).
+
+## Tahap 4 (sebagian) — status machine, kontrak otomatis, cli_analisis harian
+
+- `application/libraries/Analisis_status.php`: satu titik masuk untuk mengubah
+  `pkl_data.status` (bagian 6.1 spesifikasi) -- validasi transisi, catat `prk_audit`
+  (`entitas='status'`). Dipakai `Analisis::terima()`/`tolak()` dan
+  `Cli_analisis::harian()`.
+- `application/models/Model_prk_kontrak.php`: `buatPertama()` (kontrak urutan 1, dipanggil
+  otomatis dari `Analisis::terima()` dengan `tgl_mulai`/`tgl_selesai` pengajuan),
+  `hitungStatus()`/`perbaruiSemuaStatus()` (status turunan dari tanggal, bagian 6.2).
+  Perpanjangan (kontrak urutan 2 dst) belum dikerjakan.
+- `Analisis::tolak()` sekarang mewajibkan alasan minimal 5 karakter (bagian 6.1) --
+  ditambah field `name="alasan"` di form Tolak pada `detail_pelamar.php` (sebelumnya
+  tidak ada field sama sekali, jadi validasi lama tidak pernah tercapai).
+- `Cli_analisis::harian()` (`php index.php cli_analisis harian`, cron 00:10 WIB):
+  auto-tolak Pending mepet/lewat tanggal mulai -> perbarui status kontrak turunan ->
+  auto-Inactive peserta Accept yang kontraknya selesai -> notifikasi H-7/H-3 (lewat
+  `Model_prk_notifikasi::generatePengingatKontrak()` yang sudah ada) -> notifikasi
+  hari-H. Idempoten lewat `dedupe_key` per tanggal.
+
+Cron yang disarankan (server aplikasi):
+```
+* * * * * php /path/index.php cli_analisis antrean
+10 0 * * * php /path/index.php cli_analisis harian
+```
+
+**Belum dikerjakan:** validasi kuota saat `terima()` (bagian 9.2, `KUOTA_HABIS`), surat
+balasan, perpanjangan/akhiri-lebih-awal kontrak, isolasi akses berkas (Tahap 5).
+
+### Pemetaan slot `doc_1`..`doc_7` (dikonfirmasi 2026-10-12)
+
+Sumber: label tombol upload/download di `application/views/transaksi/v_transaksi.php`
+baris 93, 117, 137, 180, 200, 253, 280 (dicocokkan dengan `insert` di
+`application/controllers/Transaksi.php` baris 111-149, yang hanya mengunggah `doc_1/2/3/5/6/7`
++ `foto` saat pendaftaran; `doc_4` diisi belakangan oleh HR).
+
+| Slot | Dokumen | Diisi saat |
+|---|---|---|
+| `doc_1` | Dokumen/Surat Pengantar | pendaftaran |
+| `doc_2` | **Proposal** → `berkas.proposal` di `/v1/analisis` | pendaftaran |
+| `doc_3` | **Transkrip Nilai** → `berkas.transkrip` di `/v1/analisis` | pendaftaran |
+| `doc_4` | Surat Balasan (dari HR, bukan pendaftar — beda alur dari modul ini) | setelah accept |
+| `doc_5` | Kartu Asuransi | pendaftaran |
+| `doc_6` | Kartu Pelajar | pendaftaran |
+| `doc_7` | Surat Pernyataan | pendaftaran |
+| `foto` | Foto (kolom terpisah, bukan `doc_N`) | pendaftaran |
+
+Jadi hook antre hanya perlu dipasang di `updateDoc2`, `updateDoc3`, dan `insert` (ketiganya
+mengisi salah satu dari proposal/transkrip) — `updateDoc1/4/5/6/7` dan `updateFoto` tidak
+memicu analisis ulang.
+
+**Masih perlu dikonfirmasi sebelum Tahap 2 dimulai:**
 - Nilai persis kolom `status` yang dipakai sebagai acuan (kode lama tidak konsisten:
   campuran `'pending'`/`'Pending'`, `'accept'`/`'Accept'`, `'Inactive'`). Disarankan
   menyeragamkan di titik masuk baru (`Analisis_status::ubah()`) dengan `LOWER()` di semua

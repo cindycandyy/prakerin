@@ -206,7 +206,8 @@ class Transaksi extends CI_Controller {
                     if (move_uploaded_file($_FILES['foto']['tmp_name'], $locfoto)) {
                     }
                 }
-                
+
+                $this->antrekanAnalisis($this->db->insert_id());
             }
              else if ($path1 == 'cekData') {
                 $user_id        = $this->input->post('user_id');
@@ -484,6 +485,7 @@ class Transaksi extends CI_Controller {
                     );
 
                     $this->model_transaksi->update($id, $data);
+                    $this->antrekanAnalisis($id);
                 }
             } else if ($path1 == 'updateDoc3') {
                 $id = $this->input->post('id');
@@ -498,6 +500,7 @@ class Transaksi extends CI_Controller {
                     );
 
                     $this->model_transaksi->update($id, $data);
+                    $this->antrekanAnalisis($id);
                 }
             } else if ($path1 == 'updateDoc4') {
                 $id = $this->input->post('id');
@@ -793,6 +796,27 @@ else if ($path1 == 'updateFoto') {
         } else {
             $this->session->set_flashdata('pesan', '<div class="alert alert-danger">&nbsp;&nbsp;Login Terlebih Dahulu !!!</div>');
             redirect(base_url() . "login/sistem/login_sistem");
+        }
+    }
+
+    // Hook modul Analisis Penempatan (spesifikasi teknis bagian 1 & 9.4): dipanggil
+    // setelah pendaftaran baru atau proposal/transkrip diunggah ulang. Dibungkus
+    // try/catch dan dicek saklar config supaya kegagalan di sini TIDAK PERNAH membuat
+    // alur pendaftaran/unggah lama (di atas) gagal -- modul analisis boleh mati total
+    // tanpa memengaruhi E-Prakerin.
+    private function antrekanAnalisis($id_transaksi) {
+        if (empty($id_transaksi)) {
+            return;
+        }
+        try {
+            $this->config->load('analisis');
+            if (!$this->config->item('analisis_aktif')) {
+                return;
+            }
+            $this->load->library('analisis_queue');
+            $this->analisis_queue->enqueue($id_transaksi);
+        } catch (Exception $e) {
+            log_message('error', 'antrekanAnalisis gagal untuk id=' . $id_transaksi . ': ' . $e->getMessage());
         }
     }
 

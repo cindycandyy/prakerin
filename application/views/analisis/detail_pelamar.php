@@ -137,7 +137,7 @@
                 <?php
                 $statusBadge = array(
                     'Accept' => array('badge-green', 'Diterima'),
-                    'Reject' => array('badge', 'Ditolak'),
+                    'Rejected' => array('badge', 'Ditolak'),
                     'Inactive' => array('badge', 'Tidak aktif'),
                 );
                 list($badgeClass, $badgeLabel) = isset($statusBadge[$pelamar->status]) ? $statusBadge[$pelamar->status] : array('badge-warn', 'Pending · menunggu keputusan');
@@ -359,6 +359,10 @@
                             <label class="field-label">Alasan jika memilih divisi berbeda dari rekomendasi sistem *</label>
                             <textarea class="field-textarea" name="alasan_ubah" placeholder="Kosongkan jika mengikuti rekomendasi sistem. Isi alasan jika HR memilih divisi lain."></textarea>
                             <p class="field-note">Alasan wajib diisi untuk pilihan yang berbeda dari rekomendasi sistem untuk pembelajaran.</p>
+                        </div>
+                        <div>
+                            <label class="field-label">Alasan penolakan (wajib bila menolak) *</label>
+                            <textarea class="field-textarea" name="alasan" placeholder="Minimal 5 karakter, wajib diisi untuk menolak pelamar."></textarea>
                         </div>
                     </div>
                     <p class="field-note">Kuota dicek ulang saat penempatan. Pending otomatis ditolak jika H-3 atau sisa tanggal mulai terlewat.</p>
