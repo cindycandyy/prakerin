@@ -21,6 +21,7 @@ class Analisis extends CI_Controller {
         $this->load->model('model_prk_penempatan');
         $this->load->model('model_prk_notifikasi');
         $this->load->model('model_prk_kontrak');
+        $this->load->model('model_prk_surat');
         $this->load->library('analisis_status');
 
         if (!$this->config->item('analisis_aktif')) {
@@ -73,6 +74,10 @@ class Analisis extends CI_Controller {
         $data['id_transaksi'] = $id;
         $data['pelamar'] = $pelamar;
         $data['rekomendasi'] = $this->model_prk_pelamar->listRekomendasi($id);
+
+        $penempatan = $this->model_prk_penempatan->getPenempatan($id);
+        $data['kontrak'] = $penempatan ? $this->model_prk_kontrak->getByPenempatan($penempatan->id) : null;
+
         $this->load->view('analisis/detail_pelamar', $data);
     }
 
@@ -187,6 +192,282 @@ class Analisis extends CI_Controller {
 
         $this->session->set_flashdata('sukses', 'Pelamar ditolak.');
         redirect(base_url() . 'analisis/pelamar');
+    }
+
+    // POST /analisis/kontrak/{id}/perpanjang — kontrak lama ditandai diperpanjang,
+    // kontrak baru urutan berikutnya dibuat (bagian 6.1 & 7.1 spesifikasi).
+    function kontrak_perpanjang($id_kontrak = null) {
+        $kontrak = $this->model_prk_kontrak->getByIdDenganPelamar($id_kontrak);
+        if (!$kontrak) {
+            show_404();
+        }
+
+        $tanggal_selesai_baru = trim((string) $this->input->post('tanggal_selesai_baru'));
+        $tanggal_mulai_baru = date('Y-m-d', strtotime($kontrak->tanggal_selesai . ' +1 day'));
+        if ($tanggal_selesai_baru === '' || $tanggal_selesai_baru <= $tanggal_mulai_baru) {
+            $this->session->set_flashdata('error', 'Tanggal selesai baru wajib diisi dan harus setelah tanggal mulai perpanjangan.');
+            redirect(base_url() . 'analisis/peserta/' . $kontrak->id_transaksi);
+            return;
+        }
+        if ($kontrak->status === 'selesai' || $kontrak->status === 'diakhiri_awal') {
+            $this->session->set_flashdata('error', 'Kontrak yang sudah selesai/diakhiri tidak bisa diperpanjang.');
+            redirect(base_url() . 'analisis/peserta/' . $kontrak->id_transaksi);
+            return;
+        }
+
+        $auth_user = $this->session->userdata('SES_ID');
+        $id_baru = $this->model_prk_kontrak->perpanjang($id_kontrak, $tanggal_selesai_baru);
+        if ($id_baru === false) {
+            $this->session->set_flashdata('error', 'Gagal memperpanjang kontrak.');
+            redirect(base_url() . 'analisis/peserta/' . $kontrak->id_transaksi);
+            return;
+        }
+
+        $this->model_prk_audit->catat(
+            'hr:' . $auth_user, 'kontrak', $id_baru, 'perpanjang',
+            array('kontrak_lama' => $id_kontrak, 'tanggal_selesai_lama' => $kontrak->tanggal_selesai),
+            array('tanggal_mulai' => $tanggal_mulai_baru, 'tanggal_selesai' => $tanggal_selesai_baru)
+        );
+        $this->model_prk_notifikasi->buat(
+            'status_otomatis', $kontrak->id_transaksi, "Kontrak diperpanjang: {$kontrak->nama}",
+            "{$kontrak->nama} diperpanjang sampai " . date('d M Y', strtotime($tanggal_selesai_baru)) . ".",
+            base_url() . 'analisis/peserta/' . $kontrak->id_transaksi,
+            'perpanjang:' . $id_baru . ':' . date('Y-m-d H:i:s')
+        );
+
+        $this->session->set_flashdata('sukses', 'Kontrak diperpanjang.');
+        redirect(base_url() . 'analisis/peserta/' . $kontrak->id_transaksi);
+    }
+
+    // POST /analisis/kontrak/{id}/akhiri — akhiri lebih awal, alasan wajib (bagian 6.1),
+    // ubah status pkl_data jadi Inactive lewat Analisis_status.
+    function kontrak_akhiri($id_kontrak = null) {
+        $kontrak = $this->model_prk_kontrak->getByIdDenganPelamar($id_kontrak);
+        if (!$kontrak) {
+            show_404();
+        }
+
+        $alasan = trim((string) $this->input->post('alasan'));
+        if (strlen($alasan) < 5) {
+            $this->session->set_flashdata('error', 'Alasan wajib diisi (minimal 5 karakter) untuk mengakhiri kontrak lebih awal.');
+            redirect(base_url() . 'analisis/peserta/' . $kontrak->id_transaksi);
+            return;
+        }
+        if ($kontrak->status === 'selesai' || $kontrak->status === 'diakhiri_awal') {
+            $this->session->set_flashdata('error', 'Kontrak ini sudah berakhir.');
+            redirect(base_url() . 'analisis/peserta/' . $kontrak->id_transaksi);
+            return;
+        }
+
+        $auth_user = $this->session->userdata('SES_ID');
+        $this->model_prk_kontrak->akhiriLebihAwal($id_kontrak, $alasan);
+        $this->analisis_status->ubah($kontrak->id_transaksi, Analisis_status::INACTIVE, 'hr:' . $auth_user, $alasan);
+
+        $this->model_prk_audit->catat(
+            'hr:' . $auth_user, 'kontrak', $id_kontrak, 'akhiri_lebih_awal',
+            array('status' => $kontrak->status), array('status' => 'diakhiri_awal'), $alasan
+        );
+        $this->model_prk_notifikasi->buat(
+            'status_otomatis', $kontrak->id_transaksi, "Kontrak diakhiri lebih awal: {$kontrak->nama}",
+            "{$kontrak->nama} diakhiri lebih awal. Alasan: {$alasan}",
+            base_url() . 'analisis/peserta/' . $kontrak->id_transaksi,
+            'akhiri:' . $id_kontrak . ':' . date('Y-m-d H:i:s')
+        );
+
+        $this->session->set_flashdata('sukses', 'Kontrak diakhiri lebih awal.');
+        redirect(base_url() . 'analisis/peserta/' . $kontrak->id_transaksi);
+    }
+
+    // POST /analisis/peserta/{id}/surat_buat — tombol "Buat surat balasan" di Halaman B
+    // (bagian 8.3 langkah 1). Kalau pelamar lain dari instansi+rujukan sama sudah punya
+    // surat draf, gabung ke situ; kalau pelamar ini sendiri sudah punya draf, buka itu;
+    // selain itu buat surat baru.
+    function surat_buat($id = null) {
+        $pelamar = $this->model_prk_pelamar->getPelamar($id);
+        if (!$pelamar) {
+            show_404();
+        }
+        if (strtolower($pelamar->status) !== 'accept') {
+            $this->session->set_flashdata('error', 'Surat balasan hanya bisa dibuat untuk pelamar yang sudah diterima.');
+            redirect(base_url() . 'analisis/peserta/' . $id);
+            return;
+        }
+
+        $draf_ada = $this->model_prk_surat->getSuratDrafUntukPelamar($id);
+        if ($draf_ada) {
+            redirect(base_url() . 'analisis/surat/' . $draf_ada->id);
+            return;
+        }
+
+        $auth_user = $this->session->userdata('SES_ID');
+        $id_surat = $this->model_prk_surat->buatDari(array($id), $auth_user);
+        if ($id_surat === false) {
+            $this->session->set_flashdata('error', 'Gagal membuat surat balasan.');
+            redirect(base_url() . 'analisis/peserta/' . $id);
+            return;
+        }
+
+        $this->model_prk_audit->catat('hr:' . $auth_user, 'surat', $id_surat, 'buat', null, array('peserta_awal' => $id));
+        redirect(base_url() . 'analisis/surat/' . $id_surat);
+    }
+
+    // GET /analisis/surat/{id} — Halaman C (form isian surat balasan, bagian 8.3).
+    function surat($id_surat = null) {
+        $surat = $this->model_prk_surat->getById($id_surat);
+        if (!$surat) {
+            show_404();
+        }
+        $data['surat'] = $surat;
+        $data['peserta'] = $this->model_prk_surat->listPeserta($id_surat);
+        $data['kandidat_gabung'] = array();
+        if ($surat->status === 'draf' && !empty($data['peserta'])) {
+            $data['kandidat_gabung'] = $this->model_prk_surat->listKandidatGabung($data['peserta'][0]->institusi, $data['peserta'][0]->id);
+        }
+        $data['saran_nomor'] = $this->model_prk_surat->saranNomorBerikutnya(date('Y'));
+        $data['nama_user'] = $this->session->userdata('SES_USERNAME');
+        $this->load->view('analisis/surat', $data);
+    }
+
+    // POST /analisis/surat/{id}/simpan — simpan isian, tetap draf (bagian 8.3 langkah 2).
+    function surat_simpan($id_surat = null) {
+        $surat = $this->model_prk_surat->getById($id_surat);
+        if (!$surat) {
+            show_404();
+        }
+        if ($surat->status !== 'draf') {
+            $this->session->set_flashdata('error', 'Surat yang sudah terkirim tidak bisa diedit. Buat surat pengganti.');
+            redirect(base_url() . 'analisis/surat/' . $id_surat);
+            return;
+        }
+
+        $nomor_urut = trim((string) $this->input->post('nomor_urut'));
+        $tanggal_surat = $this->input->post('tanggal_surat') ?: date('Y-m-d');
+        $pembekalan_tanggal = $this->input->post('pembekalan_tanggal');
+
+        $data = array(
+            'tanggal_surat' => $tanggal_surat,
+            'rujukan_nomor' => trim((string) $this->input->post('rujukan_nomor')) ?: null,
+            'rujukan_tanggal' => $this->input->post('rujukan_tanggal') ?: null,
+            'pembekalan_tanggal' => $pembekalan_tanggal ?: null,
+            'pembekalan_pukul' => trim((string) $this->input->post('pembekalan_pukul')) ?: $this->model_prk_master->getPengaturan('surat_pembekalan_pukul'),
+            'pembekalan_tempat' => trim((string) $this->input->post('pembekalan_tempat')) ?: null,
+            'pembekalan_keterangan' => trim((string) $this->input->post('pembekalan_keterangan')) ?: null,
+        );
+
+        if ($nomor_urut !== '') {
+            $segmen_tengah = $this->model_prk_master->getPengaturan('surat_pola_nomor', 'B2/NK.03.02/SU/DR');
+            $tahun = date('Y', strtotime($tanggal_surat));
+            $nomor_lengkap = "{$nomor_urut}/{$segmen_tengah}/{$tahun}";
+            if (!preg_match('#^\d{5}/[A-Z0-9./]+/\d{4}$#', $nomor_lengkap)) {
+                $this->session->set_flashdata('error', 'Format nomor urut tidak valid, gunakan 5 digit angka.');
+                redirect(base_url() . 'analisis/surat/' . $id_surat);
+                return;
+            }
+            if ($this->model_prk_surat->nomorSudahDipakai($nomor_lengkap, $id_surat)) {
+                $this->session->set_flashdata('error', 'Nomor surat ini sudah dipakai surat lain.');
+                redirect(base_url() . 'analisis/surat/' . $id_surat);
+                return;
+            }
+            $data['nomor_surat'] = $nomor_lengkap;
+        }
+
+        $this->model_prk_surat->simpanIsian($id_surat, $data);
+        $this->session->set_flashdata('sukses', 'Isian surat tersimpan.');
+        redirect(base_url() . 'analisis/surat/' . $id_surat);
+    }
+
+    // GET /analisis/surat/{id}/pratinjau — PDF inline dengan watermark DRAF (bagian 8.3
+    // langkah 3), dari isian terakhir yang tersimpan.
+    function surat_pratinjau($id_surat = null) {
+        $surat = $this->model_prk_surat->getById($id_surat);
+        $peserta = $this->model_prk_surat->listPeserta($id_surat);
+        if (!$surat || empty($peserta)) {
+            show_404();
+        }
+
+        $this->load->library('analisis_surat');
+        $pdf = $this->analisis_surat->render($surat, $peserta, true);
+
+        header('Content-Type: application/pdf');
+        header('Content-Disposition: inline; filename="pratinjau-surat-' . $id_surat . '.pdf"');
+        echo $pdf;
+    }
+
+    // POST /analisis/surat/{id}/kirim — finalkan: PDF tanpa watermark disimpan,
+    // status jadi terkirim, isian terkunci (bagian 8.3 langkah 4).
+    function surat_kirim($id_surat = null) {
+        $surat = $this->model_prk_surat->getById($id_surat);
+        $peserta = $this->model_prk_surat->listPeserta($id_surat);
+        if (!$surat) {
+            show_404();
+        }
+        if ($surat->status !== 'draf') {
+            $this->session->set_flashdata('error', 'Surat ini sudah terkirim.');
+            redirect(base_url() . 'analisis/surat/' . $id_surat);
+            return;
+        }
+        if (empty($surat->nomor_surat) || empty($peserta)) {
+            $this->session->set_flashdata('error', 'Lengkapi nomor surat sebelum mengirim.');
+            redirect(base_url() . 'analisis/surat/' . $id_surat);
+            return;
+        }
+        if (empty($surat->pembekalan_tanggal) || empty($surat->pembekalan_pukul)) {
+            $this->session->set_flashdata('error', 'Tanggal dan pukul pembekalan wajib diisi sebelum mengirim.');
+            redirect(base_url() . 'analisis/surat/' . $id_surat);
+            return;
+        }
+
+        $this->load->library('analisis_surat');
+        $pdf = $this->analisis_surat->render($surat, $peserta, false);
+        $file_path = $this->analisis_surat->simpanFinal($id_surat, $pdf);
+
+        $ok = $this->model_prk_surat->tandaiTerkirim($id_surat, $file_path);
+        if (!$ok) {
+            $this->session->set_flashdata('error', 'Gagal mengirim surat (kemungkinan sudah dikirim sebelumnya).');
+            redirect(base_url() . 'analisis/surat/' . $id_surat);
+            return;
+        }
+
+        $auth_user = $this->session->userdata('SES_ID');
+        $this->model_prk_audit->catat('hr:' . $auth_user, 'surat', $id_surat, 'kirim', array('status' => 'draf'), array('status' => 'terkirim'));
+
+        $this->session->set_flashdata('sukses', 'Surat balasan terkirim.');
+        redirect(base_url() . 'analisis/surat/' . $id_surat);
+    }
+
+    // GET /analisis/surat/{id}/unduh — PDF final, hanya untuk surat berstatus terkirim.
+    function surat_unduh($id_surat = null) {
+        $surat = $this->model_prk_surat->getById($id_surat);
+        if (!$surat || $surat->status === 'draf' || empty($surat->file_path)) {
+            show_404();
+        }
+
+        $this->load->library('analisis_surat');
+        $path_absolut = $this->analisis_surat->pathAbsolut($surat->file_path);
+        if (!is_file($path_absolut)) {
+            show_404();
+        }
+
+        header('Content-Type: application/pdf');
+        header('Content-Disposition: attachment; filename="surat-balasan-' . $id_surat . '.pdf"');
+        header('Content-Length: ' . filesize($path_absolut));
+        readfile($path_absolut);
+    }
+
+    // POST /analisis/surat/{id}/pengganti — surat lama -> diganti, surat baru draf
+    // dengan peserta sama (bagian 8.3 langkah 5).
+    function surat_pengganti($id_surat = null) {
+        $auth_user = $this->session->userdata('SES_ID');
+        $id_baru = $this->model_prk_surat->buatPengganti($id_surat, $auth_user);
+        if ($id_baru === false) {
+            $this->session->set_flashdata('error', 'Gagal membuat surat pengganti.');
+            redirect(base_url() . 'analisis/surat/' . $id_surat);
+            return;
+        }
+
+        $this->model_prk_audit->catat('hr:' . $auth_user, 'surat', $id_baru, 'buat_pengganti', array('surat_lama' => $id_surat), null);
+        $this->session->set_flashdata('sukses', 'Surat pengganti dibuat, silakan lengkapi nomor baru.');
+        redirect(base_url() . 'analisis/surat/' . $id_baru);
     }
 
     // GET /analisis/riwayat — Riwayat keputusan HR (terima/tolak), dari prk_audit.

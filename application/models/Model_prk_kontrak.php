@@ -35,6 +35,18 @@ class Model_prk_kontrak extends CI_Model {
         return $this->db->where('id', $id_kontrak)->get('prk_kontrak')->row();
     }
 
+    // Kontrak + id_transaksi & nama pelamar, dipakai controller untuk notifikasi dan
+    // redirect setelah aksi perpanjang/akhiri tanpa query tambahan terpisah.
+    function getByIdDenganPelamar($id_kontrak) {
+        return $this->db
+            ->select('prk_kontrak.*, prk_penempatan.id_transaksi, pkl_data.nama')
+            ->from('prk_kontrak')
+            ->join('prk_penempatan', 'prk_penempatan.id = prk_kontrak.id_penempatan')
+            ->join('pkl_data', 'pkl_data.id = prk_penempatan.id_transaksi')
+            ->where('prk_kontrak.id', $id_kontrak)
+            ->get()->row();
+    }
+
     // Semua kontrak + nama pelamar + id_transaksi, dipakai cli_analisis harian supaya
     // tidak perlu query per baris.
     function listUntukPenjadwal() {

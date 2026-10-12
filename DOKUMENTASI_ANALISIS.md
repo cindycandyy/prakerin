@@ -28,9 +28,8 @@ E-Prakerin yang sudah ada: prefix tabel baru `prk_`, controller `Analisis.php`, 
 - [x] **Tahap 2 — Hook integrasi & antrean** (selesai, lihat rincian di bawah)
 - [x] **Tahap 3 — Layanan analisis Python** (selesai — `simagang-analyzer/`, baca PDF,
       redaksi, skor; lihat README di folder itu)
-- [~] Tahap 4 — Keputusan HR, kontrak, surat balasan, notifikasi (terima/tolak/kuota/
-      pengaturan/notifikasi/kontrak otomatis/status machine/`cli_analisis harian`
-      selesai; surat balasan belum)
+- [x] **Tahap 4 — Keputusan HR, kontrak, surat balasan, notifikasi** (selesai, lihat
+      rincian di bawah)
 - [ ] Tahap 5 — Isolasi akses berkas, syarat foto, uji & aktivasi
 
 ---
@@ -181,8 +180,27 @@ Cron yang disarankan (server aplikasi):
 10 0 * * * php /path/index.php cli_analisis harian
 ```
 
-**Belum dikerjakan:** validasi kuota saat `terima()` (bagian 9.2, `KUOTA_HABIS`), surat
-balasan, perpanjangan/akhiri-lebih-awal kontrak, isolasi akses berkas (Tahap 5).
+## Validasi kuota, perpanjang & akhiri kontrak
+
+- `Analisis::terima()` sekarang mengunci baris `prk_kuota` divisi yang dipilih
+  (`Model_prk_master::sisaKuotaDivisiUntukUpdate()`, `SELECT ... FOR UPDATE` dalam
+  `trans_start()`/`trans_complete()`) sebelum menyimpan penempatan -- mencegah dua HR
+  menerima bersamaan ke divisi yang kuotanya tinggal 1 (bagian 9.2, `KUOTA_HABIS`).
+  Re-konfirmasi divisi yang sama tidak ikut diblokir.
+- `POST /analisis/kontrak/{id}/perpanjang` (`Analisis::kontrak_perpanjang()`): kontrak
+  lama ditandai `tindak_lanjut=diperpanjang` (berhenti muncul di H-7/H-3), kontrak baru
+  urutan berikutnya dibuat dari `tanggal_selesai` lama + 1 hari sampai tanggal yang
+  diisi HR. Status pelamar tetap `Accept`.
+- `POST /analisis/kontrak/{id}/akhiri` (`Analisis::kontrak_akhiri()`): alasan wajib
+  min. 5 karakter, kontrak ditandai `diakhiri_awal`, status pelamar diubah ke
+  `Inactive` lewat `Analisis_status`.
+- `detail_pelamar.php` dan `Analisis::peserta()` ditambah bagian "Kontrak magang"
+  (hanya tampil kalau penempatan+kontrak sudah ada) dengan form Perpanjang/Akhiri —
+  sebelumnya tidak ada tampilan kontrak sama sekali di halaman ini.
+- Rute baru di `routes.php`: `analisis/kontrak/(:num)/perpanjang` dan `.../akhiri`
+  (pola sama dengan `analisis/peserta/(:num)/terima|tolak`).
+
+**Belum dikerjakan:** surat balasan, isolasi akses berkas + syarat foto (Tahap 5).
 
 ### Pemetaan slot `doc_1`..`doc_7` (dikonfirmasi 2026-10-12)
 
@@ -234,6 +252,65 @@ Rute berkas lewat PHP dengan cek kepemilikan (bagian 7.7 spesifikasi — ini tem
 di E-Prakerin lama: pendaftar lain bisa melihat berkas siapa pun lewat folder `gambar/` yang
 ada di web root), pemeriksaan foto otomatis, lalu uji T01–T46 sebelum `analisis_aktif = true`
 di produksi.
+
+---
+
+## Surat balasan (bagian 8 spesifikasi teknis)
+
+LibreOffice tidak tersedia di server pengembangan ini, jadi dipakai **Dompdf + templat
+HTML** (alternatif resmi yang disebut bagian 8.4), bukan PHPWord+LibreOffice. Dompdf
+butuh banyak dependency jadi ditambahkan lewat **Composer** (`composer.json` baru di
+root project) — satu-satunya bagian modul Analisis yang pakai Composer; sisa project
+tetap vendor manual seperti sebelumnya. Jalankan `composer install` sekali di server
+sebelum fitur surat dipakai; folder `vendor/` tidak masuk git (lihat `.gitignore`).
+
+Yang dibuat:
+- `composer.json` — `dompdf/dompdf: ^3.1` (v2.0.x dihindari karena kena beberapa
+  security advisory, lihat output `composer install`).
+- `application/helpers/analisis_helper.php` — `terbilang()` (angka ke kata, "1 (Satu)")
+  dan `tanggal_indo()` (nama bulan/hari Indonesia tanpa bergantung `setlocale()`, yang
+  sering tidak tersedia/beda nama locale antar server — `date('d F Y')` bawaan PHP
+  menghasilkan bahasa Inggris kalau locale server bukan `id_ID`).
+- `application/models/Model_prk_surat.php` — CRUD `prk_surat_balasan`+`prk_surat_peserta`:
+  `buatDari()` (gabung beberapa peserta instansi sama ke satu surat), validasi nomor unik,
+  saran nomor urut berikutnya per tahun, `buatPengganti()` (status lama → `diganti`).
+- `application/libraries/Analisis_surat.php` — render templat ke PDF (Dompdf), simpan
+  PDF final ke `storage/analisis/surat/{tahun}/{id}.pdf` (di luar web root, konsisten
+  dengan `analisis_storage_surat` di config).
+- `application/views/analisis/templat/surat_balasan.php` — templat HTML: kop, nomor,
+  rujukan, tabel peserta, jadwal pembekalan, tanda tangan, tembusan. **Tidak pernah
+  menyebut departemen/divisi penempatan** (bagian 8 & 9.3) — HR bebas menempatkan
+  peserta di departemen berbeda dari yang diminta pendaftar tanpa itu terlihat di surat.
+  Watermark "DRAF" di pratinjau, tanpa watermark di PDF final.
+- `application/views/analisis/surat.php` — Halaman C: isian (nomor, rujukan, jadwal
+  pembekalan), tombol Simpan draf/Pratinjau/Kirim, dan tampilan terkunci + tombol "Buat
+  surat pengganti" setelah terkirim.
+- `Analisis::surat_buat()`, `surat()`, `surat_simpan()`, `surat_pratinjau()`,
+  `surat_kirim()`, `surat_unduh()`, `surat_pengganti()` di `Analisis.php` — alur draf →
+  pratinjau → kirim (terkunci) → pengganti (bagian 8.3). Tombol "Buat / buka surat
+  balasan" muncul di `detail_pelamar.php` hanya untuk pelamar berstatus `Accept`.
+- Rute eksplisit di `routes.php` untuk semua aksi (`analisis/surat/(:num)/simpan` dst),
+  pola sama dengan `terima`/`tolak` yang sudah ada.
+- Validasi: nomor surat `^\d{5}/[A-Z0-9./]+/\d{4}$` dan unik (bagian 8.2); kirim ditolak
+  kalau nomor/jadwal pembekalan belum lengkap; isian terkunci setelah `terkirim`
+  (hanya `buat_pengganti` yang bisa membuat salinan baru untuk dikoreksi).
+
+Diverifikasi dengan merender templat lewat Dompdf langsung (tanpa CodeIgniter/DB, PHP CLI
+`php -r`) dan membaca ulang teks PDF hasilnya (PyMuPDF) — isi lengkap dan benar: nomor,
+rujukan, tabel peserta, jadwal pembekalan dengan nama bulan/hari Indonesia ("27 Juli
+2026", "Senin, 03 Agustus 2026"), tanda tangan, tembusan.
+
+**Belum dikerjakan:**
+- Tanda tangan/stempel/QR digital — PDF hanya memuat nama+jabatan (sesuai bagian 8.4,
+  "sistem tidak membuatnya"); unggah PDF yang sudah ditandatangani manual untuk
+  menggantikan hasil sistem belum ada di versi ini.
+- Form "Kepada" yang bisa diedit HR secara terpisah — saat ini disusun otomatis dari
+  instansi peserta pertama (SMK → "Kepala Sekolah", selain itu → "Kepala
+  Departemen/Program Studi") dan tidak bisa diubah lewat UI.
+- Penggabungan beberapa peserta instansi sama ke satu surat lewat form (model
+  `listKandidatGabung()` sudah ada, UI baru menampilkan daftarnya sebagai info, belum
+  ada tombol gabung).
+- Email ke pendaftar saat surat terkirim (prioritas terakhir per spesifikasi).
 
 ---
 

@@ -1,0 +1,12 @@
+{
+    "name": "eprakerin/analisis-surat",
+    "require": {
+        "dompdf/dompdf": "^3.1"
+    },
+    "authors": [
+        {
+            "name": "cindy revalia",
+            "email": "5053231015@student.its.ac.id"
+        }
+    ]
+}

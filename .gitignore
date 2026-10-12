@@ -3,6 +3,7 @@ application/config/analisis.php
 application/config/database.php
 gambar/
 storage/
+vendor/
 
 # Script uji lokal (php -S + router), bukan bagian aplikasi production.
 router_local.php

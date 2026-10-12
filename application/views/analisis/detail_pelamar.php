@@ -372,6 +372,55 @@
                     </div>
                 </form>
             </div>
+
+            <?php if (!empty($kontrak)) { ?>
+            <!-- Kontrak magang -->
+            <div class="panel" style="width:100%">
+                <div class="panel-head">
+                    <h2>Kontrak magang</h2>
+                </div>
+                <div class="panel-sub">
+                    Urutan ke-<?php echo (int) $kontrak->urutan; ?> ·
+                    <?php echo date('d M Y', strtotime($kontrak->tanggal_mulai)); ?> –
+                    <?php echo date('d M Y', strtotime($kontrak->tanggal_selesai)); ?> ·
+                    status <strong><?php echo htmlspecialchars(str_replace('_', ' ', $kontrak->status)); ?></strong>
+                </div>
+
+                <?php if ($kontrak->status !== 'selesai' && $kontrak->status !== 'diakhiri_awal') { ?>
+                <div class="keputusan-grid">
+                    <form method="post" action="<?php echo base_url(); ?>analisis/kontrak/<?php echo (int) $kontrak->id; ?>/perpanjang">
+                        <label class="field-label">Perpanjang sampai tanggal</label>
+                        <input class="field-select" type="date" name="tanggal_selesai_baru" min="<?php echo date('Y-m-d', strtotime($kontrak->tanggal_selesai . ' +1 day')); ?>">
+                        <div class="keputusan-footer">
+                            <button type="submit" class="btn-primary">Perpanjang kontrak</button>
+                        </div>
+                    </form>
+                    <form method="post" action="<?php echo base_url(); ?>analisis/kontrak/<?php echo (int) $kontrak->id; ?>/akhiri">
+                        <label class="field-label">Alasan akhiri lebih awal *</label>
+                        <textarea class="field-textarea" name="alasan" placeholder="Minimal 5 karakter, wajib diisi."></textarea>
+                        <div class="keputusan-footer">
+                            <button type="submit" class="btn-outline">Akhiri lebih awal</button>
+                        </div>
+                    </form>
+                </div>
+                <?php } ?>
+            </div>
+            <?php } ?>
+
+            <?php if (strtolower($pelamar->status) === 'accept') { ?>
+            <!-- Surat balasan -->
+            <div class="panel" style="width:100%">
+                <div class="panel-head">
+                    <h2>Surat balasan</h2>
+                </div>
+                <div class="panel-sub">Isi, pratinjau, dan kirim surat balasan penerimaan PKL untuk pelamar ini.</div>
+                <form method="post" action="<?php echo base_url(); ?>analisis/peserta/<?php echo (int) $id_transaksi; ?>/surat_buat">
+                    <div class="keputusan-footer">
+                        <button type="submit" class="btn-primary">Buat / buka surat balasan</button>
+                    </div>
+                </form>
+            </div>
+            <?php } ?>
         </main>
     </div>
 </div>
