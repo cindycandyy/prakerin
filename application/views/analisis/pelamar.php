@@ -77,7 +77,6 @@
         .conf-rendah { background: var(--merah-100); color: var(--merah-700); }
         .skor-cell strong { display: block; color: var(--hijau-700); }
         .skor-cell .status-sub { margin-top: 1px; }
-        .top3-list { font-size: 11px; color: var(--abu-600); margin-top: 2px; }
         .aksi-cell { display: flex; gap: 6px; white-space: nowrap; justify-content: center; align-items: center; }
         th.aksi-head { text-align: center; }
         .btn-aksi { border: none; border-radius: 6px; padding: 6px 10px; font-size: 11px; font-weight: 600; cursor: pointer; }
@@ -206,13 +205,7 @@
                             </td>
                             <td class="skor-cell">
                                 <?php if (!empty($p->top1_nama_divisi)) { ?>
-                                    <strong>#1 · <?php echo htmlspecialchars($p->top1_nama_divisi); ?> · <?php echo number_format($p->top1_skor, 1, ',', '.'); ?></strong>
-                                    <?php if (!empty($p->top2_nama_divisi)) { ?>
-                                    <div class="top3-list">#2 · <?php echo htmlspecialchars($p->top2_nama_divisi); ?> · <?php echo number_format($p->top2_skor, 1, ',', '.'); ?></div>
-                                    <?php } ?>
-                                    <?php if (!empty($p->top3_nama_divisi)) { ?>
-                                    <div class="top3-list">#3 · <?php echo htmlspecialchars($p->top3_nama_divisi); ?> · <?php echo number_format($p->top3_skor, 1, ',', '.'); ?></div>
-                                    <?php } ?>
+                                    <strong><?php echo htmlspecialchars($p->top1_nama_divisi); ?> · <?php echo number_format($p->top1_skor, 1, ',', '.'); ?></strong>
                                 <?php } else { ?>
                                     <span class="status-sub">Hasil belum tersedia</span>
                                 <?php } ?>

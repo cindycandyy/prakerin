@@ -154,7 +154,11 @@ def _teks_kekurangan(divisi: dict, faktor: dict, profil: dict) -> str:
 
 
 def hitung_rekomendasi(profil: dict, master: dict) -> dict:
-    """Bagian 5 'Pemilihan tiga teratas'. Return {"rekomendasi": [...], "divisi_penuh_disembunyikan": n}."""
+    """Pemilihan satu divisi terbaik. Return {"rekomendasi": [...], "divisi_penuh_disembunyikan": n}.
+
+    "rekomendasi" tetap berbentuk list (1 elemen) demi kompatibilitas pemanggil,
+    bukan dict tunggal.
+    """
     divisi_list = [d for d in master["divisi"] if d.get("aktif", 1)]
     penuh = sum(1 for d in divisi_list if d.get("sisa_kuota", 0) <= 0)
     tersedia = [d for d in divisi_list if d.get("sisa_kuota", 0) > 0]
@@ -169,7 +173,7 @@ def hitung_rekomendasi(profil: dict, master: dict) -> dict:
     ambang = master["ambang"]
     rekomendasi = []
     semua_catatan = []
-    for peringkat, (skor, faktor, d, catatan) in enumerate(dihitung[:3], start=1):
+    for peringkat, (skor, faktor, d, catatan) in enumerate(dihitung[:1], start=1):
         semua_catatan.extend(catatan)
         rekomendasi.append({
             "peringkat": peringkat,

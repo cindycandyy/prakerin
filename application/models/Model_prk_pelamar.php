@@ -13,8 +13,9 @@ class Model_prk_pelamar extends CI_Model {
         parent::__construct();
     }
 
-    // Satu baris pelamar + rekomendasi #1 (kalau ada), dipakai di dashboard dan
-    // daftar pelamar. $tab menyaring status: pending|diterima|ditolak|tidak_aktif.
+    // Satu baris pelamar + rekomendasi #1 (satu-satunya rekomendasi tersimpan),
+    // dipakai di dashboard dan daftar pelamar. $tab menyaring status:
+    // pending|diterima|ditolak|tidak_aktif.
     function listPelamar($tab = null, $cari = null, $batas = null) {
         $this->db->select('
                 pkl_data.id, pkl_data.nama, pkl_data.institusi, pkl_data.jurusan,
@@ -22,20 +23,12 @@ class Model_prk_pelamar extends CI_Model {
                 pkl_data.status, pkl_data.id_depag,
                 depag.nama_depag,
                 r1.id_divisi AS top1_id_divisi, r1.skor AS top1_skor, r1.keyakinan AS top1_keyakinan,
-                divisi1.nama AS top1_nama_divisi,
-                r2.id_divisi AS top2_id_divisi, r2.skor AS top2_skor, r2.keyakinan AS top2_keyakinan,
-                divisi2.nama AS top2_nama_divisi,
-                r3.id_divisi AS top3_id_divisi, r3.skor AS top3_skor, r3.keyakinan AS top3_keyakinan,
-                divisi3.nama AS top3_nama_divisi
+                divisi1.nama AS top1_nama_divisi
             ')
             ->from('pkl_data')
             ->join('depag', 'depag.id = pkl_data.id_depag', 'left')
             ->join('prk_rekomendasi r1', 'r1.id_transaksi = pkl_data.id AND r1.is_current = 1 AND r1.peringkat = 1', 'left')
-            ->join('prk_divisi divisi1', 'divisi1.id = r1.id_divisi', 'left')
-            ->join('prk_rekomendasi r2', 'r2.id_transaksi = pkl_data.id AND r2.is_current = 1 AND r2.peringkat = 2', 'left')
-            ->join('prk_divisi divisi2', 'divisi2.id = r2.id_divisi', 'left')
-            ->join('prk_rekomendasi r3', 'r3.id_transaksi = pkl_data.id AND r3.is_current = 1 AND r3.peringkat = 3', 'left')
-            ->join('prk_divisi divisi3', 'divisi3.id = r3.id_divisi', 'left');
+            ->join('prk_divisi divisi1', 'divisi1.id = r1.id_divisi', 'left');
 
         if (!empty($tab)) {
             $this->db->where('pkl_data.status', $this->_statusDariTab($tab));

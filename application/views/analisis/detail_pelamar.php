@@ -446,7 +446,7 @@
                                     $r = isset($peringkat_per_divisi[(int) $d->id]) ? $peringkat_per_divisi[(int) $d->id] : null;
                                     $label = htmlspecialchars($d->nama);
                                     if ($r) {
-                                        $label = '#' . (int) $r->peringkat . ' · ' . $label . ' · skor ' . number_format($r->skor, 1, ',', '.');
+                                        $label = '★ ' . $label . ' (rekomendasi sistem) · skor ' . number_format($r->skor, 1, ',', '.');
                                     }
                                     echo '<option value="' . (int) $d->id . '">' . $label . '</option>';
                                 }

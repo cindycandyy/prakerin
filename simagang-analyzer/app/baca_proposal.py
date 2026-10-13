@@ -30,7 +30,10 @@ _POLA_BIODATA = re.compile(r"\bbiodata\b|\bdaftar riwayat hidup\b", re.I)
 _AWALAN_NOMOR = r"^\s*(?:[Bb][Aa][Bb]\s+[IVXivx]+\.?\s*)?(?:\d+(?:\.\d+)*[.\)]?\s*)?"
 _JUDUL_BAGIAN = {
     "latar_belakang": re.compile(_AWALAN_NOMOR + r"Latar\s+[Bb]elakang\s*$", re.M),
-    "tujuan": re.compile(_AWALAN_NOMOR + r"Tujuan\b.{0,60}$", re.M),
+    # (?!...) menolak heading seperti "Visi, Misi, dan Tujuan Pendidikan" atau
+    # "Tujuan Sekolah" -- itu section tujuan PENDIDIKAN/SEKOLAH (proposal kerja
+    # sama institusi), bukan tujuan PKL peserta; isinya salah tangkap bila ikut match.
+    "tujuan": re.compile(_AWALAN_NOMOR + r"Tujuan\b(?!\s*(?:[Ss]ekolah|[Pp]endidikan)\b|.{0,40}[Pp]endidikan).{0,60}$", re.M),
     "ruang_lingkup": re.compile(_AWALAN_NOMOR + r"Ruang\s+[Ll]ingkup\s*$", re.M),
     "bidang": re.compile(_AWALAN_NOMOR + r"Bidang\s+(?:[Pp][Kk][Ll]|[Kk]erja)\b.{0,60}$", re.M),
     "mata_kuliah": re.compile(_AWALAN_NOMOR + r"Mata\s+[Kk]uliah\b.{0,60}$", re.M),
@@ -60,18 +63,32 @@ def _halaman_informatif(teks: str) -> bool:
     return True
 
 
+_POLA_AWAL_BAB = re.compile(r"^\s*BAB\s+[IVX]+\b", re.M)
+
+
 def _pecah_bagian(teks: str) -> dict:
-    """Pecah teks gabungan jadi {nama_bagian: isi}. Teks di luar bagian diabaikan."""
+    """Pecah teks gabungan jadi {nama_bagian: isi}. Teks di luar bagian diabaikan.
+
+    Awal "BAB <angka romawi>" berikutnya (mis. "BAB II") selalu memotong bagian
+    sebelumnya meski bab itu sendiri bukan salah satu nama bagian yang dikenal
+    -- tanpa ini, bagian terakhir pada sebuah bab (mis. "1.5 Mata Kuliah yang
+    Relevan" sebelum "BAB II") akan ikut menyedot seluruh bab berikutnya karena
+    tidak ada penanda bagian lain yang memotongnya.
+    """
     tanda = []
     for nama, pola in _JUDUL_BAGIAN.items():
         for m in pola.finditer(teks):
             tanda.append((m.start(), nama))
+    pemutus_bab = [m.start() for m in _POLA_AWAL_BAB.finditer(teks)]
     tanda.sort()
     if not tanda:
         return {}
     hasil = {}
     for i, (mulai, nama) in enumerate(tanda):
         akhir = tanda[i + 1][0] if i + 1 < len(tanda) else len(teks)
+        batas_bab = next((p for p in pemutus_bab if mulai < p < akhir), None)
+        if batas_bab is not None:
+            akhir = batas_bab
         isi = teks[mulai:akhir]
         hasil[nama] = (hasil.get(nama, "") + "\n" + isi).strip()
     return hasil
