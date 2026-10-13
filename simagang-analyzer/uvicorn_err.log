@@ -2,3 +2,4 @@ INFO:     Started server process [70312]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://127.0.0.1:8001 (Press CTRL+C to quit)
+2026-10-13 13:24:50,142 INFO job_id=5 status=perlu_tinjau durasi_ms=1817
