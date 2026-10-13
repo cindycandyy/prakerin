@@ -13,7 +13,7 @@ VERSI = "1.0.0"
 # bagian 4. Dipakai sekarang hanya untuk dev/testing atas persetujuan — baca bagian 12.2
 # #17 & #24 spesifikasi teknis sebelum dipakai dengan data peserta asli di produksi.
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
-GROQ_MODEL = os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile")
+GROQ_MODEL = os.environ.get("GROQ_MODEL", "openai/gpt-oss-20b")
 GROQ_TIMEOUT_DETIK = 20
 
 LLM_SIAP = LLM_AKTIF or bool(GROQ_API_KEY)

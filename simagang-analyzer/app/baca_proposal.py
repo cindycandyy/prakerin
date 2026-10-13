@@ -21,16 +21,22 @@ _POLA_DAFTAR_ISI = re.compile(r"\bdaftar isi\b", re.I)
 _POLA_PROFIL_SEKOLAH = re.compile(r"\bprofil (sekolah|kampus|perusahaan)\b", re.I)
 _POLA_BIODATA = re.compile(r"\bbiodata\b|\bdaftar riwayat hidup\b", re.I)
 
-# Judul bagian (regex tak peka huruf besar, di awal baris, boleh diawali nomor/"BAB I").
+# Judul bagian: di awal baris, boleh diawali nomor bertingkat ("1.2") atau "BAB I",
+# dan kata kuncinya harus berhuruf awal Kapital (judul proposal akademik ditulis
+# Title Case: "Tujuan Praktik Kerja Lapangan"). Peka huruf besar pada kata kunci
+# sendiri -- bukan sekadar cek baris pendek -- supaya kalimat badan teks yang
+# kebetulan diawali kata sama dalam huruf kecil (mis. baris wrap "tujuan
+# perusahaan.") tidak ikut dianggap heading bagian.
+_AWALAN_NOMOR = r"^\s*(?:[Bb][Aa][Bb]\s+[IVXivx]+\.?\s*)?(?:\d+(?:\.\d+)*[.\)]?\s*)?"
 _JUDUL_BAGIAN = {
-    "latar_belakang": re.compile(r"^\s*(?:bab\s+[ivx]+\.?\s*)?(?:\d+[.\)]?\s*)?latar\s+belakang\b", re.I | re.M),
-    "tujuan": re.compile(r"^\s*(?:bab\s+[ivx]+\.?\s*)?(?:\d+[.\)]?\s*)?tujuan\b", re.I | re.M),
-    "ruang_lingkup": re.compile(r"^\s*(?:bab\s+[ivx]+\.?\s*)?(?:\d+[.\)]?\s*)?ruang\s+lingkup\b", re.I | re.M),
-    "bidang": re.compile(r"^\s*(?:bab\s+[ivx]+\.?\s*)?(?:\d+[.\)]?\s*)?bidang\s+(?:pkl|kerja)\b", re.I | re.M),
-    "mata_kuliah": re.compile(r"^\s*(?:bab\s+[ivx]+\.?\s*)?(?:\d+[.\)]?\s*)?mata\s+kuliah\b", re.I | re.M),
-    "objek_pkl": re.compile(r"^\s*(?:bab\s+[ivx]+\.?\s*)?(?:\d+[.\)]?\s*)?objek\s+pkl\b", re.I | re.M),
-    "manfaat": re.compile(r"^\s*(?:bab\s+[ivx]+\.?\s*)?(?:\d+[.\)]?\s*)?manfaat\b", re.I | re.M),
-    "waktu": re.compile(r"^\s*(?:bab\s+[ivx]+\.?\s*)?(?:\d+[.\)]?\s*)?waktu\b", re.I | re.M),
+    "latar_belakang": re.compile(_AWALAN_NOMOR + r"Latar\s+[Bb]elakang\s*$", re.M),
+    "tujuan": re.compile(_AWALAN_NOMOR + r"Tujuan\b.{0,60}$", re.M),
+    "ruang_lingkup": re.compile(_AWALAN_NOMOR + r"Ruang\s+[Ll]ingkup\s*$", re.M),
+    "bidang": re.compile(_AWALAN_NOMOR + r"Bidang\s+(?:[Pp][Kk][Ll]|[Kk]erja)\b.{0,60}$", re.M),
+    "mata_kuliah": re.compile(_AWALAN_NOMOR + r"Mata\s+[Kk]uliah\b.{0,60}$", re.M),
+    "objek_pkl": re.compile(_AWALAN_NOMOR + r"Objek\s+[Pp][Kk][Ll]\s*$", re.M),
+    "manfaat": re.compile(_AWALAN_NOMOR + r"Manfaat\b.{0,60}$", re.M),
+    "waktu": re.compile(_AWALAN_NOMOR + r"Waktu\s*$", re.M),
 }
 
 BAGIAN_DIPAKAI = {"ruang_lingkup", "bidang", "tujuan", "mata_kuliah", "objek_pkl"}
