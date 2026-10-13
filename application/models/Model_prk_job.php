@@ -22,6 +22,16 @@ class Model_prk_job extends CI_Model {
             ->get('prk_analisis_job')->row();
     }
 
+    // Job yang belum selesai (masih antre/jalan) untuk id_transaksi ini -- dicek
+    // sebelum enqueue supaya klik beruntun tombol "Analisis ulang" tidak menumpuk
+    // job duplikat untuk pelamar yang sama.
+    function jobBelumSelesai($id_transaksi) {
+        return $this->db
+            ->where('id_transaksi', $id_transaksi)
+            ->where_in('status', array('antre', 'jalan'))
+            ->get('prk_analisis_job')->row();
+    }
+
     function enqueue($id_transaksi, $hash_proposal, $hash_transkrip) {
         $this->db->insert('prk_analisis_job', array(
             'id_transaksi' => $id_transaksi,

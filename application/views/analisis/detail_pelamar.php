@@ -353,7 +353,9 @@
                 <div class="panel panel-analisis">
                     <div class="panel-head">
                         <h2>Ringkasan hasil analisis</h2>
-                        <button type="button" class="btn-analisis-ulang">Analisis ulang</button>
+                        <form method="post" action="<?php echo base_url(); ?>analisis/peserta/<?php echo (int) $id_transaksi; ?>/analisis_ulang" style="margin:0;">
+                            <button type="submit" class="btn-analisis-ulang">Analisis ulang</button>
+                        </form>
                     </div>
                     <div class="panel-sub">Rangkuman dari proposal magang dan transkrip nilai</div>
                     <?php if ($profil) { ?>

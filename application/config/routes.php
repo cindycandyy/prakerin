@@ -61,6 +61,7 @@ $route['analisis/peserta/(:num)/terima'] = 'analisis/terima/$1';
 $route['analisis/peserta/(:num)/tolak'] = 'analisis/tolak/$1';
 $route['analisis/peserta/(:num)/surat_buat'] = 'analisis/surat_buat/$1';
 $route['analisis/peserta/(:num)/berkas_unduh'] = 'analisis/berkas_unduh/$1';
+$route['analisis/peserta/(:num)/analisis_ulang'] = 'analisis/analisis_ulang/$1';
 $route['analisis/kontrak/(:num)/perpanjang'] = 'analisis/kontrak_perpanjang/$1';
 $route['analisis/kontrak/(:num)/akhiri'] = 'analisis/kontrak_akhiri/$1';
 $route['analisis/surat/(:num)/simpan'] = 'analisis/surat_simpan/$1';

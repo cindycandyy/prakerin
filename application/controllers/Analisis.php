@@ -97,6 +97,28 @@ class Analisis extends CI_Controller {
         $this->load->view('analisis/detail_pelamar', $data);
     }
 
+    // POST /analisis/peserta/{id}/analisis_ulang — tombol "Analisis ulang" (FR-04):
+    // paksa job baru masuk antrean meski berkas sama persis dengan analisis
+    // terakhir. Hasil baru baru muncul setelah Cli_analisis::antrean() berjalan
+    // (cron tiap menit), bukan seketika -- makanya cuma pesan status, bukan hasil.
+    function analisis_ulang($id = null) {
+        $pelamar = $this->model_prk_pelamar->getPelamar($id);
+        if (!$pelamar) {
+            show_404();
+        }
+
+        $this->load->library('analisis_queue');
+        $masuk_antrean = $this->analisis_queue->enqueue($id, true);
+
+        if ($masuk_antrean) {
+            $this->session->set_flashdata('sukses', 'Analisis ulang diantrekan. Hasil baru akan muncul dalam beberapa menit.');
+        } else {
+            $this->session->set_flashdata('error', 'Belum bisa mengantrekan analisis ulang — proposal/transkrip belum lengkap, atau masih ada proses analisis yang berjalan.');
+        }
+
+        redirect(base_url() . 'analisis/peserta/' . $id);
+    }
+
     // GET /analisis/peserta/{id}/berkas_unduh — zip semua berkas pelamar yang
     // ada secara fisik di gambar/, untuk tombol "Unduh semua berkas".
     function berkas_unduh($id = null) {

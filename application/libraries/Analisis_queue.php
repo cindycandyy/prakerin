@@ -19,7 +19,10 @@ class Analisis_queue {
     // $id_transaksi: pkl_data.id. Baca doc_2 (proposal) dan doc_3 (transkrip) dari
     // baris itu sendiri -- aman dipanggil di tengah hook update sebelum/sesudah
     // kolom berubah selama dipanggil setelah $this->model_transaksi->update() sukses.
-    function enqueue($id_transaksi) {
+    // $paksa: lewati cek dedup hash -- dipakai tombol "Analisis ulang" HR (FR-04),
+    // karena HR sengaja minta diproses ulang meski berkasnya sama persis dengan
+    // analisis terakhir (mis. setelah Admin mengubah bobot/pengaturan).
+    function enqueue($id_transaksi, $paksa = false) {
         if (empty($id_transaksi)) {
             return false;
         }
@@ -40,13 +43,20 @@ class Analisis_queue {
             return false;
         }
 
+        if ($this->ci->model_prk_job->jobBelumSelesai($id_transaksi)) {
+            // Sudah ada job antre/jalan untuk pelamar ini -- jangan numpuk duplikat.
+            return false;
+        }
+
         $hash_proposal = hash_file('sha256', $path_proposal);
         $hash_transkrip = hash_file('sha256', $path_transkrip);
 
-        $terakhir = $this->ci->model_prk_job->jobSelesaiTerakhir($id_transaksi);
-        if ($terakhir && $terakhir->hash_proposal === $hash_proposal && $terakhir->hash_transkrip === $hash_transkrip) {
-            // Berkas sama persis dengan analisis terakhir yang sukses -- tidak perlu diulang.
-            return false;
+        if (!$paksa) {
+            $terakhir = $this->ci->model_prk_job->jobSelesaiTerakhir($id_transaksi);
+            if ($terakhir && $terakhir->hash_proposal === $hash_proposal && $terakhir->hash_transkrip === $hash_transkrip) {
+                // Berkas sama persis dengan analisis terakhir yang sukses -- tidak perlu diulang.
+                return false;
+            }
         }
 
         return $this->ci->model_prk_job->enqueue($id_transaksi, $hash_proposal, $hash_transkrip);
