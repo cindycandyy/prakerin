@@ -65,18 +65,30 @@
         }
         .search-box:focus { outline: none; border-color: var(--hijau-700); box-shadow: 0 0 0 3px var(--hijau-100); }
         .chip {
-            border: 1px solid var(--abu-200); border-radius: 20px; padding: 6px 14px; font-size: 12px;
-            background: #fff; cursor: pointer; color: var(--abu-900); white-space: nowrap;
+            display: inline-flex; align-items: center; border: 1px solid var(--abu-200); border-radius: 20px;
+            padding: 8px 14px; font-size: 12px; font-weight: 600; background: #fff; cursor: pointer;
+            color: var(--abu-600); white-space: nowrap; height: 36px; box-sizing: border-box; text-decoration: none;
         }
-        .chip.active { background: var(--hijau-700); color: #fff; border-color: var(--hijau-700); }
+        .chip-pending:hover { background: var(--kuning-bg); border-color: var(--kuning-bg); color: var(--kuning-teks); }
+        .chip-diterima:hover { background: var(--hijau-100); border-color: var(--hijau-100); color: var(--hijau-700); }
+        .chip-ditolak:hover { background: var(--merah-100); border-color: var(--merah-100); color: var(--merah-700); }
         .tabel-scroll { width: 100%; overflow-x: auto; }
         table.pelamar { width: 100%; min-width: 760px; border-collapse: collapse; font-size: 12px; }
         table.pelamar th { text-align: left; color: var(--abu-600); font-weight: 600; padding: 8px 10px; border-bottom: 1px solid var(--abu-200); font-size: 11px; text-transform: uppercase; }
         table.pelamar td { padding: 12px 10px; border-bottom: 1px solid var(--abu-100); vertical-align: top; }
         .peserta-cell { display: flex; align-items: center; gap: 10px; }
         .peserta-foto { width: 36px; height: 36px; border-radius: 100px; background: var(--abu-200); flex-shrink: 0; object-fit: cover; }
-        .peserta-nama { font-weight: 600; }
+        .peserta-nama { font-weight: 600; color: var(--abu-900); }
         .peserta-sub { color: var(--abu-600); font-size: 11px; }
+        .peserta-sub .institusi { color: var(--abu-900); font-weight: 500; }
+        .peserta-sub .jurusan { color: var(--abu-600); font-weight: 400; }
+
+        .period-controls .btn-chip { display: inline-flex; align-items: center; justify-content: center; }
+        .panel-perhatian .panel-head { margin-bottom: 4px; }
+        .panel-perhatian .panel-head h2 { font-size: 16px; font-weight: 700; color: var(--abu-900); }
+        .panel-perhatian .panel-sub { font-size: 12px; color: var(--abu-600); margin-top: 0; }
+        .link-arrow { display: inline-flex; align-items: center; gap: 4px; }
+        .link-arrow svg { position: relative; top: 1px; }
         .status-sub { margin-top: 2px; }
         .skor-cell strong { display: block; color: var(--hijau-700); }
         .skor-cell .status-sub { margin-top: 1px; }
@@ -120,9 +132,9 @@
                     <p>Pantau pelamar baru, kapasitas penempatan, dan jadwal magang dalam satu tempat.</p>
                 </div>
                 <div class="period-controls">
-                    <button class="btn-chip">‹</button>
+                    <button class="btn-chip"><?php icon_analisis('chevron-left', 14); ?></button>
                     <button class="btn-chip">5–11 Oktober 2026</button>
-                    <button class="btn-chip">›</button>
+                    <button class="btn-chip"><?php icon_analisis('chevron-right', 14); ?></button>
                 </div>
             </div>
             <div class="snapshot-line">
@@ -224,21 +236,21 @@
                 </div>
             </div>
 
-            <div class="panel" style="width:100%">
+            <div class="panel panel-perhatian" style="width:100%">
                 <div class="panel-head">
                     <h2>Pelamar yang perlu perhatian</h2>
-                    <a class="panel-head link" href="<?php echo base_url(); ?>analisis/pelamar">Semua pelamar →</a>
+                    <a class="panel-head link link-arrow" href="<?php echo base_url(); ?>analisis/pelamar">Semua pelamar <?php icon_analisis('arrow-right', 14); ?></a>
                 </div>
-                <div class="panel-sub">Dahulukan berkas siap dan hasil yang perlu tinjau ulang. Keputusan tetap di tangan HR.</div>
+                <div class="panel-sub">Pelamar pending yang paling lama menunggu keputusan kamu.</div>
                 <form class="filters" method="get" action="<?php echo base_url(); ?>analisis/pelamar">
                     <div class="search-box-wrap">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                         <input class="search-box" type="text" name="cari" placeholder="Cari nama, sekolah, atau kampus">
                     </div>
-                    <a class="chip active" href="<?php echo base_url(); ?>analisis/pelamar">Pending · <?php echo isset($jumlah_status['pending']) ? $jumlah_status['pending'] : 0; ?></a>
-                    <a class="chip" href="<?php echo base_url(); ?>analisis/pelamar?tab=diterima">Diterima · <?php echo isset($jumlah_status['diterima']) ? $jumlah_status['diterima'] : 0; ?></a>
-                    <a class="chip" href="<?php echo base_url(); ?>analisis/pelamar?tab=ditolak">Ditolak · <?php echo isset($jumlah_status['ditolak']) ? $jumlah_status['ditolak'] : 0; ?></a>
-                    <button class="btn-chip" type="submit">Semua departemen ⌄</button>
+                    <a class="chip chip-pending" href="<?php echo base_url(); ?>analisis/pelamar?tab=pending">Pending · <?php echo isset($jumlah_status['pending']) ? $jumlah_status['pending'] : 0; ?></a>
+                    <a class="chip chip-diterima" href="<?php echo base_url(); ?>analisis/pelamar?tab=diterima">Diterima · <?php echo isset($jumlah_status['diterima']) ? $jumlah_status['diterima'] : 0; ?></a>
+                    <a class="chip chip-ditolak" href="<?php echo base_url(); ?>analisis/pelamar?tab=ditolak">Ditolak · <?php echo isset($jumlah_status['ditolak']) ? $jumlah_status['ditolak'] : 0; ?></a>
+                    <a class="chip" href="<?php echo base_url(); ?>analisis/pelamar?tab=tidak_aktif">Tidak aktif · <?php echo isset($jumlah_status['tidak_aktif']) ? $jumlah_status['tidak_aktif'] : 0; ?></a>
                 </form>
                 <div class="tabel-scroll">
                 <table class="pelamar">
@@ -266,7 +278,7 @@
                                     <img class="peserta-foto" src="<?php echo base_url(); ?>assets/images/avatar-default.png" alt="">
                                     <div>
                                         <div class="peserta-nama"><?php echo htmlspecialchars($p->nama); ?></div>
-                                        <div class="peserta-sub"><?php echo htmlspecialchars($p->institusi); ?><br><?php echo htmlspecialchars($p->jurusan); ?></div>
+                                        <div class="peserta-sub"><span class="institusi"><?php echo htmlspecialchars($p->institusi); ?></span><br><span class="jurusan"><?php echo htmlspecialchars($p->jurusan); ?></span></div>
                                     </div>
                                 </div>
                             </td>
@@ -295,14 +307,8 @@
                     </tbody>
                 </table>
                 </div>
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;">
+                <div style="margin-top:10px;">
                     <span class="status-sub">Menampilkan <?php echo count($pelamar_perhatian); ?> pelamar pending teratas · saran bukan penetapan</span>
-                    <div class="pager">
-                        <button>‹</button>
-                        <button class="active">1</button>
-                        <button>2</button>
-                        <button>›</button>
-                    </div>
                 </div>
             </div>
 
@@ -310,7 +316,7 @@
                 <div class="panel">
                     <div class="panel-head">
                         <h2>Agenda magang terdekat</h2>
-                        <a class="panel-head link" href="<?php echo base_url(); ?>analisis/kalender">Buka kalender →</a>
+                        <a class="panel-head link link-arrow" href="<?php echo base_url(); ?>analisis/kalender">Buka kalender <?php icon_analisis('arrow-right', 14); ?></a>
                     </div>
                     <div class="panel-sub">Oktober 2026 · mulai dan berakhir</div>
                     <div class="agenda-grid">

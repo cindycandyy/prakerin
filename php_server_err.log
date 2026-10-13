@@ -86,3 +86,732 @@
 [Mon Oct 12 14:54:58 2026] 127.0.0.1:62142 Closing
 [Mon Oct 12 14:54:58 2026] 127.0.0.1:57487 Accepted
 [Mon Oct 12 14:54:58 2026] 127.0.0.1:57487 Closing
+[Tue Oct 13 07:19:39 2026] 127.0.0.1:55564 Accepted
+[Tue Oct 13 07:19:41 2026] 127.0.0.1:55564 Closing
+[Tue Oct 13 07:21:31 2026] 127.0.0.1:64501 Accepted
+[Tue Oct 13 07:21:31 2026] 127.0.0.1:64501 Closing
+[Tue Oct 13 07:21:32 2026] 127.0.0.1:64503 Accepted
+[Tue Oct 13 07:21:32 2026] 127.0.0.1:64503 Closing
+[Tue Oct 13 07:21:35 2026] 127.0.0.1:64505 Accepted
+[Tue Oct 13 07:21:35 2026] 127.0.0.1:64505 Closing
+[Tue Oct 13 07:21:39 2026] 127.0.0.1:54945 Accepted
+[Tue Oct 13 07:21:39 2026] 127.0.0.1:54945 Closing
+[Tue Oct 13 07:21:39 2026] 127.0.0.1:54947 Accepted
+[Tue Oct 13 07:21:39 2026] 127.0.0.1:54947 Closing
+[Tue Oct 13 07:24:36 2026] 127.0.0.1:58110 Accepted
+[Tue Oct 13 07:24:36 2026] 127.0.0.1:58110 Closing
+[Tue Oct 13 07:24:47 2026] 127.0.0.1:58745 Accepted
+[Tue Oct 13 07:24:47 2026] 127.0.0.1:58745 Closing
+[Tue Oct 13 07:24:47 2026] 127.0.0.1:56095 Accepted
+[Tue Oct 13 07:24:47 2026] 127.0.0.1:51143 Accepted
+[Tue Oct 13 07:24:47 2026] 127.0.0.1:55592 Accepted
+[Tue Oct 13 07:24:47 2026] 127.0.0.1:60377 Accepted
+[Tue Oct 13 07:24:47 2026] 127.0.0.1:56095 [200]: GET /assets/vendor/fontawesome-free/css/all.min.css
+[Tue Oct 13 07:24:47 2026] 127.0.0.1:59668 Accepted
+[Tue Oct 13 07:24:47 2026] 127.0.0.1:51143 [200]: GET /assets/css/sb-admin-2.min.css
+[Tue Oct 13 07:24:47 2026] 127.0.0.1:55592 [200]: GET /assets/vendor/datatables/dataTables.bootstrap4.min.css
+[Tue Oct 13 07:24:47 2026] 127.0.0.1:60377 Closing
+[Tue Oct 13 07:24:47 2026] 127.0.0.1:59668 [200]: GET /assets/vendor/jquery/jquery.min.js
+[Tue Oct 13 07:24:47 2026] 127.0.0.1:55502 Accepted
+[Tue Oct 13 07:24:47 2026] 127.0.0.1:56095 Closing
+[Tue Oct 13 07:24:47 2026] 127.0.0.1:55502 [200]: GET /assets/vendor/bootstrap/js/bootstrap.bundle.min.js
+[Tue Oct 13 07:24:47 2026] 127.0.0.1:55592 Closing
+[Tue Oct 13 07:24:47 2026] 127.0.0.1:51143 Closing
+[Tue Oct 13 07:24:47 2026] 127.0.0.1:59668 Closing
+[Tue Oct 13 07:24:47 2026] 127.0.0.1:55502 Closing
+[Tue Oct 13 07:24:47 2026] 127.0.0.1:49528 Accepted
+[Tue Oct 13 07:24:47 2026] 127.0.0.1:55494 Accepted
+[Tue Oct 13 07:24:47 2026] 127.0.0.1:51444 Accepted
+[Tue Oct 13 07:24:47 2026] 127.0.0.1:58588 Accepted
+[Tue Oct 13 07:24:47 2026] 127.0.0.1:64008 Accepted
+[Tue Oct 13 07:24:47 2026] 127.0.0.1:60146 Accepted
+[Tue Oct 13 07:24:47 2026] 127.0.0.1:49528 [200]: GET /assets/vendor/jquery-easing/jquery.easing.min.js
+[Tue Oct 13 07:24:47 2026] 127.0.0.1:55494 [200]: GET /assets/js/sb-admin-2.min.js
+[Tue Oct 13 07:24:47 2026] 127.0.0.1:51444 [200]: GET /assets/vendor/chart.js/Chart.min.js
+[Tue Oct 13 07:24:47 2026] 127.0.0.1:58588 [200]: GET /assets/vendor/datatables/jquery.dataTables.min.js
+[Tue Oct 13 07:24:47 2026] 127.0.0.1:64008 [200]: GET /assets/vendor/datatables/dataTables.bootstrap4.min.js
+[Tue Oct 13 07:24:47 2026] 127.0.0.1:60146 [200]: GET /assets/js/demo/datatables-demo.js
+[Tue Oct 13 07:24:47 2026] 127.0.0.1:49528 Closing
+[Tue Oct 13 07:24:47 2026] 127.0.0.1:55494 Closing
+[Tue Oct 13 07:24:47 2026] 127.0.0.1:58588 Closing
+[Tue Oct 13 07:24:47 2026] 127.0.0.1:64008 Closing
+[Tue Oct 13 07:24:47 2026] 127.0.0.1:60146 Closing
+[Tue Oct 13 07:24:47 2026] 127.0.0.1:51444 Closing
+[Tue Oct 13 07:24:47 2026] 127.0.0.1:55479 Accepted
+[Tue Oct 13 07:24:48 2026] 127.0.0.1:55479 Closing
+[Tue Oct 13 07:26:32 2026] 127.0.0.1:60421 Accepted
+[Tue Oct 13 07:26:32 2026] 127.0.0.1:60421 Closing
+[Tue Oct 13 07:26:32 2026] 127.0.0.1:51911 Accepted
+[Tue Oct 13 07:26:32 2026] 127.0.0.1:51911 Closing
+[Tue Oct 13 07:27:10 2026] 127.0.0.1:58109 Accepted
+[Tue Oct 13 07:27:10 2026] 127.0.0.1:58109 Closing
+[Tue Oct 13 07:27:10 2026] 127.0.0.1:58111 Accepted
+[Tue Oct 13 07:27:10 2026] 127.0.0.1:58111 Closing
+[Tue Oct 13 07:27:10 2026] 127.0.0.1:58113 Accepted
+[Tue Oct 13 07:27:10 2026] 127.0.0.1:58113 Closing
+[Tue Oct 13 07:27:15 2026] 127.0.0.1:62925 Accepted
+[Tue Oct 13 07:27:15 2026] 127.0.0.1:62925 Closing
+[Tue Oct 13 07:27:15 2026] 127.0.0.1:62927 Accepted
+[Tue Oct 13 07:27:15 2026] 127.0.0.1:62927 Closing
+[Tue Oct 13 07:27:25 2026] 127.0.0.1:64538 Accepted
+[Tue Oct 13 07:27:25 2026] 127.0.0.1:64538 Closing
+[Tue Oct 13 07:27:25 2026] 127.0.0.1:64540 Accepted
+[Tue Oct 13 07:27:25 2026] 127.0.0.1:64540 Closing
+[Tue Oct 13 07:27:30 2026] 127.0.0.1:64542 Accepted
+[Tue Oct 13 07:27:30 2026] 127.0.0.1:64542 Closing
+[Tue Oct 13 07:27:54 2026] 127.0.0.1:56649 Accepted
+[Tue Oct 13 07:27:54 2026] 127.0.0.1:56649 Closing
+[Tue Oct 13 07:27:54 2026] 127.0.0.1:56651 Accepted
+[Tue Oct 13 07:27:54 2026] 127.0.0.1:56651 Closing
+[Tue Oct 13 07:27:54 2026] 127.0.0.1:65251 Accepted
+[Tue Oct 13 07:27:54 2026] 127.0.0.1:65251 Closing
+[Tue Oct 13 07:28:39 2026] 127.0.0.1:59116 Accepted
+[Tue Oct 13 07:28:39 2026] 127.0.0.1:59116 Closing
+[Tue Oct 13 07:28:39 2026] 127.0.0.1:59118 Accepted
+[Tue Oct 13 07:28:39 2026] 127.0.0.1:59118 Closing
+[Tue Oct 13 07:28:39 2026] 127.0.0.1:59120 Accepted
+[Tue Oct 13 07:28:40 2026] 127.0.0.1:59120 Closing
+[Tue Oct 13 07:28:53 2026] 127.0.0.1:60756 Accepted
+[Tue Oct 13 07:28:53 2026] 127.0.0.1:60756 Closing
+[Tue Oct 13 07:28:53 2026] 127.0.0.1:60758 Accepted
+[Tue Oct 13 07:28:53 2026] 127.0.0.1:60758 Closing
+[Tue Oct 13 07:28:53 2026] 127.0.0.1:60760 Accepted
+[Tue Oct 13 07:28:53 2026] 127.0.0.1:60760 Closing
+[Tue Oct 13 07:28:53 2026] 127.0.0.1:60762 Accepted
+[Tue Oct 13 07:28:53 2026] 127.0.0.1:60762 Closing
+[Tue Oct 13 07:29:03 2026] 127.0.0.1:57045 Accepted
+[Tue Oct 13 07:29:03 2026] 127.0.0.1:57045 Closing
+[Tue Oct 13 07:29:12 2026] 127.0.0.1:53861 Accepted
+[Tue Oct 13 07:29:12 2026] 127.0.0.1:53861 Closing
+[Tue Oct 13 07:29:33 2026] 127.0.0.1:54606 Accepted
+[Tue Oct 13 07:29:33 2026] 127.0.0.1:54606 Closing
+[Tue Oct 13 07:29:33 2026] 127.0.0.1:64774 Accepted
+[Tue Oct 13 07:29:37 2026] 127.0.0.1:64774 Closing
+[Tue Oct 13 07:29:37 2026] 127.0.0.1:64367 Accepted
+[Tue Oct 13 07:30:17 2026] 127.0.0.1:64367 Closing
+[Tue Oct 13 07:30:17 2026] 127.0.0.1:56020 Accepted
+[Tue Oct 13 07:30:31 2026] 127.0.0.1:56020 Closing
+[Tue Oct 13 07:30:31 2026] 127.0.0.1:51777 Accepted
+[Tue Oct 13 07:30:31 2026] 127.0.0.1:51777 Closing
+[Tue Oct 13 07:30:31 2026] 127.0.0.1:50143 Accepted
+[Tue Oct 13 07:30:31 2026] 127.0.0.1:60430 Accepted
+[Tue Oct 13 07:30:31 2026] 127.0.0.1:60933 Accepted
+[Tue Oct 13 07:30:31 2026] 127.0.0.1:52145 Accepted
+[Tue Oct 13 07:30:31 2026] 127.0.0.1:50143 [200]: GET /assets/vendor/fontawesome-free/css/all.min.css
+[Tue Oct 13 07:30:31 2026] 127.0.0.1:60430 [200]: GET /assets/css/sb-admin-2.min.css
+[Tue Oct 13 07:30:31 2026] 127.0.0.1:60933 [200]: GET /assets/vendor/datatables/dataTables.bootstrap4.min.css
+[Tue Oct 13 07:30:31 2026] 127.0.0.1:52145 Closing
+[Tue Oct 13 07:30:31 2026] 127.0.0.1:61563 Accepted
+[Tue Oct 13 07:30:31 2026] 127.0.0.1:61563 [200]: GET /assets/vendor/jquery/jquery.min.js
+[Tue Oct 13 07:30:31 2026] 127.0.0.1:50143 Closing
+[Tue Oct 13 07:30:31 2026] 127.0.0.1:60933 Closing
+[Tue Oct 13 07:30:31 2026] 127.0.0.1:60430 Closing
+[Tue Oct 13 07:30:31 2026] 127.0.0.1:61563 Closing
+[Tue Oct 13 07:30:31 2026] 127.0.0.1:56232 Accepted
+[Tue Oct 13 07:30:31 2026] 127.0.0.1:56232 [200]: GET /assets/vendor/bootstrap/js/bootstrap.bundle.min.js
+[Tue Oct 13 07:30:31 2026] 127.0.0.1:56232 Closing
+[Tue Oct 13 07:30:31 2026] 127.0.0.1:57503 Accepted
+[Tue Oct 13 07:30:31 2026] 127.0.0.1:57503 [200]: GET /assets/vendor/jquery-easing/jquery.easing.min.js
+[Tue Oct 13 07:30:31 2026] 127.0.0.1:57503 Closing
+[Tue Oct 13 07:30:31 2026] 127.0.0.1:59940 Accepted
+[Tue Oct 13 07:30:31 2026] 127.0.0.1:59940 [200]: GET /assets/js/sb-admin-2.min.js
+[Tue Oct 13 07:30:31 2026] 127.0.0.1:59940 Closing
+[Tue Oct 13 07:30:31 2026] 127.0.0.1:54593 Accepted
+[Tue Oct 13 07:30:31 2026] 127.0.0.1:54593 [200]: GET /assets/vendor/chart.js/Chart.min.js
+[Tue Oct 13 07:30:31 2026] 127.0.0.1:54593 Closing
+[Tue Oct 13 07:30:31 2026] 127.0.0.1:53973 Accepted
+[Tue Oct 13 07:30:31 2026] 127.0.0.1:53973 [200]: GET /assets/vendor/datatables/jquery.dataTables.min.js
+[Tue Oct 13 07:30:31 2026] 127.0.0.1:53973 Closing
+[Tue Oct 13 07:30:31 2026] 127.0.0.1:51365 Accepted
+[Tue Oct 13 07:30:31 2026] 127.0.0.1:52036 Accepted
+[Tue Oct 13 07:30:31 2026] 127.0.0.1:51365 [200]: GET /assets/vendor/datatables/dataTables.bootstrap4.min.js
+[Tue Oct 13 07:30:31 2026] 127.0.0.1:52036 [200]: GET /assets/js/demo/datatables-demo.js
+[Tue Oct 13 07:30:31 2026] 127.0.0.1:51365 Closing
+[Tue Oct 13 07:30:31 2026] 127.0.0.1:52036 Closing
+[Tue Oct 13 07:30:31 2026] 127.0.0.1:52447 Accepted
+[Tue Oct 13 07:30:31 2026] 127.0.0.1:52447 Closing
+[Tue Oct 13 07:30:31 2026] 127.0.0.1:53563 Accepted
+[Tue Oct 13 07:30:32 2026] 127.0.0.1:53563 Closing
+[Tue Oct 13 07:30:49 2026] 127.0.0.1:64234 Accepted
+[Tue Oct 13 07:30:49 2026] 127.0.0.1:64234 Closing
+[Tue Oct 13 07:30:49 2026] 127.0.0.1:58751 Accepted
+[Tue Oct 13 07:30:49 2026] 127.0.0.1:58751 Closing
+[Tue Oct 13 07:30:49 2026] 127.0.0.1:62240 Accepted
+[Tue Oct 13 07:30:49 2026] 127.0.0.1:55864 Accepted
+[Tue Oct 13 07:30:49 2026] 127.0.0.1:62240 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 07:30:49 2026] 127.0.0.1:55864 Closing
+[Tue Oct 13 07:30:49 2026] 127.0.0.1:62240 Closing
+[Tue Oct 13 07:31:09 2026] 127.0.0.1:52835 Accepted
+[Tue Oct 13 07:31:10 2026] 127.0.0.1:52835 Closing
+[Tue Oct 13 07:31:10 2026] 127.0.0.1:63110 Accepted
+[Tue Oct 13 07:31:10 2026] 127.0.0.1:63110 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 07:31:10 2026] 127.0.0.1:59326 Accepted
+[Tue Oct 13 07:31:10 2026] 127.0.0.1:59326 Closing
+[Tue Oct 13 07:31:10 2026] 127.0.0.1:63110 Closing
+[Tue Oct 13 07:31:13 2026] 127.0.0.1:54217 Accepted
+[Tue Oct 13 07:31:13 2026] 127.0.0.1:54217 Closing
+[Tue Oct 13 07:31:13 2026] 127.0.0.1:52047 Accepted
+[Tue Oct 13 07:31:13 2026] 127.0.0.1:52047 Closing
+[Tue Oct 13 07:31:13 2026] 127.0.0.1:52188 Accepted
+[Tue Oct 13 07:31:13 2026] 127.0.0.1:53221 Accepted
+[Tue Oct 13 07:31:13 2026] 127.0.0.1:52188 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 07:31:13 2026] 127.0.0.1:53221 Closing
+[Tue Oct 13 07:31:13 2026] 127.0.0.1:52188 Closing
+[Tue Oct 13 07:31:22 2026] 127.0.0.1:56218 Accepted
+[Tue Oct 13 07:31:23 2026] 127.0.0.1:56218 Closing
+[Tue Oct 13 07:31:23 2026] 127.0.0.1:63353 Accepted
+[Tue Oct 13 07:31:23 2026] 127.0.0.1:63353 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 07:31:23 2026] 127.0.0.1:54221 Accepted
+[Tue Oct 13 07:31:23 2026] 127.0.0.1:54221 Closing
+[Tue Oct 13 07:31:23 2026] 127.0.0.1:63353 Closing
+[Tue Oct 13 07:31:29 2026] 127.0.0.1:52578 Accepted
+[Tue Oct 13 07:31:29 2026] 127.0.0.1:52578 Closing
+[Tue Oct 13 07:31:29 2026] 127.0.0.1:49935 Accepted
+[Tue Oct 13 07:31:29 2026] 127.0.0.1:49935 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 07:31:29 2026] 127.0.0.1:52006 Accepted
+[Tue Oct 13 07:31:29 2026] 127.0.0.1:52006 Closing
+[Tue Oct 13 07:31:29 2026] 127.0.0.1:49935 Closing
+[Tue Oct 13 07:31:46 2026] 127.0.0.1:62241 Accepted
+[Tue Oct 13 07:31:46 2026] 127.0.0.1:62241 Closing
+[Tue Oct 13 07:31:46 2026] 127.0.0.1:60961 Accepted
+[Tue Oct 13 07:31:46 2026] 127.0.0.1:60961 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 07:31:46 2026] 127.0.0.1:59863 Accepted
+[Tue Oct 13 07:31:46 2026] 127.0.0.1:59863 Closing
+[Tue Oct 13 07:31:46 2026] 127.0.0.1:60961 Closing
+[Tue Oct 13 07:31:47 2026] 127.0.0.1:58237 Accepted
+[Tue Oct 13 07:31:47 2026] 127.0.0.1:58237 Closing
+[Tue Oct 13 07:31:47 2026] 127.0.0.1:56658 Accepted
+[Tue Oct 13 07:31:47 2026] 127.0.0.1:56658 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 07:31:47 2026] 127.0.0.1:54823 Accepted
+[Tue Oct 13 07:31:47 2026] 127.0.0.1:54823 Closing
+[Tue Oct 13 07:31:47 2026] 127.0.0.1:56658 Closing
+[Tue Oct 13 07:31:48 2026] 127.0.0.1:62615 Accepted
+[Tue Oct 13 07:31:48 2026] 127.0.0.1:62615 Closing
+[Tue Oct 13 07:31:48 2026] 127.0.0.1:64017 Accepted
+[Tue Oct 13 07:31:48 2026] 127.0.0.1:64017 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 07:31:48 2026] 127.0.0.1:51870 Accepted
+[Tue Oct 13 07:31:48 2026] 127.0.0.1:51870 Closing
+[Tue Oct 13 07:31:48 2026] 127.0.0.1:64017 Closing
+[Tue Oct 13 07:32:16 2026] 127.0.0.1:54898 Accepted
+[Tue Oct 13 07:32:17 2026] 127.0.0.1:54898 Closing
+[Tue Oct 13 07:32:17 2026] 127.0.0.1:50279 Accepted
+[Tue Oct 13 07:32:17 2026] 127.0.0.1:50279 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 07:32:17 2026] 127.0.0.1:65200 Accepted
+[Tue Oct 13 07:32:17 2026] 127.0.0.1:65200 Closing
+[Tue Oct 13 07:32:17 2026] 127.0.0.1:50279 Closing
+[Tue Oct 13 07:32:57 2026] 127.0.0.1:54041 Accepted
+[Tue Oct 13 07:32:57 2026] 127.0.0.1:54041 Closing
+[Tue Oct 13 07:32:57 2026] 127.0.0.1:55594 Accepted
+[Tue Oct 13 07:32:57 2026] 127.0.0.1:55594 Closing
+[Tue Oct 13 07:32:57 2026] 127.0.0.1:57934 Accepted
+[Tue Oct 13 07:32:57 2026] 127.0.0.1:57934 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 07:32:57 2026] 127.0.0.1:57934 Closing
+[Tue Oct 13 07:55:51 2026] 127.0.0.1:65108 Accepted
+[Tue Oct 13 07:55:51 2026] 127.0.0.1:65108 Closing
+[Tue Oct 13 07:55:51 2026] 127.0.0.1:51864 Accepted
+[Tue Oct 13 07:55:51 2026] 127.0.0.1:51864 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 07:55:51 2026] 127.0.0.1:57510 Accepted
+[Tue Oct 13 07:55:51 2026] 127.0.0.1:57510 Closing
+[Tue Oct 13 07:55:51 2026] 127.0.0.1:51864 Closing
+[Tue Oct 13 07:57:17 2026] 127.0.0.1:57014 Accepted
+[Tue Oct 13 07:57:17 2026] 127.0.0.1:57014 Closing
+[Tue Oct 13 07:57:17 2026] 127.0.0.1:57016 Accepted
+[Tue Oct 13 07:57:17 2026] 127.0.0.1:57016 Closing
+[Tue Oct 13 07:58:03 2026] 127.0.0.1:62536 Accepted
+[Tue Oct 13 07:58:03 2026] 127.0.0.1:62536 Closing
+[Tue Oct 13 07:58:03 2026] 127.0.0.1:63177 Accepted
+[Tue Oct 13 07:58:03 2026] 127.0.0.1:63177 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 07:58:03 2026] 127.0.0.1:62324 Accepted
+[Tue Oct 13 07:58:03 2026] 127.0.0.1:62324 Closing
+[Tue Oct 13 07:58:03 2026] 127.0.0.1:63177 Closing
+[Tue Oct 13 07:58:03 2026] 127.0.0.1:55870 Accepted
+[Tue Oct 13 07:58:03 2026] 127.0.0.1:55870 Closing
+[Tue Oct 13 07:58:09 2026] 127.0.0.1:60979 Accepted
+[Tue Oct 13 07:58:09 2026] 127.0.0.1:60979 Closing
+[Tue Oct 13 07:58:09 2026] 127.0.0.1:63595 Accepted
+[Tue Oct 13 07:58:09 2026] 127.0.0.1:63595 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 07:58:09 2026] 127.0.0.1:61046 Accepted
+[Tue Oct 13 07:58:09 2026] 127.0.0.1:61046 Closing
+[Tue Oct 13 07:58:09 2026] 127.0.0.1:63595 Closing
+[Tue Oct 13 07:58:09 2026] 127.0.0.1:52766 Accepted
+[Tue Oct 13 07:58:09 2026] 127.0.0.1:52766 Closing
+[Tue Oct 13 07:58:10 2026] 127.0.0.1:62361 Accepted
+[Tue Oct 13 07:58:10 2026] 127.0.0.1:62361 Closing
+[Tue Oct 13 07:58:10 2026] 127.0.0.1:57866 Accepted
+[Tue Oct 13 07:58:10 2026] 127.0.0.1:57866 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 07:58:10 2026] 127.0.0.1:60745 Accepted
+[Tue Oct 13 07:58:10 2026] 127.0.0.1:60745 Closing
+[Tue Oct 13 07:58:10 2026] 127.0.0.1:57866 Closing
+[Tue Oct 13 07:58:10 2026] 127.0.0.1:58202 Accepted
+[Tue Oct 13 07:58:10 2026] 127.0.0.1:58202 Closing
+[Tue Oct 13 07:58:10 2026] 127.0.0.1:62618 Accepted
+[Tue Oct 13 07:58:11 2026] 127.0.0.1:62618 Closing
+[Tue Oct 13 07:58:11 2026] 127.0.0.1:58277 Accepted
+[Tue Oct 13 07:58:11 2026] 127.0.0.1:58277 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 07:58:11 2026] 127.0.0.1:56582 Accepted
+[Tue Oct 13 07:58:11 2026] 127.0.0.1:56582 Closing
+[Tue Oct 13 07:58:11 2026] 127.0.0.1:58277 Closing
+[Tue Oct 13 07:58:11 2026] 127.0.0.1:61206 Accepted
+[Tue Oct 13 07:58:11 2026] 127.0.0.1:61206 Closing
+[Tue Oct 13 07:58:12 2026] 127.0.0.1:59522 Accepted
+[Tue Oct 13 07:58:12 2026] 127.0.0.1:59522 Closing
+[Tue Oct 13 07:58:12 2026] 127.0.0.1:61104 Accepted
+[Tue Oct 13 07:58:12 2026] 127.0.0.1:61104 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 07:58:12 2026] 127.0.0.1:59949 Accepted
+[Tue Oct 13 07:58:12 2026] 127.0.0.1:59949 Closing
+[Tue Oct 13 07:58:12 2026] 127.0.0.1:61104 Closing
+[Tue Oct 13 07:58:12 2026] 127.0.0.1:61733 Accepted
+[Tue Oct 13 07:58:12 2026] 127.0.0.1:61733 Closing
+[Tue Oct 13 07:58:14 2026] 127.0.0.1:61794 Accepted
+[Tue Oct 13 07:58:14 2026] 127.0.0.1:61794 Closing
+[Tue Oct 13 07:58:14 2026] 127.0.0.1:54629 Accepted
+[Tue Oct 13 07:58:14 2026] 127.0.0.1:54629 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 07:58:14 2026] 127.0.0.1:61203 Accepted
+[Tue Oct 13 07:58:14 2026] 127.0.0.1:61203 Closing
+[Tue Oct 13 07:58:14 2026] 127.0.0.1:54629 Closing
+[Tue Oct 13 07:58:14 2026] 127.0.0.1:54391 Accepted
+[Tue Oct 13 07:58:14 2026] 127.0.0.1:54391 Closing
+[Tue Oct 13 07:58:22 2026] 127.0.0.1:64601 Accepted
+[Tue Oct 13 07:58:23 2026] 127.0.0.1:64601 Closing
+[Tue Oct 13 07:58:23 2026] 127.0.0.1:50399 Accepted
+[Tue Oct 13 07:58:23 2026] 127.0.0.1:50399 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 07:58:23 2026] 127.0.0.1:57412 Accepted
+[Tue Oct 13 07:58:23 2026] 127.0.0.1:57412 Closing
+[Tue Oct 13 07:58:23 2026] 127.0.0.1:50399 Closing
+[Tue Oct 13 07:58:23 2026] 127.0.0.1:53408 Accepted
+[Tue Oct 13 07:58:23 2026] 127.0.0.1:53408 Closing
+[Tue Oct 13 07:58:25 2026] 127.0.0.1:64166 Accepted
+[Tue Oct 13 07:58:25 2026] 127.0.0.1:64166 Closing
+[Tue Oct 13 07:58:25 2026] 127.0.0.1:58159 Accepted
+[Tue Oct 13 07:58:25 2026] 127.0.0.1:58159 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 07:58:25 2026] 127.0.0.1:57016 Accepted
+[Tue Oct 13 07:58:25 2026] 127.0.0.1:57016 Closing
+[Tue Oct 13 07:58:25 2026] 127.0.0.1:58159 Closing
+[Tue Oct 13 07:58:25 2026] 127.0.0.1:58111 Accepted
+[Tue Oct 13 07:58:25 2026] 127.0.0.1:58111 Closing
+[Tue Oct 13 08:00:43 2026] 127.0.0.1:51095 Accepted
+[Tue Oct 13 08:00:43 2026] 127.0.0.1:51095 Closing
+[Tue Oct 13 08:00:43 2026] 127.0.0.1:51097 Accepted
+[Tue Oct 13 08:00:43 2026] 127.0.0.1:51097 Closing
+[Tue Oct 13 08:01:32 2026] 127.0.0.1:59888 Accepted
+[Tue Oct 13 08:01:32 2026] 127.0.0.1:59888 Closing
+[Tue Oct 13 08:01:32 2026] 127.0.0.1:61383 Accepted
+[Tue Oct 13 08:01:32 2026] 127.0.0.1:64353 Accepted
+[Tue Oct 13 08:01:32 2026] 127.0.0.1:61383 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 08:01:32 2026] 127.0.0.1:64353 Closing
+[Tue Oct 13 08:01:32 2026] 127.0.0.1:61383 Closing
+[Tue Oct 13 08:01:32 2026] 127.0.0.1:58918 Accepted
+[Tue Oct 13 08:01:32 2026] 127.0.0.1:58918 Closing
+[Tue Oct 13 08:02:50 2026] 127.0.0.1:52006 Accepted
+[Tue Oct 13 08:02:50 2026] 127.0.0.1:52006 Closing
+[Tue Oct 13 08:02:50 2026] 127.0.0.1:52008 Accepted
+[Tue Oct 13 08:02:50 2026] 127.0.0.1:52008 Closing
+[Tue Oct 13 08:03:08 2026] 127.0.0.1:62174 Accepted
+[Tue Oct 13 08:03:08 2026] 127.0.0.1:62174 Closing
+[Tue Oct 13 08:03:08 2026] 127.0.0.1:57869 Accepted
+[Tue Oct 13 08:03:08 2026] 127.0.0.1:57869 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 08:03:08 2026] 127.0.0.1:57634 Accepted
+[Tue Oct 13 08:03:08 2026] 127.0.0.1:57634 Closing
+[Tue Oct 13 08:03:08 2026] 127.0.0.1:57869 Closing
+[Tue Oct 13 08:03:08 2026] 127.0.0.1:62736 Accepted
+[Tue Oct 13 08:03:08 2026] 127.0.0.1:62736 Closing
+[Tue Oct 13 08:03:16 2026] 127.0.0.1:61556 Accepted
+[Tue Oct 13 08:03:16 2026] 127.0.0.1:61556 Closing
+[Tue Oct 13 08:03:16 2026] 127.0.0.1:64793 Accepted
+[Tue Oct 13 08:03:16 2026] 127.0.0.1:64793 Closing
+[Tue Oct 13 08:03:16 2026] 127.0.0.1:63746 Accepted
+[Tue Oct 13 08:03:16 2026] 127.0.0.1:63746 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 08:03:16 2026] 127.0.0.1:63746 Closing
+[Tue Oct 13 08:03:16 2026] 127.0.0.1:51311 Accepted
+[Tue Oct 13 08:03:16 2026] 127.0.0.1:51311 Closing
+[Tue Oct 13 08:03:19 2026] 127.0.0.1:56065 Accepted
+[Tue Oct 13 08:03:20 2026] 127.0.0.1:56065 Closing
+[Tue Oct 13 08:03:20 2026] 127.0.0.1:53044 Accepted
+[Tue Oct 13 08:03:20 2026] 127.0.0.1:65370 Accepted
+[Tue Oct 13 08:03:20 2026] 127.0.0.1:53044 Closing
+[Tue Oct 13 08:03:20 2026] 127.0.0.1:65370 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 08:03:20 2026] 127.0.0.1:65370 Closing
+[Tue Oct 13 08:03:20 2026] 127.0.0.1:51668 Accepted
+[Tue Oct 13 08:03:20 2026] 127.0.0.1:51668 Closing
+[Tue Oct 13 08:03:21 2026] 127.0.0.1:58669 Accepted
+[Tue Oct 13 08:03:21 2026] 127.0.0.1:58669 Closing
+[Tue Oct 13 08:03:21 2026] 127.0.0.1:51589 Accepted
+[Tue Oct 13 08:03:21 2026] 127.0.0.1:51589 Closing
+[Tue Oct 13 08:03:21 2026] 127.0.0.1:64028 Accepted
+[Tue Oct 13 08:03:21 2026] 127.0.0.1:64028 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 08:03:21 2026] 127.0.0.1:64028 Closing
+[Tue Oct 13 08:03:21 2026] 127.0.0.1:58778 Accepted
+[Tue Oct 13 08:03:21 2026] 127.0.0.1:58778 Closing
+[Tue Oct 13 08:04:02 2026] 127.0.0.1:58872 Accepted
+[Tue Oct 13 08:04:02 2026] 127.0.0.1:58872 Closing
+[Tue Oct 13 08:04:02 2026] 127.0.0.1:53861 Accepted
+[Tue Oct 13 08:04:02 2026] 127.0.0.1:53861 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 08:04:02 2026] 127.0.0.1:50329 Accepted
+[Tue Oct 13 08:04:02 2026] 127.0.0.1:50329 Closing
+[Tue Oct 13 08:04:02 2026] 127.0.0.1:53861 Closing
+[Tue Oct 13 08:04:02 2026] 127.0.0.1:58404 Accepted
+[Tue Oct 13 08:04:02 2026] 127.0.0.1:58404 Closing
+[Tue Oct 13 08:04:05 2026] 127.0.0.1:57789 Accepted
+[Tue Oct 13 08:04:05 2026] 127.0.0.1:57789 Closing
+[Tue Oct 13 08:04:05 2026] 127.0.0.1:49999 Accepted
+[Tue Oct 13 08:04:05 2026] 127.0.0.1:49999 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 08:04:05 2026] 127.0.0.1:58513 Accepted
+[Tue Oct 13 08:04:05 2026] 127.0.0.1:58513 Closing
+[Tue Oct 13 08:04:05 2026] 127.0.0.1:49999 Closing
+[Tue Oct 13 08:04:05 2026] 127.0.0.1:53513 Accepted
+[Tue Oct 13 08:04:05 2026] 127.0.0.1:53513 Closing
+[Tue Oct 13 08:04:58 2026] 127.0.0.1:63775 Accepted
+[Tue Oct 13 08:04:58 2026] 127.0.0.1:63775 Closing
+[Tue Oct 13 08:04:58 2026] 127.0.0.1:55436 Accepted
+[Tue Oct 13 08:04:58 2026] 127.0.0.1:55436 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 08:04:58 2026] 127.0.0.1:61938 Accepted
+[Tue Oct 13 08:04:58 2026] 127.0.0.1:61938 Closing
+[Tue Oct 13 08:04:58 2026] 127.0.0.1:55436 Closing
+[Tue Oct 13 08:05:02 2026] 127.0.0.1:49159 Accepted
+[Tue Oct 13 08:05:03 2026] 127.0.0.1:49159 Closing
+[Tue Oct 13 08:05:03 2026] 127.0.0.1:54291 Accepted
+[Tue Oct 13 08:05:03 2026] 127.0.0.1:54291 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 08:05:03 2026] 127.0.0.1:56766 Accepted
+[Tue Oct 13 08:05:03 2026] 127.0.0.1:56766 Closing
+[Tue Oct 13 08:05:03 2026] 127.0.0.1:54291 Closing
+[Tue Oct 13 08:05:03 2026] 127.0.0.1:64008 Accepted
+[Tue Oct 13 08:05:03 2026] 127.0.0.1:64008 Closing
+[Tue Oct 13 08:05:04 2026] 127.0.0.1:58929 Accepted
+[Tue Oct 13 08:05:04 2026] 127.0.0.1:58929 Closing
+[Tue Oct 13 08:05:04 2026] 127.0.0.1:64087 Accepted
+[Tue Oct 13 08:05:04 2026] 127.0.0.1:64087 Closing
+[Tue Oct 13 08:05:04 2026] 127.0.0.1:50147 Accepted
+[Tue Oct 13 08:05:04 2026] 127.0.0.1:50147 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 08:05:04 2026] 127.0.0.1:50147 Closing
+[Tue Oct 13 08:05:39 2026] 127.0.0.1:61054 Accepted
+[Tue Oct 13 08:05:39 2026] 127.0.0.1:61054 Closing
+[Tue Oct 13 08:05:39 2026] 127.0.0.1:54486 Accepted
+[Tue Oct 13 08:05:39 2026] 127.0.0.1:54486 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 08:05:39 2026] 127.0.0.1:59890 Accepted
+[Tue Oct 13 08:05:39 2026] 127.0.0.1:59890 Closing
+[Tue Oct 13 08:05:39 2026] 127.0.0.1:54486 Closing
+[Tue Oct 13 08:05:39 2026] 127.0.0.1:63893 Accepted
+[Tue Oct 13 08:05:39 2026] 127.0.0.1:63893 Closing
+[Tue Oct 13 08:05:42 2026] 127.0.0.1:56512 Accepted
+[Tue Oct 13 08:05:42 2026] 127.0.0.1:56512 Closing
+[Tue Oct 13 08:05:42 2026] 127.0.0.1:51487 Accepted
+[Tue Oct 13 08:05:42 2026] 127.0.0.1:51487 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 08:05:42 2026] 127.0.0.1:60670 Accepted
+[Tue Oct 13 08:05:42 2026] 127.0.0.1:60670 Closing
+[Tue Oct 13 08:05:42 2026] 127.0.0.1:51487 Closing
+[Tue Oct 13 08:05:45 2026] 127.0.0.1:60007 Accepted
+[Tue Oct 13 08:05:45 2026] 127.0.0.1:60007 Closing
+[Tue Oct 13 08:05:45 2026] 127.0.0.1:54176 Accepted
+[Tue Oct 13 08:05:45 2026] 127.0.0.1:54176 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 08:05:45 2026] 127.0.0.1:64679 Accepted
+[Tue Oct 13 08:05:45 2026] 127.0.0.1:64679 Closing
+[Tue Oct 13 08:05:45 2026] 127.0.0.1:54176 Closing
+[Tue Oct 13 08:05:45 2026] 127.0.0.1:59295 Accepted
+[Tue Oct 13 08:05:45 2026] 127.0.0.1:59295 Closing
+[Tue Oct 13 08:05:47 2026] 127.0.0.1:60353 Accepted
+[Tue Oct 13 08:05:47 2026] 127.0.0.1:60353 Closing
+[Tue Oct 13 08:05:47 2026] 127.0.0.1:49551 Accepted
+[Tue Oct 13 08:05:47 2026] 127.0.0.1:49551 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 08:05:47 2026] 127.0.0.1:63854 Accepted
+[Tue Oct 13 08:05:47 2026] 127.0.0.1:63854 Closing
+[Tue Oct 13 08:05:47 2026] 127.0.0.1:49551 Closing
+[Tue Oct 13 08:08:45 2026] 127.0.0.1:49200 Accepted
+[Tue Oct 13 08:08:45 2026] 127.0.0.1:49200 Closing
+[Tue Oct 13 08:08:45 2026] 127.0.0.1:49202 Accepted
+[Tue Oct 13 08:08:45 2026] 127.0.0.1:49202 Closing
+[Tue Oct 13 08:08:45 2026] 127.0.0.1:49204 Accepted
+[Tue Oct 13 08:08:45 2026] 127.0.0.1:49204 Closing
+[Tue Oct 13 08:08:57 2026] 127.0.0.1:53433 Accepted
+[Tue Oct 13 08:08:57 2026] 127.0.0.1:53433 Closing
+[Tue Oct 13 08:08:57 2026] 127.0.0.1:51097 Accepted
+[Tue Oct 13 08:08:57 2026] 127.0.0.1:51097 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 08:08:57 2026] 127.0.0.1:59509 Accepted
+[Tue Oct 13 08:08:57 2026] 127.0.0.1:59509 Closing
+[Tue Oct 13 08:08:57 2026] 127.0.0.1:51097 Closing
+[Tue Oct 13 08:08:59 2026] 127.0.0.1:59250 Accepted
+[Tue Oct 13 08:09:00 2026] 127.0.0.1:59250 Closing
+[Tue Oct 13 08:09:00 2026] 127.0.0.1:49798 Accepted
+[Tue Oct 13 08:09:00 2026] 127.0.0.1:49798 Closing
+[Tue Oct 13 08:09:00 2026] 127.0.0.1:52113 Accepted
+[Tue Oct 13 08:09:00 2026] 127.0.0.1:52113 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 08:09:00 2026] 127.0.0.1:52113 Closing
+[Tue Oct 13 08:09:00 2026] 127.0.0.1:50547 Accepted
+[Tue Oct 13 08:09:00 2026] 127.0.0.1:50547 Closing
+[Tue Oct 13 08:09:02 2026] 127.0.0.1:53861 Accepted
+[Tue Oct 13 08:09:02 2026] 127.0.0.1:53861 Closing
+[Tue Oct 13 08:09:02 2026] 127.0.0.1:55448 Accepted
+[Tue Oct 13 08:09:02 2026] 127.0.0.1:55448 Closing
+[Tue Oct 13 08:09:02 2026] 127.0.0.1:52317 Accepted
+[Tue Oct 13 08:09:02 2026] 127.0.0.1:52317 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 08:09:02 2026] 127.0.0.1:52317 Closing
+[Tue Oct 13 08:09:02 2026] 127.0.0.1:60852 Accepted
+[Tue Oct 13 08:09:02 2026] 127.0.0.1:60852 Closing
+[Tue Oct 13 08:09:04 2026] 127.0.0.1:59143 Accepted
+[Tue Oct 13 08:09:04 2026] 127.0.0.1:59143 Closing
+[Tue Oct 13 08:09:04 2026] 127.0.0.1:59292 Accepted
+[Tue Oct 13 08:09:04 2026] 127.0.0.1:59292 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 08:09:04 2026] 127.0.0.1:58753 Accepted
+[Tue Oct 13 08:09:04 2026] 127.0.0.1:58753 Closing
+[Tue Oct 13 08:09:04 2026] 127.0.0.1:59292 Closing
+[Tue Oct 13 08:09:04 2026] 127.0.0.1:55546 Accepted
+[Tue Oct 13 08:09:04 2026] 127.0.0.1:55546 Closing
+[Tue Oct 13 08:09:05 2026] 127.0.0.1:56495 Accepted
+[Tue Oct 13 08:09:05 2026] 127.0.0.1:56495 Closing
+[Tue Oct 13 08:09:05 2026] 127.0.0.1:52552 Accepted
+[Tue Oct 13 08:09:05 2026] 127.0.0.1:52552 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 08:09:05 2026] 127.0.0.1:64913 Accepted
+[Tue Oct 13 08:09:05 2026] 127.0.0.1:64913 Closing
+[Tue Oct 13 08:09:05 2026] 127.0.0.1:52552 Closing
+[Tue Oct 13 08:09:05 2026] 127.0.0.1:57171 Accepted
+[Tue Oct 13 08:09:05 2026] 127.0.0.1:57171 Closing
+[Tue Oct 13 08:09:06 2026] 127.0.0.1:63806 Accepted
+[Tue Oct 13 08:09:06 2026] 127.0.0.1:63806 Closing
+[Tue Oct 13 08:09:06 2026] 127.0.0.1:57980 Accepted
+[Tue Oct 13 08:09:06 2026] 127.0.0.1:57980 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 08:09:06 2026] 127.0.0.1:60807 Accepted
+[Tue Oct 13 08:09:06 2026] 127.0.0.1:60807 Closing
+[Tue Oct 13 08:09:06 2026] 127.0.0.1:57980 Closing
+[Tue Oct 13 08:09:06 2026] 127.0.0.1:50578 Accepted
+[Tue Oct 13 08:09:06 2026] 127.0.0.1:50578 Closing
+[Tue Oct 13 08:09:07 2026] 127.0.0.1:57171 Accepted
+[Tue Oct 13 08:09:07 2026] 127.0.0.1:57171 Closing
+[Tue Oct 13 08:09:07 2026] 127.0.0.1:65266 Accepted
+[Tue Oct 13 08:09:07 2026] 127.0.0.1:65266 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 08:09:07 2026] 127.0.0.1:60269 Accepted
+[Tue Oct 13 08:09:07 2026] 127.0.0.1:60269 Closing
+[Tue Oct 13 08:09:07 2026] 127.0.0.1:65266 Closing
+[Tue Oct 13 08:09:14 2026] 127.0.0.1:52173 Accepted
+[Tue Oct 13 08:09:14 2026] 127.0.0.1:52173 Closing
+[Tue Oct 13 08:09:14 2026] 127.0.0.1:53624 Accepted
+[Tue Oct 13 08:09:14 2026] 127.0.0.1:50451 Accepted
+[Tue Oct 13 08:09:14 2026] 127.0.0.1:53624 Closing
+[Tue Oct 13 08:09:14 2026] 127.0.0.1:50451 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 08:09:14 2026] 127.0.0.1:50451 Closing
+[Tue Oct 13 08:09:14 2026] 127.0.0.1:62618 Accepted
+[Tue Oct 13 08:09:14 2026] 127.0.0.1:62618 Closing
+[Tue Oct 13 08:09:25 2026] 127.0.0.1:57724 Accepted
+[Tue Oct 13 08:09:25 2026] 127.0.0.1:57724 Closing
+[Tue Oct 13 08:09:25 2026] 127.0.0.1:59223 Accepted
+[Tue Oct 13 08:09:25 2026] 127.0.0.1:59223 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 08:09:25 2026] 127.0.0.1:60769 Accepted
+[Tue Oct 13 08:09:25 2026] 127.0.0.1:60769 Closing
+[Tue Oct 13 08:09:25 2026] 127.0.0.1:59223 Closing
+[Tue Oct 13 08:12:05 2026] 127.0.0.1:54784 Accepted
+[Tue Oct 13 08:12:05 2026] 127.0.0.1:54784 Closing
+[Tue Oct 13 08:12:05 2026] 127.0.0.1:54786 Accepted
+[Tue Oct 13 08:12:05 2026] 127.0.0.1:54786 Closing
+[Tue Oct 13 08:13:00 2026] 127.0.0.1:53337 Accepted
+[Tue Oct 13 08:13:00 2026] 127.0.0.1:53337 Closing
+[Tue Oct 13 08:13:00 2026] 127.0.0.1:52689 Accepted
+[Tue Oct 13 08:13:00 2026] 127.0.0.1:52689 Closing
+[Tue Oct 13 08:13:00 2026] 127.0.0.1:63389 Accepted
+[Tue Oct 13 08:13:00 2026] 127.0.0.1:63389 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 08:13:00 2026] 127.0.0.1:63389 Closing
+[Tue Oct 13 08:16:17 2026] 127.0.0.1:60521 Accepted
+[Tue Oct 13 08:16:17 2026] 127.0.0.1:60521 Closing
+[Tue Oct 13 08:16:17 2026] 127.0.0.1:60523 Accepted
+[Tue Oct 13 08:16:17 2026] 127.0.0.1:60523 Closing
+[Tue Oct 13 08:16:29 2026] 127.0.0.1:64603 Accepted
+[Tue Oct 13 08:16:29 2026] 127.0.0.1:64603 Closing
+[Tue Oct 13 08:16:29 2026] 127.0.0.1:64659 Accepted
+[Tue Oct 13 08:16:29 2026] 127.0.0.1:64659 Closing
+[Tue Oct 13 08:16:29 2026] 127.0.0.1:54939 Accepted
+[Tue Oct 13 08:16:29 2026] 127.0.0.1:54939 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 08:16:29 2026] 127.0.0.1:54939 Closing
+[Tue Oct 13 08:19:38 2026] 127.0.0.1:59198 Accepted
+[Tue Oct 13 08:19:38 2026] 127.0.0.1:59198 Closing
+[Tue Oct 13 08:19:38 2026] 127.0.0.1:59200 Accepted
+[Tue Oct 13 08:19:38 2026] 127.0.0.1:59200 Closing
+[Tue Oct 13 08:19:39 2026] 127.0.0.1:59202 Accepted
+[Tue Oct 13 08:19:39 2026] 127.0.0.1:59202 Closing
+[Tue Oct 13 08:19:54 2026] 127.0.0.1:55425 Accepted
+[Tue Oct 13 08:19:54 2026] 127.0.0.1:55425 Closing
+[Tue Oct 13 08:19:54 2026] 127.0.0.1:58897 Accepted
+[Tue Oct 13 08:19:54 2026] 127.0.0.1:58897 Closing
+[Tue Oct 13 08:19:54 2026] 127.0.0.1:52370 Accepted
+[Tue Oct 13 08:19:54 2026] 127.0.0.1:52370 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 08:19:54 2026] 127.0.0.1:52370 Closing
+[Tue Oct 13 08:20:57 2026] 127.0.0.1:57438 Accepted
+[Tue Oct 13 08:20:57 2026] 127.0.0.1:57438 Closing
+[Tue Oct 13 08:20:57 2026] 127.0.0.1:58632 Accepted
+[Tue Oct 13 08:20:57 2026] 127.0.0.1:58632 Closing
+[Tue Oct 13 08:20:57 2026] 127.0.0.1:60707 Accepted
+[Tue Oct 13 08:20:57 2026] 127.0.0.1:60707 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 08:20:57 2026] 127.0.0.1:60707 Closing
+[Tue Oct 13 08:20:57 2026] 127.0.0.1:61615 Accepted
+[Tue Oct 13 08:20:57 2026] 127.0.0.1:61615 Closing
+[Tue Oct 13 08:21:00 2026] 127.0.0.1:52647 Accepted
+[Tue Oct 13 08:21:00 2026] 127.0.0.1:52647 Closing
+[Tue Oct 13 08:21:00 2026] 127.0.0.1:54563 Accepted
+[Tue Oct 13 08:21:00 2026] 127.0.0.1:54563 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 08:21:00 2026] 127.0.0.1:51220 Accepted
+[Tue Oct 13 08:21:00 2026] 127.0.0.1:51220 Closing
+[Tue Oct 13 08:21:00 2026] 127.0.0.1:54563 Closing
+[Tue Oct 13 08:21:00 2026] 127.0.0.1:54957 Accepted
+[Tue Oct 13 08:21:00 2026] 127.0.0.1:54957 Closing
+[Tue Oct 13 08:24:14 2026] 127.0.0.1:51791 Accepted
+[Tue Oct 13 08:24:14 2026] 127.0.0.1:51791 Closing
+[Tue Oct 13 08:24:14 2026] 127.0.0.1:51793 Accepted
+[Tue Oct 13 08:24:14 2026] 127.0.0.1:51793 Closing
+[Tue Oct 13 08:24:44 2026] 127.0.0.1:56781 Accepted
+[Tue Oct 13 08:24:44 2026] 127.0.0.1:56781 Closing
+[Tue Oct 13 08:24:44 2026] 127.0.0.1:55115 Accepted
+[Tue Oct 13 08:24:44 2026] 127.0.0.1:55115 Closing
+[Tue Oct 13 08:24:44 2026] 127.0.0.1:51987 Accepted
+[Tue Oct 13 08:24:44 2026] 127.0.0.1:51987 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 08:24:44 2026] 127.0.0.1:51987 Closing
+[Tue Oct 13 08:24:44 2026] 127.0.0.1:61148 Accepted
+[Tue Oct 13 08:24:44 2026] 127.0.0.1:61148 Closing
+[Tue Oct 13 08:24:54 2026] 127.0.0.1:53973 Accepted
+[Tue Oct 13 08:24:54 2026] 127.0.0.1:53973 Closing
+[Tue Oct 13 08:24:54 2026] 127.0.0.1:50670 Accepted
+[Tue Oct 13 08:24:54 2026] 127.0.0.1:50670 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 08:24:54 2026] 127.0.0.1:58813 Accepted
+[Tue Oct 13 08:24:54 2026] 127.0.0.1:58813 Closing
+[Tue Oct 13 08:24:54 2026] 127.0.0.1:50670 Closing
+[Tue Oct 13 08:24:57 2026] 127.0.0.1:62181 Accepted
+[Tue Oct 13 08:24:57 2026] 127.0.0.1:62181 Closing
+[Tue Oct 13 08:24:57 2026] 127.0.0.1:57473 Accepted
+[Tue Oct 13 08:24:57 2026] 127.0.0.1:57473 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 08:24:57 2026] 127.0.0.1:58996 Accepted
+[Tue Oct 13 08:24:57 2026] 127.0.0.1:58996 Closing
+[Tue Oct 13 08:24:57 2026] 127.0.0.1:57473 Closing
+[Tue Oct 13 08:24:57 2026] 127.0.0.1:57011 Accepted
+[Tue Oct 13 08:24:57 2026] 127.0.0.1:57011 Closing
+[Tue Oct 13 08:24:59 2026] 127.0.0.1:62715 Accepted
+[Tue Oct 13 08:24:59 2026] 127.0.0.1:62715 Closing
+[Tue Oct 13 08:24:59 2026] 127.0.0.1:54853 Accepted
+[Tue Oct 13 08:24:59 2026] 127.0.0.1:54853 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 08:24:59 2026] 127.0.0.1:61781 Accepted
+[Tue Oct 13 08:24:59 2026] 127.0.0.1:61781 Closing
+[Tue Oct 13 08:24:59 2026] 127.0.0.1:54853 Closing
+[Tue Oct 13 08:25:21 2026] 127.0.0.1:51357 Accepted
+[Tue Oct 13 08:25:21 2026] 127.0.0.1:51357 Closing
+[Tue Oct 13 08:25:21 2026] 127.0.0.1:57011 Accepted
+[Tue Oct 13 08:25:21 2026] 127.0.0.1:57011 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 08:25:21 2026] 127.0.0.1:52049 Accepted
+[Tue Oct 13 08:25:21 2026] 127.0.0.1:52049 Closing
+[Tue Oct 13 08:25:21 2026] 127.0.0.1:57011 Closing
+[Tue Oct 13 08:25:28 2026] 127.0.0.1:57171 Accepted
+[Tue Oct 13 08:25:28 2026] 127.0.0.1:57171 Closing
+[Tue Oct 13 08:25:28 2026] 127.0.0.1:54174 Accepted
+[Tue Oct 13 08:25:28 2026] 127.0.0.1:54174 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 08:25:28 2026] 127.0.0.1:54757 Accepted
+[Tue Oct 13 08:25:28 2026] 127.0.0.1:54757 Closing
+[Tue Oct 13 08:25:28 2026] 127.0.0.1:54174 Closing
+[Tue Oct 13 08:26:05 2026] 127.0.0.1:54997 Accepted
+[Tue Oct 13 08:26:05 2026] 127.0.0.1:54997 Closing
+[Tue Oct 13 08:26:05 2026] 127.0.0.1:54999 Accepted
+[Tue Oct 13 08:26:05 2026] 127.0.0.1:54999 Closing
+[Tue Oct 13 08:26:05 2026] 127.0.0.1:55001 Accepted
+[Tue Oct 13 08:26:05 2026] 127.0.0.1:55001 Closing
+[Tue Oct 13 08:26:30 2026] 127.0.0.1:64288 Accepted
+[Tue Oct 13 08:26:30 2026] 127.0.0.1:64288 Closing
+[Tue Oct 13 08:26:30 2026] 127.0.0.1:65501 Accepted
+[Tue Oct 13 08:26:30 2026] 127.0.0.1:65501 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 08:26:30 2026] 127.0.0.1:61974 Accepted
+[Tue Oct 13 08:26:30 2026] 127.0.0.1:61974 Closing
+[Tue Oct 13 08:26:30 2026] 127.0.0.1:65501 Closing
+[Tue Oct 13 08:26:32 2026] 127.0.0.1:58110 Accepted
+[Tue Oct 13 08:26:32 2026] 127.0.0.1:58110 Closing
+[Tue Oct 13 08:26:32 2026] 127.0.0.1:57416 Accepted
+[Tue Oct 13 08:26:32 2026] 127.0.0.1:57416 Closing
+[Tue Oct 13 08:26:32 2026] 127.0.0.1:53863 Accepted
+[Tue Oct 13 08:26:32 2026] 127.0.0.1:53863 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 08:26:32 2026] 127.0.0.1:53863 Closing
+[Tue Oct 13 08:26:32 2026] 127.0.0.1:51278 Accepted
+[Tue Oct 13 08:26:32 2026] 127.0.0.1:51278 Closing
+[Tue Oct 13 08:26:35 2026] 127.0.0.1:60728 Accepted
+[Tue Oct 13 08:26:35 2026] 127.0.0.1:60728 Closing
+[Tue Oct 13 08:26:35 2026] 127.0.0.1:60267 Accepted
+[Tue Oct 13 08:26:35 2026] 127.0.0.1:60267 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 08:26:35 2026] 127.0.0.1:65422 Accepted
+[Tue Oct 13 08:26:35 2026] 127.0.0.1:65422 Closing
+[Tue Oct 13 08:26:35 2026] 127.0.0.1:60267 Closing
+[Tue Oct 13 08:26:40 2026] 127.0.0.1:61107 Accepted
+[Tue Oct 13 08:26:41 2026] 127.0.0.1:61107 Closing
+[Tue Oct 13 08:26:41 2026] 127.0.0.1:51567 Accepted
+[Tue Oct 13 08:26:41 2026] 127.0.0.1:51567 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 08:26:41 2026] 127.0.0.1:52328 Accepted
+[Tue Oct 13 08:26:41 2026] 127.0.0.1:52328 Closing
+[Tue Oct 13 08:26:41 2026] 127.0.0.1:51567 Closing
+[Tue Oct 13 08:27:16 2026] 127.0.0.1:60879 Accepted
+[Tue Oct 13 08:27:16 2026] 127.0.0.1:60879 Closing
+[Tue Oct 13 08:27:16 2026] 127.0.0.1:60331 Accepted
+[Tue Oct 13 08:27:16 2026] 127.0.0.1:60331 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 08:27:16 2026] 127.0.0.1:54403 Accepted
+[Tue Oct 13 08:27:16 2026] 127.0.0.1:54403 Closing
+[Tue Oct 13 08:27:16 2026] 127.0.0.1:60331 Closing
+[Tue Oct 13 08:27:18 2026] 127.0.0.1:61610 Accepted
+[Tue Oct 13 08:27:18 2026] 127.0.0.1:61610 Closing
+[Tue Oct 13 08:27:18 2026] 127.0.0.1:60017 Accepted
+[Tue Oct 13 08:27:18 2026] 127.0.0.1:60017 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 08:27:18 2026] 127.0.0.1:64052 Accepted
+[Tue Oct 13 08:27:18 2026] 127.0.0.1:64052 Closing
+[Tue Oct 13 08:27:18 2026] 127.0.0.1:60017 Closing
+[Tue Oct 13 08:27:18 2026] 127.0.0.1:57415 Accepted
+[Tue Oct 13 08:27:18 2026] 127.0.0.1:57415 Closing
+[Tue Oct 13 08:27:19 2026] 127.0.0.1:57065 Accepted
+[Tue Oct 13 08:27:19 2026] 127.0.0.1:57065 Closing
+[Tue Oct 13 08:27:19 2026] 127.0.0.1:60469 Accepted
+[Tue Oct 13 08:27:19 2026] 127.0.0.1:60469 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 08:27:19 2026] 127.0.0.1:59267 Accepted
+[Tue Oct 13 08:27:19 2026] 127.0.0.1:59267 Closing
+[Tue Oct 13 08:27:19 2026] 127.0.0.1:60469 Closing
+[Tue Oct 13 08:27:22 2026] 127.0.0.1:59215 Accepted
+[Tue Oct 13 08:27:22 2026] 127.0.0.1:59215 Closing
+[Tue Oct 13 08:27:22 2026] 127.0.0.1:55716 Accepted
+[Tue Oct 13 08:27:22 2026] 127.0.0.1:55716 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 08:27:22 2026] 127.0.0.1:53250 Accepted
+[Tue Oct 13 08:27:22 2026] 127.0.0.1:53250 Closing
+[Tue Oct 13 08:27:22 2026] 127.0.0.1:55716 Closing
+[Tue Oct 13 08:35:21 2026] 127.0.0.1:58706 Accepted
+[Tue Oct 13 08:35:21 2026] 127.0.0.1:58706 Closing
+[Tue Oct 13 08:35:21 2026] 127.0.0.1:58708 Accepted
+[Tue Oct 13 08:35:21 2026] 127.0.0.1:58708 Closing
+[Tue Oct 13 08:35:21 2026] 127.0.0.1:58710 Accepted
+[Tue Oct 13 08:35:21 2026] 127.0.0.1:58710 Closing
+[Tue Oct 13 08:36:03 2026] 127.0.0.1:52420 Accepted
+[Tue Oct 13 08:36:03 2026] 127.0.0.1:52420 Closing
+[Tue Oct 13 08:36:03 2026] 127.0.0.1:52422 Accepted
+[Tue Oct 13 08:36:03 2026] 127.0.0.1:52422 Closing
+[Tue Oct 13 08:36:31 2026] 127.0.0.1:63652 Accepted
+[Tue Oct 13 08:36:31 2026] 127.0.0.1:63652 Closing
+[Tue Oct 13 08:36:31 2026] 127.0.0.1:49891 Accepted
+[Tue Oct 13 08:36:31 2026] 127.0.0.1:49891 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 08:36:31 2026] 127.0.0.1:52626 Accepted
+[Tue Oct 13 08:36:31 2026] 127.0.0.1:52626 Closing
+[Tue Oct 13 08:36:31 2026] 127.0.0.1:49891 Closing
+[Tue Oct 13 08:40:28 2026] 127.0.0.1:59083 Accepted
+[Tue Oct 13 08:40:28 2026] 127.0.0.1:59083 Closing
+[Tue Oct 13 08:40:28 2026] 127.0.0.1:59085 Accepted
+[Tue Oct 13 08:40:28 2026] 127.0.0.1:59085 Closing
+[Tue Oct 13 08:40:54 2026] 127.0.0.1:60798 Accepted
+[Tue Oct 13 08:40:54 2026] 127.0.0.1:60798 Closing
+[Tue Oct 13 08:40:54 2026] 127.0.0.1:57412 Accepted
+[Tue Oct 13 08:40:54 2026] 127.0.0.1:57412 Closing
+[Tue Oct 13 08:40:54 2026] 127.0.0.1:56200 Accepted
+[Tue Oct 13 08:40:54 2026] 127.0.0.1:56200 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 08:40:54 2026] 127.0.0.1:56200 Closing
+[Tue Oct 13 08:44:15 2026] 127.0.0.1:65356 Accepted
+[Tue Oct 13 08:44:15 2026] 127.0.0.1:65356 Closing
+[Tue Oct 13 08:44:15 2026] 127.0.0.1:65358 Accepted
+[Tue Oct 13 08:44:15 2026] 127.0.0.1:65358 Closing
+[Tue Oct 13 08:44:15 2026] 127.0.0.1:65360 Accepted
+[Tue Oct 13 08:44:15 2026] 127.0.0.1:65360 Closing
+[Tue Oct 13 08:45:13 2026] 127.0.0.1:56013 Accepted
+[Tue Oct 13 08:45:13 2026] 127.0.0.1:56013 Closing
+[Tue Oct 13 08:45:13 2026] 127.0.0.1:56015 Accepted
+[Tue Oct 13 08:45:13 2026] 127.0.0.1:56015 Closing
+[Tue Oct 13 08:45:21 2026] 127.0.0.1:51526 Accepted
+[Tue Oct 13 08:45:21 2026] 127.0.0.1:51526 Closing
+[Tue Oct 13 08:45:21 2026] 127.0.0.1:52878 Accepted
+[Tue Oct 13 08:45:21 2026] 127.0.0.1:52878 Closing
+[Tue Oct 13 08:45:21 2026] 127.0.0.1:63799 Accepted
+[Tue Oct 13 08:45:21 2026] 127.0.0.1:63799 [200]: GET /assets/css/analisis-shell.css
+[Tue Oct 13 08:45:21 2026] 127.0.0.1:63799 Closing
+[Tue Oct 13 08:45:28 2026] 127.0.0.1:54580 Accepted
+[Tue Oct 13 08:45:29 2026] 127.0.0.1:54580 Closing
+[Tue Oct 13 08:45:29 2026] 127.0.0.1:49582 Accepted
+[Tue Oct 13 08:46:32 2026] 127.0.0.1:49582 Closed without sending a request; it was probably just an unused speculative preconnection
+[Tue Oct 13 08:46:32 2026] 127.0.0.1:49582 Closing

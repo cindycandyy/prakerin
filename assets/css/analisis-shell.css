@@ -16,6 +16,25 @@
     --merah-700: #ba4239;
 }
 * { box-sizing: border-box; }
+
+/* Feedback tekan tombol: sedikit naik saat hover, sedikit turun saat ditekan. */
+button, .btn-chip, .nav-item, .chip, .tab, .pager button,
+.btn-aksi, .btn-terima, .btn-tolak, .btn-detail, .btn-terapkan,
+.back-link, .panel-head .link {
+    transition: transform .12s ease, box-shadow .12s ease, background-color .12s ease, filter .12s ease;
+}
+button:hover, .btn-chip:hover, .nav-item:hover, .chip:hover,
+.btn-aksi:hover, .btn-terapkan:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.03);
+}
+button:active, .btn-chip:active, .nav-item:active, .chip:active, .tab:active, .pager button:active,
+.btn-aksi:active, .btn-terima:active, .btn-tolak:active, .btn-detail:active, .btn-terapkan:active {
+    transform: translateY(0) scale(.97);
+    filter: brightness(.97);
+}
+.back-link:hover, .panel-head .link:hover { transform: translateX(-2px); }
+.panel-head .link.link-arrow:hover { transform: translateX(2px); }
 body {
     margin: 0;
     font-family: 'Inter', Arial, sans-serif;

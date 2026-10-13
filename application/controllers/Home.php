@@ -15,7 +15,12 @@ class Home extends CI_Controller {
 
     public function index() {
         $auth    = $this->session->userdata("SES_PRIV");
-        
+
+        if (!$auth) {
+            redirect(base_url() . "login/sistem/login_sistem");
+        }
+        redirect(base_url() . "analisis/dashboard");
+
         if($this->model_setting->getSingleSetting()->maintenance == "True" && $auth > 2){
              $this->load->view('maintenance');
         }else{

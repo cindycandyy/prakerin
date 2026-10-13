@@ -8,51 +8,62 @@
     <link href="//fonts.googleapis.com/css?family=Inter:400,600,700,800" rel="stylesheet">
     <link href="<?php echo base_url(); ?>assets/css/analisis-shell.css" rel="stylesheet">
     <style>
-        .back-link { display: flex; align-items: center; gap: 8px; color: var(--hijau-700); font-size: 12px; }
+        .back-link { display: flex; align-items: center; gap: 8px; color: var(--hijau-700); font-size: 13px; font-weight: 700; }
         .page-head .status-sub { margin: 0; }
 
         /* Profil pelamar */
-        .profil-card { display: flex; gap: 20px; }
-        .profil-foto { width: 72px; height: 72px; border-radius: 100px; object-fit: cover; background: var(--abu-200); flex-shrink: 0; }
-        .profil-info { flex: 1.3; }
-        .profil-nama-besar { font-size: 18px; font-weight: 700; margin: 0 0 2px; }
-        .profil-institusi { color: var(--abu-600); font-size: 12px; }
-        .profil-jurusan { color: var(--abu-600); font-size: 12px; }
-        .profil-meta { display: flex; gap: 6px; align-items: center; font-size: 11px; color: var(--abu-600); margin-top: 8px; }
-        .profil-kontak { flex: 1; font-size: 12px; display: flex; flex-direction: column; gap: 6px; }
-        .profil-kontak .lbl { color: var(--abu-600); font-size: 11px; }
+        .profil-card { display: flex; gap: 24px; }
+        .profil-foto { width: 64px; height: 64px; border-radius: 100px; object-fit: cover; background: var(--abu-200); flex-shrink: 0; }
+        .profil-info { flex: 1.2; }
+        .profil-nama-besar { font-size: 16px; font-weight: 700; margin: 0 0 3px; color: var(--abu-900); }
+        .profil-institusi { color: var(--abu-600); font-size: 12px; margin: 0 0 2px; }
+        .profil-jurusan { color: var(--abu-600); font-size: 12px; margin: 0 0 8px; }
+        .profil-status-pill {
+            display: inline-block; background: var(--hijau-100); color: var(--hijau-700); font-size: 11px;
+            font-weight: 600; padding: 3px 9px; border-radius: 6px; margin-bottom: 6px;
+        }
+        .profil-meta { font-size: 11px; color: var(--abu-600); margin-top: 6px; }
+        .profil-kontak { flex: 1.1; font-size: 12px; display: flex; flex-direction: column; gap: 12px; }
+        .profil-kontak .lbl { color: var(--abu-600); font-size: 11px; display: block; margin-bottom: 2px; }
+        .profil-kontak .val { color: var(--abu-900); display: block; }
         .profil-side {
-            background: var(--hijau-100); border-radius: 8px; padding: 12px; font-size: 11px;
-            color: var(--hijau-700); width: 220px; flex-shrink: 0;
+            background: var(--hijau-100); border-radius: 10px; padding: 14px; font-size: 11px;
+            color: var(--abu-900); width: 230px; flex-shrink: 0; display: flex; flex-direction: column; gap: 10px;
         }
-        .profil-side .lbl { color: var(--abu-600); margin-top: 8px; }
-        .profil-side strong { display: block; color: var(--abu-900); font-size: 12px; font-weight: 600; }
-        .profil-note {
-            background: var(--hijau-100); border-radius: 8px; padding: 10px 12px; font-size: 11px;
-            color: var(--hijau-700); display: flex; gap: 8px; align-items: flex-start; margin-top: 16px;
-        }
+        .profil-side .lbl { color: var(--hijau-700); font-weight: 600; margin-bottom: 2px; }
+        .profil-side .val { color: var(--abu-900); font-size: 12px; }
+        .profil-side .catatan { color: var(--hijau-700); font-size: 10px; line-height: 1.5; }
         .profil-footer {
-            display: flex; justify-content: space-between; align-items: center;
-            border-top: 1px solid var(--abu-100); margin-top: 16px; padding-top: 12px; font-size: 11px; color: var(--abu-600);
+            border-top: 1px solid var(--abu-100); margin-top: 18px; padding-top: 14px; font-size: 12px;
         }
-        .sosmed-list { display: flex; gap: 14px; }
-        .sosmed-item { display: flex; align-items: center; gap: 5px; }
+        .profil-footer-lbl { font-weight: 600; color: var(--abu-900); margin-bottom: 4px; }
+        .sosmed-list { color: var(--abu-600); font-size: 12px; }
         .sosmed-item a { color: var(--hijau-700); font-weight: 600; }
+        .sosmed-item a:hover { text-decoration: underline; }
         .sosmed-item.kosong { color: var(--abu-400, #a8b3af); }
+        .sosmed-sep { color: var(--abu-400, #a8b3af); margin: 0 4px; }
 
         /* Berkas persyaratan */
         .berkas-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
-        .berkas-card { border: 1px solid var(--abu-200); border-radius: 10px; padding: 12px; }
+        .berkas-card { border: 1px solid var(--abu-200); border-radius: 10px; padding: 14px; background: #fff; }
         .berkas-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
-        .berkas-nama { font-size: 12px; font-weight: 600; }
-        .berkas-file { font-size: 11px; color: var(--abu-600); margin: 2px 0 6px; }
-        .berkas-sub { font-size: 10px; color: var(--hijau-700); }
-        .berkas-aksi { display: flex; gap: 6px; margin-top: 8px; }
-        .btn-mini { border: 1px solid var(--abu-200); background: #fff; border-radius: 6px; padding: 5px 10px; font-size: 11px; cursor: pointer; flex: 1; text-align: center; }
-        .berkas-banner {
-            background: var(--hijau-100); border-radius: 8px; padding: 10px 12px; font-size: 11px;
-            color: var(--hijau-700); margin-top: 16px;
+        .berkas-judul { display: flex; align-items: center; gap: 8px; }
+        .berkas-icon {
+            width: 30px; height: 30px; border-radius: 7px; background: var(--abu-100);
+            display: flex; align-items: center; justify-content: center; color: var(--abu-600); flex-shrink: 0;
         }
+        .berkas-nama { font-size: 12px; font-weight: 600; color: var(--abu-900); }
+        .berkas-check { color: var(--hijau-700); flex-shrink: 0; }
+        .berkas-kosong-ikon { color: var(--abu-400, #a8b3af); flex-shrink: 0; }
+        .berkas-file { font-size: 11px; color: var(--abu-600); margin: 0 0 4px; }
+        .berkas-sub { font-size: 10px; color: var(--hijau-700); font-weight: 600; margin-bottom: 4px; }
+        .berkas-aksi { display: flex; gap: 8px; margin-top: 10px; }
+        .btn-mini {
+            border: 1px solid var(--abu-200); background: #fff; border-radius: 6px; padding: 0 10px;
+            font-size: 11px; font-weight: 600; cursor: pointer; color: var(--abu-900); flex: 1;
+            height: 32px; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center;
+        }
+        .btn-mini:hover { background: var(--hijau-100); border-color: var(--hijau-100); color: var(--hijau-700); }
 
         /* Analisis */
         .skill-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
@@ -117,7 +128,7 @@
         <?php $breadcrumb_akhir = 'Pelamar / Detail pelamar'; include APPPATH . 'views/analisis/_topbar.php'; ?>
 
         <main class="content">
-            <a class="back-link" href="<?php echo base_url(); ?>analisis/dashboard">
+            <a class="back-link" href="<?php echo base_url(); ?>analisis/pelamar">
                 <?php icon_analisis('arrow-left', 16); ?> Kembali ke daftar pelamar
             </a>
 
@@ -125,9 +136,11 @@
             <?php if ($CI->session->flashdata('sukses')) { ?>
             <div class="profil-note" style="margin:0;"><?php echo htmlspecialchars($CI->session->flashdata('sukses')); ?></div>
             <?php } ?>
-            <?php if ($CI->session->flashdata('error')) { ?>
-            <div class="divisi-penuh" style="margin:0;"><?php echo htmlspecialchars($CI->session->flashdata('error')); ?></div>
-            <?php } ?>
+            <?php /* Pesan error (termasuk "Alasan penolakan wajib diisi...") disembunyikan sementara atas
+                     permintaan — aktifkan lagi dengan menghapus komentar ini bila warning submit-gagal
+                     perlu ditampilkan lagi. */ ?>
+            <?php // if ($CI->session->flashdata('error')) { ?>
+            <?php // } ?>
 
             <div class="page-head">
                 <div>
@@ -152,45 +165,58 @@
                     <div class="profil-info">
                         <p class="profil-nama-besar"><?php echo htmlspecialchars($pelamar->nama); ?></p>
                         <p class="profil-institusi"><?php echo htmlspecialchars($pelamar->institusi); ?></p>
-                        <p class="profil-jurusan"><?php echo htmlspecialchars($pelamar->pendidikan); ?> · <?php echo htmlspecialchars($pelamar->jurusan); ?></p>
-                        <div class="profil-meta"><?php echo htmlspecialchars($pelamar->no_pkl); ?></div>
+                        <p class="profil-jurusan"><?php echo htmlspecialchars($pelamar->pendidikan); ?> · peminatan <?php echo htmlspecialchars($pelamar->jurusan); ?></p>
+                        <span class="profil-status-pill"><?php echo !empty($rekomendasi) ? 'Analisis siap' : 'Analisis belum tersedia'; ?></span>
+                        <div class="profil-meta">Kode pendaftaran <?php echo htmlspecialchars($pelamar->no_pkl); ?></div>
                     </div>
                     <div class="profil-kontak">
-                        <div><span class="lbl">Email</span><br><?php echo htmlspecialchars($pelamar->email); ?></div>
-                        <div><span class="lbl">Nomor telepon</span><br><?php echo htmlspecialchars($pelamar->telp); ?></div>
+                        <div><span class="lbl">NIM / nomor pelajar</span><span class="val"><?php echo htmlspecialchars($pelamar->user_id); ?></span></div>
+                        <div><span class="lbl">Email</span><span class="val"><?php echo htmlspecialchars($pelamar->email); ?></span></div>
+                        <div><span class="lbl">Nomor telepon</span><span class="val"><?php echo htmlspecialchars($pelamar->telp); ?></span></div>
                     </div>
                     <div class="profil-side">
-                        <strong>Periode usulan</strong>
-                        <?php echo $pelamar->tgl_mulai ? date('d M Y', strtotime($pelamar->tgl_mulai)) : '-'; ?> – <?php echo $pelamar->tgl_selesai ? date('d M Y', strtotime($pelamar->tgl_selesai)) : '-'; ?>
-                        <div class="lbl">Departemen yang diminta pelamar</div>
-                        <strong><?php echo htmlspecialchars($pelamar->nama_depag ? $pelamar->nama_depag : '-'); ?></strong>
-                        <div style="margin-top:8px;">Penempatan pelamar disimpan terakhir; tidak menjadi faktor dari rekomendasi.</div>
+                        <div>
+                            <div class="lbl">Periode usulan yang diajukan</div>
+                            <div class="val"><?php echo $pelamar->tgl_mulai ? date('d M Y', strtotime($pelamar->tgl_mulai)) : '-'; ?> – <?php echo $pelamar->tgl_selesai ? date('d M Y', strtotime($pelamar->tgl_selesai)) : '-'; ?></div>
+                        </div>
+                        <div>
+                            <div class="lbl">Departemen yang diminta pelamar</div>
+                            <div class="val"><?php echo htmlspecialchars($pelamar->nama_depag ? $pelamar->nama_depag : '-'); ?></div>
+                        </div>
+                        <div class="catatan">Permintaan pelamar ditampilkan terpisah; tidak menjadi faktor skor rekomendasi.</div>
                     </div>
                 </div>
                 <div class="profil-footer">
                     <?php
                     // Daftar contoh/ilustrasi (Tahap 1). Platform yang tidak diisi
                     // pelamar tetap ditampilkan tapi abu-abu, bukan dihilangkan.
+                    // url_dasar menyusun link profil asli dari handle yang tersimpan.
                     $sosmed = array(
-                        'LinkedIn' => 'linkedin.com/in/ayu-putri-lestari',
-                        'Instagram' => '@ayu.lestari',
-                        'TikTok' => '',
-                        'Twitter' => '',
+                        'LinkedIn' => array('akun' => 'linkedin.com/in/ayu-putri-lestari', 'url_dasar' => 'https://'),
+                        'Instagram' => array('akun' => '@ayu.lestari', 'url_dasar' => 'https://instagram.com/'),
+                        'TikTok' => array('akun' => '', 'url_dasar' => 'https://tiktok.com/@'),
+                        'Twitter' => array('akun' => '', 'url_dasar' => 'https://twitter.com/'),
                     );
                     ?>
+                    <div class="profil-footer-lbl">Media sosial</div>
                     <div class="sosmed-list">
-                        <?php foreach ($sosmed as $platform => $akun) { ?>
+                        <?php
+                        $i = 0;
+                        foreach ($sosmed as $platform => $s) {
+                            $akun = $s['akun'];
+                            $handle = ltrim($akun, '@');
+                            if ($i > 0) { echo '<span class="sosmed-sep">·</span>'; }
+                            $i++;
+                        ?>
                             <span class="sosmed-item <?php echo $akun ? '' : 'kosong'; ?>">
-                                <?php echo $platform; ?>:
                                 <?php if ($akun) { ?>
-                                    <a href="#"><?php echo htmlspecialchars($akun); ?></a>
+                                    <a href="<?php echo htmlspecialchars($s['url_dasar'] . $handle); ?>" target="_blank" rel="noopener"><?php echo $platform; ?></a>
                                 <?php } else { ?>
-                                    belum diisi
+                                    <?php echo $platform; ?>
                                 <?php } ?>
                             </span>
                         <?php } ?>
                     </div>
-                    <a href="#" style="color:var(--hijau-700); font-weight:600;">Koreksi profil</a>
                 </div>
             </div>
 
@@ -198,48 +224,60 @@
             <div class="panel" style="width:100%">
                 <div class="panel-head">
                     <h2>Berkas persyaratan</h2>
-                    <span class="panel-head link">Unduh semua berkas</span>
+                    <button type="button" class="btn-chip" disabled title="Fitur unduh gabungan belum tersedia">Unduh semua berkas</button>
                 </div>
                 <?php
                 $berkas = array(
                     array('Surat pengantar', $pelamar->doc_1, ''),
-                    array('Proposal magang', $pelamar->doc_2, 'Sumber otomatis analisis'),
-                    array('Transkrip nilai', $pelamar->doc_3, 'Sumber otomatis analisis'),
-                    array('Kartu pelajar', $pelamar->doc_4, ''),
-                    array('Kartu asuransi', $pelamar->doc_5, ''),
-                    array('Surat pernyataan', $pelamar->doc_6, ''),
+                    array('Proposal magang', $pelamar->doc_2, 'Sumber analisis otomatis'),
+                    array('Transkrip nilai', $pelamar->doc_3, 'Sumber analisis otomatis'),
                     array('Foto', $pelamar->foto, ''),
+                    array('Kartu asuransi', $pelamar->doc_5, ''),
+                    array('Kartu pelajar', $pelamar->doc_4, ''),
+                    array('Surat pernyataan', $pelamar->doc_6, ''),
                 );
                 $jumlah_lengkap = count(array_filter($berkas, function ($b) { return !empty($b[1]); }));
                 ?>
-                <div class="panel-sub"><?php echo $jumlah_lengkap; ?>/7 persyaratan terunggah · diunggah pelamar melalui E-Prakerin</div>
+                <div class="panel-sub"><?php echo $jumlah_lengkap; ?>/7 persyaratan lengkap · diunggah pelamar melalui E-Prakerin</div>
                 <div class="berkas-grid">
                     <?php
                     foreach ($berkas as $b) {
                         list($nama, $file, $sub) = $b;
                         $ada = !empty($file);
+                        $path_file = $ada ? FCPATH . 'gambar/' . $file : null;
+                        $ekstensi = $ada ? strtoupper(pathinfo($file, PATHINFO_EXTENSION)) : '';
+                        $adalah_gambar = in_array(strtolower($ekstensi), array('jpg', 'jpeg', 'png'));
+                        $ukuran = ($ada && is_file($path_file)) ? round(filesize($path_file) / 1024) . ' KB' : null;
                     ?>
                     <div class="berkas-card">
                         <div class="berkas-top">
-                            <span class="berkas-nama"><?php echo $nama; ?></span>
-                            <span style="color:<?php echo $ada ? 'var(--hijau-700)' : 'var(--abu-400)'; ?>"><?php echo $ada ? '✓' : '—'; ?></span>
+                            <div class="berkas-judul">
+                                <span class="berkas-icon"><?php icon_analisis($adalah_gambar ? 'image' : 'file-text', 16); ?></span>
+                                <span class="berkas-nama"><?php echo $nama; ?></span>
+                            </div>
+                            <?php if ($ada) { ?>
+                            <span class="berkas-check"><?php icon_analisis('check-circle', 16); ?></span>
+                            <?php } else { ?>
+                            <span class="berkas-kosong-ikon">&mdash;</span>
+                            <?php } ?>
                         </div>
-                        <div class="berkas-file"><?php echo $ada ? htmlspecialchars($file) : 'Belum diunggah'; ?></div>
+                        <div class="berkas-file">
+                            <?php if ($ada) { ?>
+                                <?php echo htmlspecialchars($file); ?><?php echo $ukuran ? ' · ' . $ukuran : ''; ?><?php echo $ekstensi ? ' · ' . $ekstensi : ''; ?>
+                            <?php } else { ?>
+                                Belum diunggah
+                            <?php } ?>
+                        </div>
                         <?php if ($sub) { ?><div class="berkas-sub"><?php echo $sub; ?></div><?php } ?>
                         <?php if ($ada) { ?>
                         <div class="berkas-aksi">
-                            <button class="btn-mini">Lihat</button>
-                            <button class="btn-mini">Unduh</button>
+                            <a class="btn-mini" href="<?php echo base_url() . 'gambar/' . rawurlencode($file); ?>" target="_blank" rel="noopener">Lihat</a>
+                            <a class="btn-mini" href="<?php echo base_url() . 'gambar/' . rawurlencode($file); ?>" download>Unduh</a>
                         </div>
                         <?php } ?>
                     </div>
                     <?php } ?>
                 </div>
-                <?php if ($jumlah_lengkap === 7) { ?>
-                <div class="berkas-banner">
-                    ✓ Semua 7 berkas sudah diunggah pelamar.
-                </div>
-                <?php } ?>
             </div>
 
             <!-- Analisis dan rekomendasi -->
