@@ -85,6 +85,25 @@
         .analisis-col { margin-bottom: 16px; }
         .analisis-col .lbl { font-size: 11px; color: var(--abu-600); margin-bottom: 4px; }
         .analisis-col .val { font-size: 12px; line-height: 1.6; }
+        ul.minat-list { margin: 0; padding-left: 18px; }
+        ul.minat-list li { margin-bottom: 6px; }
+        ul.minat-list li:last-child { margin-bottom: 0; }
+
+        .nilai-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px 16px;
+            max-height: 220px; overflow: hidden; transition: max-height .2s ease;
+        }
+        .nilai-grid.terbuka { max-height: 2000px; }
+        .nilai-item {
+            display: flex; justify-content: space-between; gap: 8px; font-size: 11px;
+            padding: 4px 0; border-bottom: 1px solid var(--abu-100);
+        }
+        .nilai-item .mapel { color: var(--abu-900); }
+        .nilai-item .angka { color: var(--hijau-700); font-weight: 600; flex-shrink: 0; }
+        .btn-lihat-semua {
+            background: none; border: none; color: var(--hijau-700); font-size: 11px; font-weight: 600;
+            cursor: pointer; padding: 8px 0 0; font-family: inherit;
+        }
         .analisis-note {
             background: var(--hijau-100); border-radius: 8px; padding: 12px 14px; font-size: 11px;
             color: var(--hijau-700); line-height: 1.6; margin-top: 4px;
@@ -350,22 +369,48 @@
                     </div>
                     <?php $istilah_mapel = ($profil->jenis_institusi === 'smk') ? 'mata pelajaran' : 'mata kuliah'; ?>
                     <div class="analisis-col">
-                        <div class="lbl">Nilai relevan</div>
-                        <div class="val">
-                            <?php if (empty($profil->nilai)) { ?>
-                                Tidak ada nilai <?php echo $istilah_mapel; ?> relevan yang terbaca.
-                            <?php } else {
-                                $baris_nilai = array();
-                                foreach ($profil->nilai as $n) {
-                                    $baris_nilai[] = htmlspecialchars(ucfirst($n['mapel'])) . ': ' . htmlspecialchars($n['nilai']);
-                                }
-                                echo implode('<br>', $baris_nilai);
-                            } ?>
+                        <div class="lbl">Nilai <?php echo $istilah_mapel; ?> (<?php echo count($profil->nilai); ?>)</div>
+                        <?php if (empty($profil->nilai)) { ?>
+                        <div class="val">Tidak ada nilai <?php echo $istilah_mapel; ?> relevan yang terbaca.</div>
+                        <?php } else { ?>
+                        <div class="nilai-grid" id="grid-nilai">
+                            <?php foreach ($profil->nilai as $n) { ?>
+                            <div class="nilai-item">
+                                <span class="mapel"><?php echo htmlspecialchars(ucfirst($n['mapel'])); ?></span>
+                                <span class="angka"><?php echo htmlspecialchars($n['nilai']); ?></span>
+                            </div>
+                            <?php } ?>
                         </div>
+                        <?php if (count($profil->nilai) > 16) { ?>
+                        <button type="button" class="btn-lihat-semua" onclick="document.getElementById('grid-nilai').classList.toggle('terbuka'); this.textContent = this.textContent.includes('semua') ? 'Tutup' : 'Lihat semua';">Lihat semua</button>
+                        <?php } ?>
+                        <?php } ?>
                     </div>
                     <div class="analisis-col">
                         <div class="lbl">Minat dalam proposal</div>
-                        <div class="val"><?php echo $profil->tujuan ? nl2br(htmlspecialchars($profil->tujuan)) : 'Tidak terbaca dari proposal.'; ?></div>
+                        <?php if (!$profil->tujuan) { ?>
+                        <div class="val">Tidak terbaca dari proposal.</div>
+                        <?php } else {
+                            // Teks mentah dari PDF: bullet "•" dan jeda baris ikut keekstrak apa
+                            // adanya dan sering terpisah tidak rapi; pecah jadi list item yang rapi
+                            // kalau memang berbentuk bullet list, atau paragraf biasa kalau tidak.
+                            $potongan = preg_split('/\s*•\s*/u', $profil->tujuan);
+                            $poin = array();
+                            foreach ($potongan as $p) {
+                                $p = trim(preg_replace('/\s+/u', ' ', $p));
+                                if ($p !== '') { $poin[] = $p; }
+                            }
+                        ?>
+                            <?php if (count($poin) > 1) { ?>
+                            <ul class="val minat-list">
+                                <?php foreach ($poin as $p) { ?>
+                                <li><?php echo htmlspecialchars($p); ?></li>
+                                <?php } ?>
+                            </ul>
+                            <?php } else { ?>
+                            <div class="val"><?php echo htmlspecialchars($poin[0]); ?></div>
+                            <?php } ?>
+                        <?php } ?>
                     </div>
                     <div class="analisis-note">
                         Jika hasil ekstraksi kurang tepat, koreksi profil bisa dilakukan. Sistem menderivasi ulang, HR menentukan.
@@ -421,6 +466,14 @@
                 <?php if (!empty($rekomendasi)) {
                     $top = $rekomendasi[0];
                 ?>
+                <?php
+                $badgeKeyakinan = array(
+                    'tinggi' => 'badge-green',
+                    'sedang' => 'badge-warn',
+                    'rendah' => 'badge-merah',
+                );
+                $kelasKeyakinan = isset($badgeKeyakinan[$top->keyakinan]) ? $badgeKeyakinan[$top->keyakinan] : 'badge-warn';
+                ?>
                 <div class="rekom-card">
                     <div class="rekom-top">
                         <span class="badge badge-green">#1 · paling sesuai</span>
@@ -428,7 +481,7 @@
                     </div>
                     <p class="rekom-divisi"><?php echo htmlspecialchars($top->nama_divisi); ?></p>
                     <p class="rekom-dept"><?php echo htmlspecialchars($top->nama_departemen); ?></p>
-                    <span class="badge badge-green">Keyakinan <?php echo htmlspecialchars(ucfirst($top->keyakinan)); ?></span>
+                    <span class="badge <?php echo $kelasKeyakinan; ?>">Keyakinan <?php echo htmlspecialchars(ucfirst($top->keyakinan)); ?></span>
                     <p class="rekom-alasan"><?php echo htmlspecialchars($top->alasan); ?></p>
                     <div class="rekom-sub-lbl hijau">Kekuatan</div>
                     <div class="rekom-sub-val"><?php echo htmlspecialchars($top->kekuatan); ?></div>

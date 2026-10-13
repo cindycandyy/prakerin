@@ -153,16 +153,38 @@ class Model_prk_master extends CI_Model {
         return max(0, $kuota_maks - $jumlah_terisi);
     }
 
+    // Kolom numerik di-cast eksplisit: MySQLi result_array() mengembalikan semua
+    // kolom sebagai string, dan layanan Python membandingkan/menjumlahkan nilai ini
+    // sebagai angka (id_divisi == int, sum(bobot) butuh int, skor dipakai sebagai
+    // float). Tanpa cast ini "29" == 29 selalu False di Python (F1/F2/F3 gagal
+    // match diam-diam) dan sum() atas string meledak TypeError -- bug yang sempat
+    // terjadi di jalur HTTP nyata, lolos dari test unit karena fixture test selalu
+    // pakai int/float Python murni.
     function listSinyalDivisi() {
-        return $this->db->get('prk_sinyal_divisi')->result_array();
+        $rows = $this->db->get('prk_sinyal_divisi')->result_array();
+        foreach ($rows as &$r) {
+            $r['id_divisi'] = (int) $r['id_divisi'];
+            $r['bobot'] = (int) $r['bobot'];
+        }
+        return $rows;
     }
 
     function listPemetaanJurusan() {
-        return $this->db->get('prk_pemetaan_jurusan')->result_array();
+        $rows = $this->db->get('prk_pemetaan_jurusan')->result_array();
+        foreach ($rows as &$r) {
+            $r['id_divisi'] = (int) $r['id_divisi'];
+            $r['skor'] = (int) $r['skor'];
+        }
+        return $rows;
     }
 
     function listMapelRelevan() {
-        return $this->db->get('prk_mapel_relevan')->result_array();
+        $rows = $this->db->get('prk_mapel_relevan')->result_array();
+        foreach ($rows as &$r) {
+            $r['id_divisi'] = (int) $r['id_divisi'];
+            $r['bobot'] = (int) $r['bobot'];
+        }
+        return $rows;
     }
 
     // Bobot F1-F4 + ambang keyakinan, dengan nilai awal spesifikasi bagian 11.1

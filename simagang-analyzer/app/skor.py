@@ -49,13 +49,27 @@ def _s_nilai(mapel_relevan: list[dict], id_divisi: int, nilai_profil: list[dict]
     return 50.0
 
 
-def _f1_jurusan(pemetaan: list[dict], jurusan_norm: str, peminatan: str) -> tuple[float, bool]:
-    """Return (skor, dipetakan)."""
-    for p in pemetaan:
+_JURUSAN_SEMUA = "semua jurusan"
+
+
+def _f1_jurusan(pemetaan: list[dict], id_divisi: int, jurusan_norm: str, peminatan: str) -> tuple[float, bool]:
+    """Return (skor, dipetakan). Baris dipetakan HARUS untuk id_divisi yang sama --
+    tanpa filter ini, skor jurusan milik divisi lain bisa "bocor" terpakai (bug
+    yang pernah terjadi: fungsi lama tidak menerima id_divisi sama sekali, jadi
+    baris pertama yang match jurusan menang terlepas divisinya siapa).
+
+    Jurusan yang tidak match spesifik ke divisi ini jatuh ke baris "semua jurusan"
+    milik divisi itu, kalau ada -- bukan skor flat 30 untuk semua divisi.
+    """
+    baris_divisi = [p for p in pemetaan if p["id_divisi"] == id_divisi]
+    for p in baris_divisi:
         if p["jurusan_norm"] == jurusan_norm and p["peminatan"] == peminatan:
             return float(p["skor"]), True
-    for p in pemetaan:
+    for p in baris_divisi:
         if p["jurusan_norm"] == jurusan_norm and p["peminatan"] == "":
+            return float(p["skor"]), True
+    for p in baris_divisi:
+        if p["jurusan_norm"] == _JURUSAN_SEMUA:
             return float(p["skor"]), True
     return 30.0, False
 
@@ -73,7 +87,7 @@ def skor_divisi(profil: dict, divisi: dict, master: dict) -> tuple[float, dict, 
     """Hitung skor + rincian faktor untuk satu divisi. Return (skor, faktor_dict, catatan)."""
     catatan = []
     pemetaan = master.get("pemetaan_jurusan", [])
-    f1, dipetakan = _f1_jurusan(pemetaan, profil["jurusan_norm"], profil.get("peminatan", ""))
+    f1, dipetakan = _f1_jurusan(pemetaan, divisi["id"], profil["jurusan_norm"], profil.get("peminatan", ""))
     if not dipetakan:
         catatan.append("jurusan belum dipetakan")
 

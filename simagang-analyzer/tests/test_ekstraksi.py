@@ -14,7 +14,7 @@ from app.baca_transkrip import baca_transkrip  # noqa: E402
 from app.errors import AnalisisError  # noqa: E402
 from app.llm import _validasi_keluaran  # noqa: E402
 from app.redaksi import redaksi  # noqa: E402
-from app.skor import hitung_rekomendasi, round_half_up  # noqa: E402
+from app.skor import _f1_jurusan, hitung_rekomendasi, round_half_up  # noqa: E402
 
 
 def _buat_pdf(path: str, baris_per_halaman: list[list[str]]):
@@ -166,6 +166,25 @@ def test_validasi_keluaran_llm_terima_valid():
 
 def test_validasi_keluaran_llm_tolak_kunci_asing():
     assert _validasi_keluaran({"bidang": [], "alat": [], "tujuan": "", "ekstra": 1}) is None
+
+
+def test_f1_jurusan_tidak_bocor_antar_divisi():
+    # Regresi: skor jurusan harus difilter per id_divisi, bukan ambil baris
+    # pertama yang match jurusan di seluruh pemetaan (lintas divisi).
+    pemetaan = [
+        {"jurusan_norm": "kimia", "peminatan": "", "id_divisi": 99, "skor": 95},
+        {"jurusan_norm": "kimia", "peminatan": "", "id_divisi": 1, "skor": 60},
+    ]
+    assert _f1_jurusan(pemetaan, 1, "kimia", "") == (60.0, True)
+    assert _f1_jurusan(pemetaan, 99, "kimia", "") == (95.0, True)
+
+
+def test_f1_jurusan_fallback_semua_jurusan():
+    # Jurusan yang tidak dipetakan spesifik ke divisi ini jatuh ke baris
+    # "semua jurusan" milik divisi itu, kalau ada -- bukan skor flat 30.
+    pemetaan = [{"jurusan_norm": "semua jurusan", "peminatan": "", "id_divisi": 5, "skor": 60}]
+    assert _f1_jurusan(pemetaan, 5, "rekayasa perangkat lunak", "") == (60.0, True)
+    assert _f1_jurusan(pemetaan, 7, "rekayasa perangkat lunak", "") == (30.0, False)
 
 
 def main():

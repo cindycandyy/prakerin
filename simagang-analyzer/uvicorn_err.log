@@ -1,5 +1,77 @@
-INFO:     Started server process [70312]
+INFO:     Started server process [31488]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://127.0.0.1:8001 (Press CTRL+C to quit)
-2026-10-13 13:24:50,142 INFO job_id=5 status=perlu_tinjau durasi_ms=1817
+2026-10-13 14:08:17,702 INFO job_id=6 status=perlu_tinjau durasi_ms=681
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "C:\Users\User-AP\AppData\Roaming\Python\Python314\site-packages\uvicorn\protocols\http\httptools_impl.py", line 416, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.scope, self.receive, self.send
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\User-AP\AppData\Roaming\Python\Python314\site-packages\uvicorn\middleware\proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\User-AP\AppData\Roaming\Python\Python314\site-packages\fastapi\applications.py", line 1216, in __call__
+    await super().__call__(scope, receive, send)
+  File "C:\Users\User-AP\AppData\Roaming\Python\Python314\site-packages\starlette\applications.py", line 96, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\User-AP\AppData\Roaming\Python\Python314\site-packages\starlette\middleware\errors.py", line 186, in __call__
+    raise exc
+  File "C:\Users\User-AP\AppData\Roaming\Python\Python314\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\User-AP\AppData\Roaming\Python\Python314\site-packages\fastapi\telemetry\_asgi.py", line 151, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\User-AP\AppData\Roaming\Python\Python314\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\User-AP\AppData\Roaming\Python\Python314\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\User-AP\AppData\Roaming\Python\Python314\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\User-AP\AppData\Roaming\Python\Python314\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\User-AP\AppData\Roaming\Python\Python314\site-packages\starlette\routing.py", line 676, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\User-AP\AppData\Roaming\Python\Python314\site-packages\fastapi\routing.py", line 2786, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\User-AP\AppData\Roaming\Python\Python314\site-packages\fastapi\routing.py", line 1310, in handle
+    await super().handle(scope, receive, send)
+  File "C:\Users\User-AP\AppData\Roaming\Python\Python314\site-packages\starlette\routing.py", line 282, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\User-AP\AppData\Roaming\Python\Python314\site-packages\fastapi\routing.py", line 165, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\User-AP\AppData\Roaming\Python\Python314\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\User-AP\AppData\Roaming\Python\Python314\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\User-AP\AppData\Roaming\Python\Python314\site-packages\fastapi\routing.py", line 151, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\User-AP\AppData\Roaming\Python\Python314\site-packages\fastapi\routing.py", line 727, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\User-AP\AppData\Roaming\Python\Python314\site-packages\fastapi\routing.py", line 360, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Cindy\intern\e_prakerin\prakerin\simagang-analyzer\app\main.py", line 114, in analisis
+    hasil_skor = hitung_rekomendasi(profil, master)
+  File "C:\Cindy\intern\e_prakerin\prakerin\simagang-analyzer\app\skor.py", line 182, in hitung_rekomendasi
+    skor, faktor, catatan = skor_divisi(profil, d, master)
+                            ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Cindy\intern\e_prakerin\prakerin\simagang-analyzer\app\skor.py", line 100, in skor_divisi
+    f3 = _s_topik(sinyal, divisi["id"], teks_topik)
+  File "C:\Cindy\intern\e_prakerin\prakerin\simagang-analyzer\app\skor.py", line 28, in _s_topik
+    total = _bobot_sinyal(sinyal, id_divisi, "topik", ditemukan)
+  File "C:\Cindy\intern\e_prakerin\prakerin\simagang-analyzer\app\skor.py", line 9, in _bobot_sinyal
+    return sum(
+        s["bobot"] for s in sinyal
+        if s["id_divisi"] == id_divisi and s["jenis"] == jenis and s["kata_kunci"].lower() in ditemukan
+    )
+TypeError: unsupported operand type(s) for +: 'int' and 'str'
+2026-10-13 14:11:49,815 INFO job_id=8 status=perlu_tinjau durasi_ms=678
