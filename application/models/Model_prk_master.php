@@ -54,6 +54,24 @@ class Model_prk_master extends CI_Model {
         }
     }
 
+    // Jumlah peserta aktif (kontrak belum selesai/diakhiri_awal) per divisi saat ini,
+    // tanpa batas periode — dipakai halaman Kuota divisi untuk kolom "Keterisian".
+    function listTerisiPerDivisi() {
+        $rows = $this->db
+            ->select('p.id_divisi, COUNT(*) AS jumlah')
+            ->from('prk_penempatan p')
+            ->join('prk_kontrak k', 'k.id_penempatan = p.id')
+            ->where_not_in('k.status', array('selesai', 'diakhiri_awal'))
+            ->group_by('p.id_divisi')
+            ->get()->result();
+
+        $hasil = array();
+        foreach ($rows as $r) {
+            $hasil[(int) $r->id_divisi] = (int) $r->jumlah;
+        }
+        return $hasil;
+    }
+
     function getPengaturan($kunci, $default = NULL) {
         $row = $this->db->where('kunci', $kunci)->get('prk_pengaturan')->row();
         return $row ? $row->nilai : $default;

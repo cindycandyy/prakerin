@@ -9,8 +9,9 @@
     <link href="<?php echo base_url(); ?>assets/css/analisis-shell.css" rel="stylesheet">
     <style>
         .period-controls { display: flex; gap: 8px; align-items: center; }
-        .snapshot-line { display: flex; justify-content: space-between; font-size: 12px; }
-        .snapshot-line .synced { color: var(--hijau-700); }
+        .period-controls a.btn-chip { text-decoration: none; }
+        .period-controls .btn-chip-label { min-width: 150px; text-align: center; cursor: default; }
+        .snapshot-line { font-size: 12px; color: var(--abu-600); margin-top: -16px; }
 
         .kpi-row { display: flex; gap: 16px; }
         .kpi-card {
@@ -132,14 +133,13 @@
                     <p>Pantau pelamar baru, kapasitas penempatan, dan jadwal magang dalam satu tempat.</p>
                 </div>
                 <div class="period-controls">
-                    <button class="btn-chip"><?php icon_analisis('chevron-left', 14); ?></button>
-                    <button class="btn-chip">5–11 Oktober 2026</button>
-                    <button class="btn-chip"><?php icon_analisis('chevron-right', 14); ?></button>
+                    <a class="btn-chip" href="<?php echo base_url(); ?>analisis/dashboard?minggu=<?php echo $offset_minggu - 1; ?>"><?php icon_analisis('chevron-left', 14); ?></a>
+                    <span class="btn-chip btn-chip-label"><?php echo $minggu_mulai->format('j'); ?>–<?php echo tanggal_indo($minggu_selesai->format('Y-m-d')); ?></span>
+                    <a class="btn-chip" href="<?php echo base_url(); ?>analisis/dashboard?minggu=<?php echo $offset_minggu + 1; ?>"><?php icon_analisis('chevron-right', 14); ?></a>
                 </div>
             </div>
             <div class="snapshot-line">
-                <span class="status-sub">Kamis, 8 Oktober 2026 · Ringkasan minggu ini sampai hari ini</span>
-                <span class="synced">Tersinkron dari E-Prakerin · contoh tampilan</span>
+                <span class="status-sub">Data diperbarui hari ini, <?php echo htmlspecialchars(tanggal_indo($hari_ini->format('Y-m-d'), true)); ?></span>
             </div>
 
             <div class="kpi-row">

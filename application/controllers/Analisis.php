@@ -23,6 +23,7 @@ class Analisis extends CI_Controller {
         $this->load->model('model_prk_kontrak');
         $this->load->model('model_prk_surat');
         $this->load->library('analisis_status');
+        $this->load->helper('analisis_helper');
 
         if (!$this->config->item('analisis_aktif')) {
             show_404();
@@ -45,6 +46,19 @@ class Analisis extends CI_Controller {
         $data['nama_user'] = $this->session->userdata('SES_USERNAME');
         $data['pelamar_perhatian'] = $this->model_prk_pelamar->listPelamar('pending', null, 5);
         $data['jumlah_status'] = $this->model_prk_pelamar->hitungPerStatus();
+
+        // Navigasi minggu (Senin-Minggu) relatif ke hari ini, digeser lewat ?minggu=-1/0/1/dst.
+        $offset_minggu = (int) $this->input->get('minggu');
+        $hari_ini = new DateTime();
+        $senin = clone $hari_ini;
+        $senin->modify('monday this week')->modify($offset_minggu . ' week');
+        $minggu = clone $senin;
+        $minggu->modify('+6 days');
+        $data['hari_ini'] = $hari_ini;
+        $data['minggu_mulai'] = $senin;
+        $data['minggu_selesai'] = $minggu;
+        $data['offset_minggu'] = $offset_minggu;
+
         $this->load->view('analisis/dashboard', $data);
     }
 
@@ -74,11 +88,61 @@ class Analisis extends CI_Controller {
         $data['id_transaksi'] = $id;
         $data['pelamar'] = $pelamar;
         $data['rekomendasi'] = $this->model_prk_pelamar->listRekomendasi($id);
+        $data['semua_divisi'] = $this->model_prk_master->listDivisiDenganDepartemen();
 
         $penempatan = $this->model_prk_penempatan->getPenempatan($id);
         $data['kontrak'] = $penempatan ? $this->model_prk_kontrak->getByPenempatan($penempatan->id) : null;
 
         $this->load->view('analisis/detail_pelamar', $data);
+    }
+
+    // GET /analisis/peserta/{id}/berkas_unduh — zip semua berkas pelamar yang
+    // ada secara fisik di gambar/, untuk tombol "Unduh semua berkas".
+    function berkas_unduh($id = null) {
+        $pelamar = $this->model_prk_pelamar->getPelamar($id);
+        if (!$pelamar) {
+            show_404();
+        }
+
+        $berkas = array(
+            'surat_pengantar' => $pelamar->doc_1,
+            'proposal_magang' => $pelamar->doc_2,
+            'transkrip_nilai' => $pelamar->doc_3,
+            'kartu_pelajar' => $pelamar->doc_4,
+            'kartu_asuransi' => $pelamar->doc_5,
+            'surat_pernyataan' => $pelamar->doc_6,
+            'foto' => $pelamar->foto,
+        );
+
+        $zip = new ZipArchive();
+        $path_zip = sys_get_temp_dir() . '/berkas-' . (int) $id . '-' . uniqid() . '.zip';
+        if ($zip->open($path_zip, ZipArchive::CREATE) !== true) {
+            show_404();
+        }
+
+        $ada_isi = false;
+        foreach ($berkas as $label => $file) {
+            if (empty($file)) {
+                continue;
+            }
+            $path_sumber = FCPATH . 'gambar/' . $file;
+            if (is_file($path_sumber)) {
+                $zip->addFile($path_sumber, $label . '-' . $file);
+                $ada_isi = true;
+            }
+        }
+        $zip->close();
+
+        if (!$ada_isi) {
+            unlink($path_zip);
+            show_404();
+        }
+
+        header('Content-Type: application/zip');
+        header('Content-Disposition: attachment; filename="berkas-' . (int) $id . '.zip"');
+        header('Content-Length: ' . filesize($path_zip));
+        readfile($path_zip);
+        unlink($path_zip);
     }
 
     // POST /analisis/peserta/{id}/terima — cek sisa kuota divisi (row lock, bagian 9.2),
@@ -506,13 +570,14 @@ class Analisis extends CI_Controller {
     // GET /analisis/kuota
     function kuota() {
         $data['divisi'] = $this->model_prk_master->listDivisiDenganDepartemen();
+        $terisi_per_divisi = $this->model_prk_master->listTerisiPerDivisi();
         foreach ($data['divisi'] as $d) {
             $kuota = $this->model_prk_master->getKuota($d->id);
             $d->kuota_maks = $kuota ? $kuota->kuota_maks : 0;
+            $d->terisi = isset($terisi_per_divisi[(int) $d->id]) ? $terisi_per_divisi[(int) $d->id] : 0;
         }
-        $this->load->view('header');
+        $data['nama_user'] = $this->session->userdata('SES_USERNAME');
         $this->load->view('analisis/kuota', $data);
-        $this->load->view('footer');
     }
 
     // POST /analisis/kuota_simpan
