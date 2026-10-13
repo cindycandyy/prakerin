@@ -4,7 +4,7 @@ if (!defined('BASEPATH'))
 
 // Partial sidebar bersama untuk semua halaman Analisis Penempatan (standalone).
 // Dipakai lewat include dengan variabel $halaman_aktif berisi salah satu:
-// 'dashboard', 'pelamar', 'kalender', 'kuota', 'riwayat'.
+// 'dashboard', 'pelamar', 'kalender', 'kuota', 'riwayat', 'pengaturan'.
 $halaman_aktif = isset($halaman_aktif) ? $halaman_aktif : '';
 ?>
 <aside class="sidebar">
@@ -41,9 +41,13 @@ $halaman_aktif = isset($halaman_aktif) ? $halaman_aktif : '';
         <p>Data pelamar tersinkron. HR tidak perlu mengisi ulang.</p>
     </div>
 
-    <div class="sidebar-links">
-        <a href="<?php echo base_url(); ?>analisis/pengaturan">⚙ Pengaturan</a>
-        <a href="#">ⓘ Panduan Analisis Penempatan</a>
+    <div>
+        <a class="nav-item <?php echo $halaman_aktif === 'pengaturan' ? 'active' : ''; ?>" href="<?php echo base_url(); ?>analisis/pengaturan">
+            <?php icon_analisis('settings', 18); ?> Pengaturan
+        </a>
+        <a class="nav-item" href="#">
+            <?php icon_analisis('info', 18); ?> Panduan Analisis Penempatan
+        </a>
     </div>
 
     <div class="sidebar-footer">

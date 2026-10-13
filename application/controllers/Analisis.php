@@ -567,7 +567,84 @@ class Analisis extends CI_Controller {
     // GET /analisis/kalender — peserta Accept yang mulai/selesai magang dalam 30 hari.
     function kalender() {
         $data['nama_user'] = $this->session->userdata('SES_USERNAME');
-        $data['daftar_agenda'] = $this->model_prk_pelamar->listAgenda(30);
+
+        $tahun = (int) $this->input->get('tahun');
+        $bulan = (int) $this->input->get('bulan');
+        if ($tahun < 2000 || $bulan < 1 || $bulan > 12) {
+            $tahun = (int) date('Y');
+            $bulan = (int) date('n');
+        }
+        $id_departemen_filter = (int) $this->input->get('departemen');
+
+        $awal_bulan = new DateTime("{$tahun}-{$bulan}-01");
+        $akhir_bulan = (clone $awal_bulan)->modify('last day of this month');
+        $str_awal = $awal_bulan->format('Y-m-d');
+        $str_akhir = $akhir_bulan->format('Y-m-d');
+        $hari_ini = date('Y-m-d');
+
+        $semua_kontrak = $this->model_prk_kontrak->listUntukKalender();
+        $data['departemen'] = $this->model_prk_master->listDepartemen();
+
+        $kontrak_tampil = $id_departemen_filter
+            ? array_values(array_filter($semua_kontrak, function ($k) use ($id_departemen_filter) {
+                return (int) $k->id_departemen === $id_departemen_filter;
+            }))
+            : $semua_kontrak;
+
+        // KPI: dihitung dari SEMUA kontrak (tidak ikut filter departemen), supaya
+        // angka ringkasan tetap mewakili keseluruhan meski tabel/grid difilter.
+        $kpi_aktif_hari_ini = 0; $kpi_akan_mulai_bulan_ini = 0; $kpi_berakhir_7_hari = 0; $kpi_selesai_bulan_ini = 0;
+        $batas_7_hari = date('Y-m-d', strtotime('+7 days'));
+        foreach ($semua_kontrak as $k) {
+            if ($k->status === 'aktif' || $k->status === 'akan_berakhir') {
+                if ($k->tanggal_mulai <= $hari_ini && $k->tanggal_selesai >= $hari_ini) {
+                    $kpi_aktif_hari_ini++;
+                }
+            }
+            if ($k->status === 'akan_mulai' && $k->tanggal_mulai >= $str_awal && $k->tanggal_mulai <= $str_akhir) {
+                $kpi_akan_mulai_bulan_ini++;
+            }
+            if (($k->status === 'aktif' || $k->status === 'akan_berakhir') && $k->tanggal_selesai >= $hari_ini && $k->tanggal_selesai <= $batas_7_hari) {
+                $kpi_berakhir_7_hari++;
+            }
+            if (($k->status === 'selesai' || $k->status === 'diakhiri_awal') && $k->tanggal_selesai >= $str_awal && $k->tanggal_selesai <= $str_akhir) {
+                $kpi_selesai_bulan_ini++;
+            }
+        }
+        $data['kpi'] = array(
+            'aktif_hari_ini' => $kpi_aktif_hari_ini,
+            'akan_mulai_bulan_ini' => $kpi_akan_mulai_bulan_ini,
+            'berakhir_7_hari' => $kpi_berakhir_7_hari,
+            'selesai_bulan_ini' => $kpi_selesai_bulan_ini,
+        );
+
+        // Perlu tindakan: kontrak akan_berakhir, belum ada tindak lanjut HR.
+        $data['perlu_tindakan'] = array_values(array_filter($kontrak_tampil, function ($k) {
+            return $k->status === 'akan_berakhir' && $k->tindak_lanjut === 'belum';
+        }));
+
+        // Grid kalender: kelompokkan per tanggal (mulai & selesai bisa jatuh di
+        // bulan yang sama untuk kontrak pendek, makanya dicek keduanya).
+        $per_tanggal = array();
+        foreach ($kontrak_tampil as $k) {
+            if ($k->tanggal_mulai >= $str_awal && $k->tanggal_mulai <= $str_akhir) {
+                $per_tanggal[$k->tanggal_mulai][] = array('nama' => $k->nama, 'institusi' => $k->institusi, 'jenis' => 'mulai');
+            }
+            if ($k->tanggal_selesai >= $str_awal && $k->tanggal_selesai <= $str_akhir
+                && in_array($k->status, array('selesai', 'diakhiri_awal', 'akan_berakhir'))) {
+                $per_tanggal[$k->tanggal_selesai][] = array('nama' => $k->nama, 'institusi' => $k->institusi, 'jenis' => 'selesai');
+            }
+        }
+
+        $data['tahun'] = $tahun;
+        $data['bulan'] = $bulan;
+        $data['awal_bulan'] = $awal_bulan;
+        $data['akhir_bulan'] = $akhir_bulan;
+        $data['per_tanggal'] = $per_tanggal;
+        $data['daftar_kontrak'] = $kontrak_tampil;
+        $data['id_departemen_filter'] = $id_departemen_filter;
+        $data['hari_ini'] = $hari_ini;
+
         $this->load->view('analisis/kalender', $data);
     }
 
@@ -637,10 +714,9 @@ class Analisis extends CI_Controller {
             $data['pengaturan'][$k] = $this->model_prk_master->getPengaturan($k);
         }
         $data['hanya_lihat'] = ($this->session->userdata('SES_PRIV') != 1);
+        $data['nama_user'] = $this->session->userdata('SES_USERNAME');
 
-        $this->load->view('header');
         $this->load->view('analisis/pengaturan', $data);
-        $this->load->view('footer');
     }
 
     // POST /analisis/pengaturan_simpan — hanya Admin
@@ -662,11 +738,25 @@ class Analisis extends CI_Controller {
             return;
         }
 
+        $lainnya = array(
+            'ambang_conf_tinggi' => (int) $this->input->post('ambang_conf_tinggi'),
+            'ambang_conf_sedang' => (int) $this->input->post('ambang_conf_sedang'),
+            'ambang_mepet_hari' => (int) $this->input->post('ambang_mepet_hari'),
+            'h7_hari' => (int) $this->input->post('h7_hari'),
+            'h3_hari' => (int) $this->input->post('h3_hari'),
+        );
+        if ($lainnya['ambang_conf_sedang'] >= $lainnya['ambang_conf_tinggi']) {
+            $this->session->set_flashdata('error', 'Ambang keyakinan sedang harus lebih kecil dari ambang tinggi.');
+            redirect(base_url() . 'analisis/pengaturan');
+            return;
+        }
+
+        $semua = array_merge($bobot, $lainnya);
         $auth_user = $this->session->userdata('SES_ID');
-        foreach ($bobot as $k => $v) {
+        foreach ($semua as $k => $v) {
             $this->model_prk_master->setPengaturan($k, $v, $auth_user);
         }
-        $this->model_prk_audit->catat('hr:' . $auth_user, 'pengaturan', 0, 'ubah_bobot', NULL, $bobot);
+        $this->model_prk_audit->catat('hr:' . $auth_user, 'pengaturan', 0, 'ubah_pengaturan', NULL, $semua);
 
         $this->session->set_flashdata('sukses', 'Pengaturan tersimpan.');
         redirect(base_url() . 'analisis/pengaturan');

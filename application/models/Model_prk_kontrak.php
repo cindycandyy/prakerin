@@ -128,6 +128,30 @@ class Model_prk_kontrak extends CI_Model {
     // Akhiri lebih awal (bagian 6.1, "accept -> inactive", alasan wajib): kontrak ini
     // ditandai selesai di luar jadwal normalnya. Status pelamar (pkl_data) diubah
     // terpisah oleh pemanggil lewat Analisis_status, bukan di sini.
+    // Semua kontrak (urutan terakhir per penempatan) + data peserta & divisi/
+    // departemen, dipakai Halaman Kalender magang (KPI, filter departemen, grid,
+    // panel tindakan, tabel peserta) dalam satu query supaya halaman itu tidak
+    // query berkali-kali. Raw SQL (bukan query builder) karena butuh subquery
+    // korelasi MAX(urutan) per id_penempatan yang tidak praktis lewat builder CI3.
+    function listUntukKalender() {
+        $sql = "
+            SELECT
+                k.id, k.urutan, k.tanggal_mulai, k.tanggal_selesai, k.status, k.tindak_lanjut, k.catatan,
+                p.id_transaksi, p.id_divisi,
+                d.nama AS nama, d.institusi AS institusi, d.status AS status_pelamar,
+                v.nama AS nama_divisi, dept.id AS id_departemen, dept.nama AS nama_departemen
+            FROM prk_kontrak k
+            JOIN prk_penempatan p ON p.id = k.id_penempatan
+            JOIN pkl_data d ON d.id = p.id_transaksi
+            LEFT JOIN prk_divisi v ON v.id = p.id_divisi
+            LEFT JOIN prk_departemen dept ON dept.id = v.id_departemen
+            JOIN (SELECT id_penempatan, MAX(urutan) AS urutan_max FROM prk_kontrak GROUP BY id_penempatan) terakhir
+                ON terakhir.id_penempatan = k.id_penempatan AND terakhir.urutan_max = k.urutan
+            ORDER BY k.tanggal_mulai ASC
+        ";
+        return $this->db->query($sql)->result();
+    }
+
     function akhiriLebihAwal($id_kontrak, $catatan) {
         $this->db->where('id', $id_kontrak)->update('prk_kontrak', array(
             'status' => 'diakhiri_awal',

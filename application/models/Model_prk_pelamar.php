@@ -118,6 +118,22 @@ class Model_prk_pelamar extends CI_Model {
             ->get()->result();
     }
 
+    // Peserta Accept dengan tgl_mulai ATAU tgl_selesai jatuh di [$awal, $akhir]
+    // (biasanya rentang satu bulan kalender). Dipakai halaman Kalender magang
+    // untuk menandai tanggal yang punya acara saat ditampilkan sebagai grid.
+    function listAgendaRentang($awal, $akhir) {
+        return $this->db
+            ->select('id, nama, institusi, tgl_mulai, tgl_selesai')
+            ->from('pkl_data')
+            ->where('status', 'Accept')
+            ->group_start()
+                ->group_start()->where('tgl_mulai >=', $awal)->where('tgl_mulai <=', $akhir)->group_end()
+                ->or_group_start()->where('tgl_selesai >=', $awal)->where('tgl_selesai <=', $akhir)->group_end()
+            ->group_end()
+            ->order_by('LEAST(tgl_mulai, tgl_selesai)', 'ASC', FALSE)
+            ->get()->result();
+    }
+
     // Status asli di pkl_data tidak konsisten kapitalisasinya di kode lama
     // (lihat catatan di sql/001_analisis_schema.sql); disamakan di satu tempat ini.
     private function _statusDariTab($tab) {
