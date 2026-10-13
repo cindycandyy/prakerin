@@ -87,6 +87,7 @@ class Analisis extends CI_Controller {
         }
         $data['id_transaksi'] = $id;
         $data['pelamar'] = $pelamar;
+        $data['profil'] = $this->model_prk_pelamar->getProfil($id);
         $data['rekomendasi'] = $this->model_prk_pelamar->listRekomendasi($id);
         $data['semua_divisi'] = $this->model_prk_master->listDivisiDenganDepartemen();
 

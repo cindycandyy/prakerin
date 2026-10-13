@@ -12,10 +12,18 @@ _BUANG_MAPEL = re.compile(
     r"jumlah|rata-rata|peringkat|ranking|sakit|izin|alpa|absen|catatan", re.I
 )
 _POLA_BARIS_REGEX = re.compile(
-    r"^(.+?)\s+(\d{2,3}(?:[.,]\d+)?)(?:\s+(\d{2,3}(?:[.,]\d+)?))?\s*$"
+    r"^(.+?)\s+(\d{2,3}(?:[.,]\d+)?|A|AB|A-|B\+|B|BC|B-|C\+|C|CD|D|E)"
+    r"(?:\s+(\d{2,3}(?:[.,]\d+)?|A|AB|A-|B\+|B|BC|B-|C\+|C|CD|D|E))?\s*$"
 )
 _POLA_IPK = re.compile(r"(?:IPK|Indeks Prestasi Kumulatif)\s*[:=]?\s*(\d[.,]\d+)", re.I)
-_NILAI_HURUF = {"A": 90, "A-": 85, "B+": 80, "B": 75, "B-": 70, "C+": 65, "C": 60, "D": 50, "E": 0}
+# Dua skema huruf yang umum dipakai kampus Indonesia: A/A-/B+/... (skala umum) dan
+# A/AB/B/BC/... (skala ITS dkk, "AB" = Baik Sekali di antara A dan B). Keduanya
+# dipetakan ke 0-100 yang sama supaya bisa dibandingkan lintas skema.
+_NILAI_HURUF = {
+    "A": 90, "A-": 85, "AB": 85, "B+": 80, "B": 75, "BC": 70, "B-": 70,
+    "C+": 65, "C": 60, "CD": 55, "D": 50, "E": 0,
+}
+_POLA_NILAI_HURUF = re.compile(r"^(A|AB|A-|B\+|B|BC|B-|C\+|C|CD|D|E)$")
 
 
 def _normalisasi_mapel(teks: str) -> str:
@@ -35,12 +43,65 @@ def _angka(teks: str) -> float | None:
     return v if 0 <= v <= 100 else None
 
 
+def _nilai_dari_sel(teks: str) -> float | None:
+    """Angka 0-100 langsung, atau huruf (A/AB/B+/dst, lihat _NILAI_HURUF)."""
+    angka = _angka(teks)
+    if angka is not None:
+        return angka
+    huruf = teks.strip().upper()
+    if _POLA_NILAI_HURUF.match(huruf):
+        return float(_NILAI_HURUF[huruf])
+    return None
+
+
+_POLA_HEADER_MAPEL = re.compile(r"mata\s*kuliah|mata\s*pelajaran|^subject$|nama\s*mk", re.I)
+_POLA_HEADER_NILAI = re.compile(r"^nilai", re.I)
+_POLA_HEADER_GRADE = re.compile(r"^grade$", re.I)
+
+
+def _kolom_dari_header(header: list) -> tuple[int, int] | None:
+    """(index_kolom_mapel, index_kolom_nilai) dari baris header tabel, atau None
+    kalau tabelnya tidak punya header yang dikenali (dipakai _dari_tabel sebagai
+    jalur utama; heuristik lama jadi fallback kalau header tak ketemu)."""
+    idx_mapel = idx_nilai = None
+    for i, cell in enumerate(header):
+        if not cell:
+            continue
+        c = cell.strip()
+        if _POLA_HEADER_MAPEL.search(c):
+            idx_mapel = i
+        elif _POLA_HEADER_NILAI.search(c) or _POLA_HEADER_GRADE.match(c):
+            idx_nilai = i
+    if idx_mapel is None or idx_nilai is None:
+        return None
+    return idx_mapel, idx_nilai
+
+
 def _dari_tabel(path: str) -> list[dict]:
     hasil = []
     with pdfplumber.open(path) as pdf:
         for page in pdf.pages:
             for table in page.extract_tables() or []:
-                for row in table:
+                if not table:
+                    continue
+                kolom = _kolom_dari_header(table[0])
+                for row in table[1:] if kolom else table:
+                    if kolom:
+                        idx_mapel, idx_nilai = kolom
+                        if idx_mapel >= len(row) or idx_nilai >= len(row):
+                            continue
+                        sel_mapel, sel_nilai = row[idx_mapel], row[idx_nilai]
+                        if not sel_mapel or not sel_nilai:
+                            continue
+                        mapel = _normalisasi_mapel(sel_mapel)
+                        nilai = _nilai_dari_sel(sel_nilai)
+                        if not mapel or nilai is None or _BUANG_MAPEL.search(mapel):
+                            continue
+                        hasil.append({"mapel": mapel, "nilai": round(nilai, 2)})
+                        continue
+
+                    # Fallback tanpa header dikenali: heuristik lama (kolom teks
+                    # pertama + rata-rata kolom angka berbasis angka 0-100 saja).
                     sel_teks = [c for c in row if c and len(c.strip()) >= 3 and _angka(c) is None]
                     sel_angka = [a for c in row if c for a in [_angka(c)] if a is not None]
                     if not sel_teks or not sel_angka:
@@ -63,10 +124,10 @@ def _dari_regex(teks_halaman: list[str]) -> list[dict]:
             mapel = _normalisasi_mapel(m.group(1))
             if not mapel or _BUANG_MAPEL.search(mapel) or len(mapel) < 3:
                 continue
-            angka = [a for g in (m.group(2), m.group(3)) if g for a in [_angka(g)] if a is not None]
-            if not angka:
+            nilai_list = [v for g in (m.group(2), m.group(3)) if g for v in [_nilai_dari_sel(g)] if v is not None]
+            if not nilai_list:
                 continue
-            hasil.append({"mapel": mapel, "nilai": round(sum(angka) / len(angka), 2)})
+            hasil.append({"mapel": mapel, "nilai": round(sum(nilai_list) / len(nilai_list), 2)})
     return hasil
 
 

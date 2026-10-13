@@ -71,6 +71,23 @@ class Model_prk_pelamar extends CI_Model {
             ->get()->row();
     }
 
+    // Profil hasil baca proposal/transkrip (versi terbaru), untuk panel
+    // "Ringkasan hasil analisis" di Halaman B. Null kalau analisis belum pernah jalan.
+    function getProfil($id_transaksi) {
+        $row = $this->db
+            ->where('id_transaksi', $id_transaksi)
+            ->where('is_current', 1)
+            ->get('prk_profil')->row();
+        if (!$row) {
+            return null;
+        }
+        $row->bidang = json_decode($row->bidang, true) ?: array();
+        $row->alat = json_decode($row->alat, true) ?: array();
+        $row->mata_kuliah = json_decode($row->mata_kuliah, true) ?: array();
+        $row->nilai = json_decode($row->nilai, true) ?: array();
+        return $row;
+    }
+
     // Semua baris prk_rekomendasi aktif untuk satu pelamar, urut peringkat.
     function listRekomendasi($id_transaksi) {
         return $this->db

@@ -337,25 +337,42 @@
                         <button type="button" class="btn-analisis-ulang">Analisis ulang</button>
                     </div>
                     <div class="panel-sub">Rangkuman dari proposal magang dan transkrip nilai</div>
+                    <?php if ($profil) { ?>
                     <div class="analisis-label">KETERAMPILAN &amp; TOOLS</div>
                     <div class="skill-tags">
-                        <span class="tag">Titrasi</span>
-                        <span class="tag">UV-Vis</span>
-                        <span class="tag">Preparasi sampel</span>
-                        <span class="tag">Microsoft Excel</span>
-                        <span class="tag">Olah data</span>
+                        <?php
+                        $alat_bidang = array_merge($profil->alat, $profil->bidang);
+                        if (empty($alat_bidang)) { ?>
+                        <span class="status-sub">Tidak ada keterampilan/alat yang terdeteksi.</span>
+                        <?php } else { foreach (array_slice($alat_bidang, 0, 10) as $kw) { ?>
+                        <span class="tag"><?php echo htmlspecialchars(ucfirst($kw)); ?></span>
+                        <?php } } ?>
                     </div>
+                    <?php $istilah_mapel = ($profil->jenis_institusi === 'smk') ? 'mata pelajaran' : 'mata kuliah'; ?>
                     <div class="analisis-col">
                         <div class="lbl">Nilai relevan</div>
-                        <div class="val">Analisis Instrumen: A<br>Kimia Analitik: A−<br>Statprobab: B+</div>
+                        <div class="val">
+                            <?php if (empty($profil->nilai)) { ?>
+                                Tidak ada nilai <?php echo $istilah_mapel; ?> relevan yang terbaca.
+                            <?php } else {
+                                $baris_nilai = array();
+                                foreach ($profil->nilai as $n) {
+                                    $baris_nilai[] = htmlspecialchars(ucfirst($n['mapel'])) . ': ' . htmlspecialchars($n['nilai']);
+                                }
+                                echo implode('<br>', $baris_nilai);
+                            } ?>
+                        </div>
                     </div>
                     <div class="analisis-col">
                         <div class="lbl">Minat dalam proposal</div>
-                        <div class="val">Pengujian produk jadi, analisis senyawa aktif, evaluasi formulasi pestisida.</div>
+                        <div class="val"><?php echo $profil->tujuan ? nl2br(htmlspecialchars($profil->tujuan)) : 'Tidak terbaca dari proposal.'; ?></div>
                     </div>
                     <div class="analisis-note">
-                        Jika hasil ekstraksi kurang tepat, koreksi profil bisa dilakukan. Sistem menderivasi ulang HR menentukan.
+                        Jika hasil ekstraksi kurang tepat, koreksi profil bisa dilakukan. Sistem menderivasi ulang, HR menentukan.
                     </div>
+                    <?php } else { ?>
+                    <div class="status-sub">Analisis otomatis belum dijalankan untuk pelamar ini.</div>
+                    <?php } ?>
                 </div>
 
                 <div class="panel panel-analisis">
@@ -363,22 +380,28 @@
                         <h2>Bagaimana skor dihitung?</h2>
                     </div>
                     <div class="panel-sub">Skor kecocokan (100) per keputusan otomatis</div>
+                    <?php if (!empty($rekomendasi)) {
+                        $f = $rekomendasi[0];
+                    ?>
                     <div class="faktor-row">
                         <div class="faktor-top"><span>Spesialisasi / peminatan</span><span class="pct">45%</span></div>
-                        <div class="faktor-track"><div class="faktor-fill" style="width:90%"></div></div>
+                        <div class="faktor-track"><div class="faktor-fill" style="width:<?php echo (float) $f->f_jurusan; ?>%"></div></div>
                     </div>
                     <div class="faktor-row">
                         <div class="faktor-top"><span>Keterampilan &amp; tools</span><span class="pct">25%</span></div>
-                        <div class="faktor-track"><div class="faktor-fill" style="width:80%"></div></div>
+                        <div class="faktor-track"><div class="faktor-fill" style="width:<?php echo (float) $f->f_skill; ?>%"></div></div>
                     </div>
                     <div class="faktor-row">
                         <div class="faktor-top"><span>Proposal &amp; minat</span><span class="pct">20%</span></div>
-                        <div class="faktor-track"><div class="faktor-fill" style="width:95%"></div></div>
+                        <div class="faktor-track"><div class="faktor-fill" style="width:<?php echo (float) $f->f_proposal; ?>%"></div></div>
                     </div>
                     <div class="faktor-row">
                         <div class="faktor-top"><span>Ketersediaan kuota</span><span class="pct">10%</span></div>
-                        <div class="faktor-track"><div class="faktor-fill" style="width:50%"></div></div>
+                        <div class="faktor-track"><div class="faktor-fill" style="width:<?php echo (float) $f->f_kebutuhan; ?>%"></div></div>
                     </div>
+                    <?php } else { ?>
+                    <div class="status-sub">Belum ada skor untuk ditampilkan.</div>
+                    <?php } ?>
                     <div class="analisis-note" style="margin-top:14px;">
                         Keyakinan tinggi ≥75%, sedang 55–74%, &lt;55% · Perlu tinjau manual.<br>
                         Departemen yang diminta tidak dihitung skor; hasil rekomendasi sistem untuk penempatan HR.
