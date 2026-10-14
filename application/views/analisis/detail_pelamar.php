@@ -62,6 +62,11 @@
         .berkas-kosong-ikon { color: var(--abu-400, #a8b3af); flex-shrink: 0; }
         .berkas-file { font-size: 11px; color: var(--abu-600); margin: 0 0 4px; }
         .berkas-sub { font-size: 10px; color: var(--hijau-700); font-weight: 600; margin-bottom: 4px; }
+        .berkas-peringatan {
+            display: flex; gap: 5px; align-items: flex-start; background: #fdebc8; border-radius: 6px;
+            padding: 6px 8px; font-size: 10px; color: #8a5209; margin-bottom: 8px; line-height: 1.4;
+        }
+        .berkas-peringatan svg { flex-shrink: 0; margin-top: 1px; }
         .berkas-aksi { display: flex; gap: 8px; margin-top: auto; padding-top: 10px; }
         .btn-mini {
             border: 1px solid var(--abu-200); background: #fff; border-radius: 6px; padding: 0 10px;
@@ -296,13 +301,13 @@
                 </div>
                 <?php
                 $berkas = array(
-                    array('Surat pengantar', $pelamar->doc_1, ''),
-                    array('Proposal magang', $pelamar->doc_2, 'Sumber analisis otomatis'),
-                    array('Transkrip nilai', $pelamar->doc_3, 'Sumber analisis otomatis'),
-                    array('Foto', $pelamar->foto, ''),
-                    array('Kartu asuransi', $pelamar->doc_5, ''),
-                    array('Kartu pelajar', $pelamar->doc_4, ''),
-                    array('Surat pernyataan', $pelamar->doc_6, ''),
+                    array('Surat pengantar', $pelamar->doc_1, '', 'doc_1'),
+                    array('Proposal magang', $pelamar->doc_2, 'Sumber analisis otomatis', 'doc_2'),
+                    array('Transkrip nilai', $pelamar->doc_3, 'Sumber analisis otomatis', 'doc_3'),
+                    array('Foto', $pelamar->foto, '', 'foto'),
+                    array('Kartu asuransi', $pelamar->doc_5, '', 'doc_5'),
+                    array('Kartu pelajar', $pelamar->doc_4, '', 'doc_4'),
+                    array('Surat pernyataan', $pelamar->doc_6, '', 'doc_6'),
                 );
                 $jumlah_lengkap = count(array_filter($berkas, function ($b) { return !empty($b[1]); }));
                 ?>
@@ -310,7 +315,7 @@
                 <div class="berkas-grid">
                     <?php
                     foreach ($berkas as $b) {
-                        list($nama, $file, $sub) = $b;
+                        list($nama, $file, $sub, $slot) = $b;
                         $ada = !empty($file);
                         $path_file = $ada ? FCPATH . 'gambar/' . $file : null;
                         $ekstensi = $ada ? strtoupper(pathinfo($file, PATHINFO_EXTENSION)) : '';
@@ -337,10 +342,16 @@
                             <?php } ?>
                         </div>
                         <?php if ($sub) { ?><div class="berkas-sub"><?php echo $sub; ?></div><?php } ?>
+                        <?php if ($slot === 'foto' && $ada && $foto_cek && !$foto_cek->ok) { ?>
+                        <div class="berkas-peringatan">
+                            <?php icon_analisis('info', 12); ?>
+                            <span>Perlu ditinjau: <?php echo htmlspecialchars($foto_cek->catatan); ?></span>
+                        </div>
+                        <?php } ?>
                         <?php if ($ada) { ?>
                         <div class="berkas-aksi">
-                            <a class="btn-mini" href="<?php echo base_url() . 'gambar/' . rawurlencode($file); ?>" target="_blank" rel="noopener">Lihat</a>
-                            <a class="btn-mini" href="<?php echo base_url() . 'gambar/' . rawurlencode($file); ?>" download>Unduh</a>
+                            <a class="btn-mini" href="<?php echo base_url(); ?>analisis/peserta/<?php echo (int) $id_transaksi; ?>/berkas/<?php echo $slot; ?>" target="_blank" rel="noopener">Lihat</a>
+                            <a class="btn-mini" href="<?php echo base_url(); ?>analisis/peserta/<?php echo (int) $id_transaksi; ?>/berkas/<?php echo $slot; ?>?unduh=1">Unduh</a>
                         </div>
                         <?php } ?>
                     </div>

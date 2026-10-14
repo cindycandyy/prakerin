@@ -145,35 +145,35 @@
             <div class="kpi-row">
                 <div class="kpi-card">
                     <div class="kpi-top">
-                        <span class="kpi-label">Pendaftar minggu ini</span>
+                        <span class="kpi-label">Total pelamar</span>
                         <span class="kpi-icon"><?php icon_analisis('inbox', 18); ?></span>
                     </div>
-                    <div class="kpi-value">18</div>
-                    <div class="kpi-note">↑ 4 dari minggu lalu (14 pendaftar)</div>
+                    <div class="kpi-value"><?php echo $kpi_pendaftar_minggu_ini; ?></div>
+                    <div class="kpi-note">Seluruh pengajuan di sistem</div>
                 </div>
                 <div class="kpi-card">
                     <div class="kpi-top">
                         <span class="kpi-label">Peserta magang aktif</span>
                         <span class="kpi-icon"><?php icon_analisis('users-round', 18); ?></span>
                     </div>
-                    <div class="kpi-value">48</div>
-                    <div class="kpi-note">Tersebar di 6 departemen</div>
+                    <div class="kpi-value"><?php echo $kpi_peserta_aktif; ?></div>
+                    <div class="kpi-note">Tersebar di <?php echo $kpi_departemen_terisi; ?> departemen</div>
                 </div>
                 <div class="kpi-card">
                     <div class="kpi-top">
                         <span class="kpi-label">Menunggu keputusan HR</span>
                         <span class="kpi-icon warn"><?php icon_analisis('clipboard-check', 18); ?></span>
                     </div>
-                    <div class="kpi-value">11</div>
-                    <div class="kpi-note warn">Termasuk 3 perlu tinjau manual</div>
+                    <div class="kpi-value"><?php echo $kpi_menunggu_keputusan; ?></div>
+                    <div class="kpi-note warn">Status Pending, belum diputuskan</div>
                 </div>
                 <div class="kpi-card">
                     <div class="kpi-top">
                         <span class="kpi-label">Berakhir dalam 7 hari</span>
                         <span class="kpi-icon warn"><?php icon_analisis('calendar-clock', 18); ?></span>
                     </div>
-                    <div class="kpi-value">2</div>
-                    <div class="kpi-note warn">1 H-3 dan 1 H-7 · perlu tindakan</div>
+                    <div class="kpi-value"><?php echo $kpi_berakhir_7_hari; ?></div>
+                    <div class="kpi-note warn"><?php echo $kpi_berakhir_7_hari > 0 ? 'Perlu tindakan segera' : 'Tidak ada yang mendesak'; ?></div>
                 </div>
             </div>
 

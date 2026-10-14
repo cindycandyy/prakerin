@@ -88,6 +88,16 @@ class Model_prk_pelamar extends CI_Model {
         return $row;
     }
 
+    // Hasil pemeriksaan foto otomatis terbaru (FR-29), untuk badge peringatan di
+    // Halaman B. Null kalau belum pernah diperiksa (foto belum diunggah, atau
+    // layanan Python sedang mati saat diunggah).
+    function getFotoCek($id_transaksi) {
+        return $this->db
+            ->where('id_transaksi', $id_transaksi)
+            ->where('is_current', 1)
+            ->get('prk_foto_cek')->row();
+    }
+
     // Semua baris prk_rekomendasi aktif untuk satu pelamar, urut peringkat.
     function listRekomendasi($id_transaksi) {
         return $this->db

@@ -1,5 +1,6 @@
-INFO:     127.0.0.1:56412 - "GET /v1/health HTTP/1.1" 200 OK
-INFO:     127.0.0.1:56415 - "POST /v1/analisis HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54189 - "GET /v1/health HTTP/1.1" 200 OK
-INFO:     127.0.0.1:57615 - "POST /v1/analisis HTTP/1.1" 500 Internal Server Error
-INFO:     127.0.0.1:59457 - "POST /v1/analisis HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62746 - "GET /v1/health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62772 - "POST /v1/validasi_foto HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63327 - "POST /v1/validasi_foto HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64861 - "POST /v1/validasi_foto HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64864 - "POST /v1/validasi_foto HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64870 - "POST /v1/validasi_foto HTTP/1.1" 200 OK

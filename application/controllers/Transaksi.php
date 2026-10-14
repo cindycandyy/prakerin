@@ -202,12 +202,18 @@ class Transaksi extends CI_Controller {
                 $exfoto = pathinfo($locfoto, PATHINFO_EXTENSION);
                 $exfoto = strtolower($exfoto);
                 $img_extfoto = array("jpg");
+                $foto_terunggah = false;
                 if (in_array($exfoto, $img_extfoto)) {
                     if (move_uploaded_file($_FILES['foto']['tmp_name'], $locfoto)) {
+                        $foto_terunggah = true;
                     }
                 }
 
-                $this->antrekanAnalisis($this->db->insert_id());
+                $id_baru = $this->db->insert_id();
+                $this->antrekanAnalisis($id_baru);
+                if ($foto_terunggah) {
+                    $this->periksaFoto($id_baru, $foto);
+                }
             }
              else if ($path1 == 'cekData') {
                 $user_id        = $this->input->post('user_id');
@@ -544,6 +550,7 @@ else if ($path1 == 'updateFoto') {
                     );
 
                     $this->model_transaksi->update($id, $data);
+                    $this->periksaFoto($id, $url);
                 }
             }			else if ($path1 == 'updateDoc6') {
                 $id = $this->input->post('id');
@@ -817,6 +824,26 @@ else if ($path1 == 'updateFoto') {
             $this->analisis_queue->enqueue($id_transaksi);
         } catch (Exception $e) {
             log_message('error', 'antrekanAnalisis gagal untuk id=' . $id_transaksi . ': ' . $e->getMessage());
+        }
+    }
+
+    // FR-29: pemeriksaan foto otomatis lokal, dipanggil tiap foto diunggah/diganti.
+    // Sinkron (menunggu respons Python) tapi dibungkus try/catch seperti
+    // antrekanAnalisis() -- kalau layanan Python mati, upload foto E-Prakerin lama
+    // tetap sukses, cuma tidak ada hasil pemeriksaan untuk foto itu.
+    private function periksaFoto($id_transaksi, $nama_file) {
+        if (empty($id_transaksi) || empty($nama_file)) {
+            return;
+        }
+        try {
+            $this->config->load('analisis');
+            if (!$this->config->item('analisis_aktif')) {
+                return;
+            }
+            $this->load->library('analisis_foto');
+            $this->analisis_foto->periksaDanSimpan($id_transaksi, $nama_file);
+        } catch (Exception $e) {
+            log_message('error', 'periksaFoto gagal untuk id=' . $id_transaksi . ': ' . $e->getMessage());
         }
     }
 

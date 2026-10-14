@@ -47,6 +47,31 @@ class Analisis extends CI_Controller {
         $data['pelamar_perhatian'] = $this->model_prk_pelamar->listPelamar('pending', null, 5);
         $data['jumlah_status'] = $this->model_prk_pelamar->hitungPerStatus();
 
+        // KPI dashboard: dihitung dari data asli, bukan contoh. pkl_data tidak punya
+        // kolom created_at (legacy), jadi "pendaftar minggu ini" tidak bisa dihitung
+        // per tanggal pendaftaran -- dipakai total seluruh pelamar sebagai gantinya.
+        $hari_ini_str = date('Y-m-d');
+        $tujuh_hari = date('Y-m-d', strtotime('+7 days'));
+        $pendaftar_minggu_ini = $this->db->count_all('pkl_data');
+
+        $semua_kontrak = $this->model_prk_kontrak->listUntukKalender();
+        $peserta_aktif = 0; $berakhir_7_hari = 0; $departemen_terisi = array();
+        foreach ($semua_kontrak as $k) {
+            if (in_array($k->status, array('aktif', 'akan_berakhir')) && $k->tanggal_mulai <= $hari_ini_str && $k->tanggal_selesai >= $hari_ini_str) {
+                $peserta_aktif++;
+                if ($k->id_departemen) { $departemen_terisi[$k->id_departemen] = true; }
+            }
+            if (in_array($k->status, array('aktif', 'akan_berakhir')) && $k->tanggal_selesai >= $hari_ini_str && $k->tanggal_selesai <= $tujuh_hari) {
+                $berakhir_7_hari++;
+            }
+        }
+
+        $data['kpi_pendaftar_minggu_ini'] = $pendaftar_minggu_ini;
+        $data['kpi_peserta_aktif'] = $peserta_aktif;
+        $data['kpi_departemen_terisi'] = count($departemen_terisi);
+        $data['kpi_menunggu_keputusan'] = isset($data['jumlah_status']['pending']) ? $data['jumlah_status']['pending'] : 0;
+        $data['kpi_berakhir_7_hari'] = $berakhir_7_hari;
+
         // Navigasi minggu (Senin-Minggu) relatif ke hari ini, digeser lewat ?minggu=-1/0/1/dst.
         $offset_minggu = (int) $this->input->get('minggu');
         $hari_ini = new DateTime();
@@ -88,6 +113,7 @@ class Analisis extends CI_Controller {
         $data['id_transaksi'] = $id;
         $data['pelamar'] = $pelamar;
         $data['profil'] = $this->model_prk_pelamar->getProfil($id);
+        $data['foto_cek'] = $this->model_prk_pelamar->getFotoCek($id);
         $data['rekomendasi'] = $this->model_prk_pelamar->listRekomendasi($id);
         $data['semua_divisi'] = $this->model_prk_master->listDivisiDenganDepartemen();
 
@@ -121,6 +147,41 @@ class Analisis extends CI_Controller {
 
     // GET /analisis/peserta/{id}/berkas_unduh — zip semua berkas pelamar yang
     // ada secara fisik di gambar/, untuk tombol "Unduh semua berkas".
+    // GET /analisis/peserta/{id}/berkas/{slot} — satu berkas pelamar (FR-25/FR-28,
+    // bagian 7.7): disajikan lewat PHP setelah controller ini mengecek SES_PRIV 1/2
+    // (lihat constructor), bukan tautan langsung ke gambar/ yang bisa ditebak siapa
+    // pun. $slot dicocokkan ke whitelist lalu nama filenya diambil dari pkl_data --
+    // tidak pernah dari parameter URL -- supaya tidak bisa dipakai membaca file lain.
+    function berkas_lihat($id = null, $slot = null) {
+        $pelamar = $this->model_prk_pelamar->getPelamar($id);
+        if (!$pelamar) {
+            show_404();
+        }
+
+        $peta_slot = array(
+            'doc_1' => $pelamar->doc_1, 'doc_2' => $pelamar->doc_2, 'doc_3' => $pelamar->doc_3,
+            'doc_4' => $pelamar->doc_4, 'doc_5' => $pelamar->doc_5, 'doc_6' => $pelamar->doc_6,
+            'foto' => $pelamar->foto,
+        );
+        if (!array_key_exists($slot, $peta_slot) || empty($peta_slot[$slot])) {
+            show_404();
+        }
+
+        $nama_file = $peta_slot[$slot];
+        $path_absolut = FCPATH . 'gambar/' . $nama_file;
+        if (!is_file($path_absolut)) {
+            show_404();
+        }
+
+        $unduh = (bool) $this->input->get('unduh');
+        $ekstensi = strtolower(pathinfo($nama_file, PATHINFO_EXTENSION));
+        $mime = array('pdf' => 'application/pdf', 'jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png');
+        header('Content-Type: ' . (isset($mime[$ekstensi]) ? $mime[$ekstensi] : 'application/octet-stream'));
+        header('Content-Disposition: ' . ($unduh ? 'attachment' : 'inline') . '; filename="' . $nama_file . '"');
+        header('Content-Length: ' . filesize($path_absolut));
+        readfile($path_absolut);
+    }
+
     function berkas_unduh($id = null) {
         $pelamar = $this->model_prk_pelamar->getPelamar($id);
         if (!$pelamar) {

@@ -17,6 +17,7 @@ from .errors import AnalisisError, master_tidak_valid
 from .jurusan import jenis_institusi, normalisasi_jurusan
 from .llm import coba_llm, perlu_llm
 from .skor import hitung_rekomendasi
+from .validasi_foto import validasi_foto
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger("simagang-analyzer")
@@ -62,6 +63,19 @@ def health():
     else:
         model = "lokal"
     return {"status": "ok", "model": model, "versi": config.VERSI}
+
+
+@app.post("/v1/validasi_foto")
+async def validasi_foto_endpoint(payload: dict, x_api_key: str | None = Header(default=None, alias="X-Api-Key")):
+    """FR-29: pemeriksaan otomatis LOKAL sebagai peringatan -- hasil selalu 200 dengan
+    {"ok", "catatan"}, tidak pernah menolak unggahan. HR yang memutuskan terima atau
+    minta foto ulang berdasarkan catatan ini."""
+    _cek_api_key(x_api_key)
+    path = payload.get("path", "")
+    _cek_path_dalam_upload_dir(path)
+    if not os.path.isfile(path):
+        raise AnalisisError("BERKAS_TIDAK_DITEMUKAN", "Berkas foto tidak ditemukan.", 404)
+    return validasi_foto(path)
 
 
 @app.post("/v1/analisis")
