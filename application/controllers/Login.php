@@ -44,7 +44,7 @@ class Login extends CI_Controller {
                 );
                 $this->model_login->updatelogin($data, $S_id);
 
-                redirect(base_url() . "analisis/dashboard");
+                redirect(base_url() . ($S_priv == 1 || $S_priv == 2 ? "analisis/dashboard" : "pelamar/beranda"));
             } else {
                 $this->session->set_flashdata('pesan', '<div class="alert alert-danger">&nbsp;USERNAME atau PASSWORD anda SALAH.</div>');
                 $this->session->set_flashdata('pesanscript', 'formlogin()');

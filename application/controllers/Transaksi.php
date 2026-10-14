@@ -21,6 +21,12 @@ class Transaksi extends CI_Controller {
         $auth    = $this->session->userdata("SES_PRIV");
         $ses_id  = $this->session->userdata("SES_ID");
         $ses_user_id  = $this->session->userdata("SES_LOGIN");
+        // Sisi pelamar (type 3/4) sekarang punya jalur sendiri dengan cek kepemilikan
+        // (Pelamar.php) -- controller ini (tanpa cek user_id/peran di banyak aksi tulisnya,
+        // lihat SPESIFIKASI_PELAMAR.md C2) tidak lagi diizinkan untuk pelamar.
+        if ($auth == 3 || $auth == 4) {
+            redirect(base_url() . 'pelamar/beranda');
+        }
         if ($auth) {
             $path1 = $this->uri->segment(3);
             if ($path1 == 'list') {

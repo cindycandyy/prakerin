@@ -92,6 +92,29 @@ class Model_prk_master extends CI_Model {
         }
     }
 
+    // Sisa tempat per departemen (depag), untuk hint informasi di wizard pendaftaran
+    // (bagian B4 spesifikasi sisi pelamar: "Tempat tersedia/terbatas/penuh", bukan
+    // penghalang -- kuota penentu sebenarnya ada di divisi dan diputuskan HR).
+    // Dihitung dari depag.kuota dikurangi jumlah pkl_data Pending/Accept pada depag itu.
+    function listSisaTempatDepag() {
+        $depag = $this->db->get('depag')->result();
+        $terisi = $this->db
+            ->select('id_depag, COUNT(*) AS jumlah')
+            ->from('pkl_data')
+            ->where_in('status', array('Pending', 'Accept'))
+            ->group_by('id_depag')
+            ->get()->result();
+        $peta_terisi = array();
+        foreach ($terisi as $t) {
+            $peta_terisi[(int) $t->id_depag] = (int) $t->jumlah;
+        }
+        foreach ($depag as $d) {
+            $jumlah_terisi = isset($peta_terisi[(int) $d->id]) ? $peta_terisi[(int) $d->id] : 0;
+            $d->sisa = $d->kuota > 0 ? max(0, (int) $d->kuota - $jumlah_terisi) : null;
+        }
+        return $depag;
+    }
+
     function getIdDepartemenUntukDepag($id_depag) {
         $row = $this->db->where('id_depag', $id_depag)->get('prk_depag_map')->row();
         return $row ? $row->id_departemen : NULL;

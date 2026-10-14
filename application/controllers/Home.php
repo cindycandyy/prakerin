@@ -19,7 +19,7 @@ class Home extends CI_Controller {
         if (!$auth) {
             redirect(base_url() . "login/sistem/login_sistem");
         }
-        redirect(base_url() . "analisis/dashboard");
+        redirect(base_url() . ($auth == 1 || $auth == 2 ? "analisis/dashboard" : "pelamar/beranda"));
 
         if($this->model_setting->getSingleSetting()->maintenance == "True" && $auth > 2){
              $this->load->view('maintenance');

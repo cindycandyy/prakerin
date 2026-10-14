@@ -14,11 +14,14 @@ class Analisis_status {
     const ACCEPT = 'Accept';
     const REJECTED = 'Rejected';
     const INACTIVE = 'Inactive';
+    const CANCELLED = 'Cancelled';
 
     // Transisi yang diizinkan (bagian 6.1). 'reject' dari Accept dipisah jadi aksi
     // 'batalkan' di kode pemanggil karena efek sampingnya beda (hapus penempatan+kontrak).
+    // Cancelled (D3, spesifikasi sisi pelamar): pelamar membatalkan pengajuannya sendiri
+    // selagi masih Pending -- status akhir, tidak ada transisi balik.
     private static $transisi = array(
-        'Pending' => array('Accept', 'Rejected'),
+        'Pending' => array('Accept', 'Rejected', 'Cancelled'),
         'Rejected' => array('Pending'),
         'Accept' => array('Inactive', 'Rejected'), // Rejected di sini = "batalkan penerimaan"
     );
@@ -69,7 +72,8 @@ class Analisis_status {
 
     private function _normalisasi($status) {
         $peta = array('pending' => self::PENDING, 'accept' => self::ACCEPT,
-            'rejected' => self::REJECTED, 'reject' => self::REJECTED, 'inactive' => self::INACTIVE);
+            'rejected' => self::REJECTED, 'reject' => self::REJECTED, 'inactive' => self::INACTIVE,
+            'cancelled' => self::CANCELLED);
         $kunci = strtolower((string) $status);
         return isset($peta[$kunci]) ? $peta[$kunci] : $status;
     }

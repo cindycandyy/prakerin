@@ -15,8 +15,11 @@ class Model_prk_notifikasi extends CI_Model {
     }
 
     // buat() — satu titik masuk, dedupe_key mencegah notifikasi dobel untuk
-    // kejadian yang sama (mis. H-3 kontrak #5 cuma dibuat sekali).
-    function buat($jenis, $id_transaksi, $judul, $isi, $tautan, $dedupe_key, $id_kontrak = null) {
+    // kejadian yang sama (mis. H-3 kontrak #5 cuma dibuat sekali). $untuk/$id_pelamar
+    // (bagian B6/B7 spesifikasi pelamar): default 'hr'/null supaya pemanggil lama
+    // (notifikasi HR) tidak perlu diubah; notifikasi pelamar mengisi id_pelamar =
+    // pkl_data.user_id supaya topbar pelamar hanya menampilkan miliknya sendiri.
+    function buat($jenis, $id_transaksi, $judul, $isi, $tautan, $dedupe_key, $id_kontrak = null, $untuk = 'hr', $id_pelamar = null) {
         $ada = $this->db->where('dedupe_key', $dedupe_key)->get('prk_notifikasi')->row();
         if ($ada) {
             return false;
@@ -29,6 +32,8 @@ class Model_prk_notifikasi extends CI_Model {
             'isi' => $isi,
             'tautan' => $tautan,
             'dedupe_key' => $dedupe_key,
+            'untuk' => $untuk,
+            'id_pelamar' => $id_pelamar,
             'dibuat_pada' => date('Y-m-d H:i:s'),
         ));
         return true;
@@ -38,6 +43,7 @@ class Model_prk_notifikasi extends CI_Model {
         return (int) $this->db
             ->from('prk_notifikasi n')
             ->join('prk_notifikasi_baca b', 'b.id_notifikasi = n.id AND b.id_user = ' . (int) $id_user, 'left')
+            ->where('n.untuk', 'hr')
             ->where('b.id_notifikasi', null)
             ->count_all_results();
     }
@@ -47,6 +53,33 @@ class Model_prk_notifikasi extends CI_Model {
             ->select('n.*, (b.id_user IS NOT NULL) AS sudah_dibaca', false)
             ->from('prk_notifikasi n')
             ->join('prk_notifikasi_baca b', 'b.id_notifikasi = n.id AND b.id_user = ' . (int) $id_user, 'left')
+            ->where('n.untuk', 'hr')
+            ->order_by('n.dibuat_pada', 'DESC')
+            ->limit($batas)
+            ->get()->result();
+    }
+
+    // Notifikasi topbar pelamar (B7): $id_user tetap dipakai untuk join tabel baca
+    // (prk_notifikasi_baca.id_user = user.id, sama seperti HR), $id_pelamar memfilter
+    // notifikasi yang kejadiannya milik pelamar ini (prk_notifikasi.id_pelamar =
+    // pkl_data.user_id / SES_LOGIN).
+    function hitungBelumDibacaPelamar($id_user, $id_pelamar) {
+        return (int) $this->db
+            ->from('prk_notifikasi n')
+            ->join('prk_notifikasi_baca b', 'b.id_notifikasi = n.id AND b.id_user = ' . (int) $id_user, 'left')
+            ->where('n.untuk', 'pelamar')
+            ->where('n.id_pelamar', $id_pelamar)
+            ->where('b.id_notifikasi', null)
+            ->count_all_results();
+    }
+
+    function listTerbaruPelamar($id_user, $id_pelamar, $batas = 8) {
+        return $this->db
+            ->select('n.*, (b.id_user IS NOT NULL) AS sudah_dibaca', false)
+            ->from('prk_notifikasi n')
+            ->join('prk_notifikasi_baca b', 'b.id_notifikasi = n.id AND b.id_user = ' . (int) $id_user, 'left')
+            ->where('n.untuk', 'pelamar')
+            ->where('n.id_pelamar', $id_pelamar)
             ->order_by('n.dibuat_pada', 'DESC')
             ->limit($batas)
             ->get()->result();

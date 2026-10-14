@@ -18,7 +18,7 @@ class Model_prk_surat extends CI_Model {
 
     function listPeserta($id_surat) {
         return $this->db
-            ->select('pkl_data.id, pkl_data.nama, pkl_data.institusi, pkl_data.jurusan, pkl_data.tgl_mulai, pkl_data.tgl_selesai')
+            ->select('pkl_data.id, pkl_data.user_id, pkl_data.nama, pkl_data.institusi, pkl_data.jurusan, pkl_data.tgl_mulai, pkl_data.tgl_selesai')
             ->from('prk_surat_peserta')
             ->join('pkl_data', 'pkl_data.id = prk_surat_peserta.id_transaksi')
             ->where('prk_surat_peserta.id_surat', $id_surat)
@@ -35,6 +35,18 @@ class Model_prk_surat extends CI_Model {
             ->join('prk_surat_peserta', 'prk_surat_peserta.id_surat = prk_surat_balasan.id')
             ->where('prk_surat_peserta.id_transaksi', $id_transaksi)
             ->where('prk_surat_balasan.status', 'draf')
+            ->get()->row();
+    }
+
+    // Surat terkirim yang memuat pelamar ini (bagian C7 spesifikasi sisi pelamar) --
+    // dipakai Pelamar::surat_unduh() untuk cek kepemilikan sebelum readfile().
+    function getSuratTerkirimUntukPelamar($id_transaksi) {
+        return $this->db
+            ->select('prk_surat_balasan.*')
+            ->from('prk_surat_balasan')
+            ->join('prk_surat_peserta', 'prk_surat_peserta.id_surat = prk_surat_balasan.id')
+            ->where('prk_surat_peserta.id_transaksi', $id_transaksi)
+            ->where('prk_surat_balasan.status', 'terkirim')
             ->get()->row();
     }
 

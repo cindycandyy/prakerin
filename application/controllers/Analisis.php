@@ -31,7 +31,7 @@ class Analisis extends CI_Controller {
 
         $auth = $this->session->userdata('SES_PRIV');
         if ($auth != 1 && $auth != 2) {
-            redirect(base_url());
+            redirect(base_url() . 'pelamar/beranda');
         }
     }
 
@@ -329,6 +329,13 @@ class Analisis extends CI_Controller {
             base_url() . 'analisis/peserta/' . $id,
             'terima:' . $id . ':' . date('Y-m-d H:i:s')
         );
+        $this->model_prk_notifikasi->buat(
+            'diterima', $id, 'Pengajuanmu diterima',
+            'Selamat! Periode magang ' . tanggal_indo($pelamar->tgl_mulai) . ' - ' . tanggal_indo($pelamar->tgl_selesai) . '.',
+            base_url() . 'pelamar/pengajuan/' . $id,
+            'pelamar_diterima:' . $id . ':' . date('Y-m-d H:i:s'),
+            null, 'pelamar', $pelamar->user_id
+        );
 
         $this->session->set_flashdata('sukses', 'Pelamar diterima, penempatan dan kontrak tersimpan.');
         redirect(base_url() . 'analisis/peserta/' . $id);
@@ -354,12 +361,20 @@ class Analisis extends CI_Controller {
             redirect(base_url() . 'analisis/peserta/' . $id);
             return;
         }
+        // D2: versi ringkas alasan yang boleh dilihat pelamar sendiri, ditulis HR saat menolak.
+        $this->db->where('id', $id)->update('pkl_data', array('alasan_pelamar' => $alasan));
 
         $this->model_prk_notifikasi->buat(
             'status_otomatis', $id, "Pelamar ditolak: {$pelamar->nama}",
             "{$pelamar->nama} ditolak.",
             base_url() . 'analisis/peserta/' . $id,
             'tolak:' . $id . ':' . date('Y-m-d H:i:s')
+        );
+        $this->model_prk_notifikasi->buat(
+            'ditolak', $id, 'Pengajuan belum dapat diproses', $alasan,
+            base_url() . 'pelamar/pengajuan/' . $id,
+            'pelamar_ditolak:' . $id . ':' . date('Y-m-d H:i:s'),
+            null, 'pelamar', $pelamar->user_id
         );
 
         $this->session->set_flashdata('sukses', 'Pelamar ditolak.');
@@ -641,6 +656,16 @@ class Analisis extends CI_Controller {
 
         $auth_user = $this->session->userdata('SES_ID');
         $this->model_prk_audit->catat('hr:' . $auth_user, 'surat', $id_surat, 'kirim', array('status' => 'draf'), array('status' => 'terkirim'));
+
+        foreach ($peserta as $p) {
+            $this->model_prk_notifikasi->buat(
+                'surat_terkirim', $p->id, 'Surat balasan tersedia',
+                'Unduh surat balasan untuk ' . $p->institusi . '.',
+                base_url() . 'pelamar/pengajuan/' . $p->id,
+                'pelamar_surat:' . $id_surat . ':' . $p->id,
+                null, 'pelamar', $p->user_id
+            );
+        }
 
         $this->session->set_flashdata('sukses', 'Surat balasan terkirim.');
         redirect(base_url() . 'analisis/surat/' . $id_surat);

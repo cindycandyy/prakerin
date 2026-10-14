@@ -71,3 +71,11 @@ $route['analisis/surat/(:num)/kirim'] = 'analisis/surat_kirim/$1';
 $route['analisis/surat/(:num)/unduh'] = 'analisis/surat_unduh/$1';
 $route['analisis/surat/(:num)/pengganti'] = 'analisis/surat_pengganti/$1';
 $route['analisis/surat/(:num)/gabung'] = 'analisis/surat_gabung/$1';
+
+// pelamar/pengajuan/{id}/xxx: segmen ke-4, sama alasannya seperti rute analisis/* di atas.
+$route['pelamar/pengajuan/(:num)/ubah'] = 'pelamar/ubah/$1';
+$route['pelamar/pengajuan/(:num)/batal'] = 'pelamar/batal/$1';
+$route['pelamar/pengajuan/(:num)/berkas/(:any)'] = 'pelamar/berkas/$1/$2';
+$route['pelamar/berkas/(:num)/(:any)'] = 'pelamar/berkas_lihat/$1/$2';
+$route['pelamar/surat/(:num)/unduh'] = 'pelamar/surat_unduh/$1';
+$route['pelamar/akun/ganti_password'] = 'pelamar/akun_ganti_password';
