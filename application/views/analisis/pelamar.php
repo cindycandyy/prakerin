@@ -191,7 +191,7 @@
                         <tr>
                             <td>
                                 <div class="peserta-cell">
-                                    <img class="peserta-foto" src="<?php echo base_url(); ?>assets/images/avatar-default.png" alt="">
+                                    <img class="peserta-foto" src="<?php echo foto_pelamar_url($p->id, $p->foto); ?>" alt="">
                                     <div>
                                         <div class="peserta-nama"><?php echo htmlspecialchars($p->nama); ?></div>
                                         <div class="peserta-sub"><?php echo htmlspecialchars($p->institusi); ?><br><?php echo htmlspecialchars($p->jurusan); ?></div>

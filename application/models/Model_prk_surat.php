@@ -71,6 +71,14 @@ class Model_prk_surat extends CI_Model {
         return $this->db->trans_status() ? $id_surat : false;
     }
 
+    // Tambahkan satu peserta ke surat draf yang sudah ada (bagian 8.3, "gabung peserta").
+    // Validasi ulang status Accept + belum ada di surat lain dilakukan di controller
+    // (data bisa berubah sejak halaman dimuat), fungsi ini hanya insert baris.
+    function tambahPeserta($id_surat, $id_transaksi) {
+        $this->db->insert('prk_surat_peserta', array('id_surat' => $id_surat, 'id_transaksi' => $id_transaksi));
+        return $this->db->affected_rows() === 1;
+    }
+
     // Simpan isian (hanya boleh saat status='draf' -- dicek di controller, bagian 8.3
     // langkah 5: "setelah terkirim, isian terkunci").
     function simpanIsian($id_surat, $data) {

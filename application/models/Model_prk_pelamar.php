@@ -20,7 +20,7 @@ class Model_prk_pelamar extends CI_Model {
         $this->db->select('
                 pkl_data.id, pkl_data.nama, pkl_data.institusi, pkl_data.jurusan,
                 pkl_data.pendidikan, pkl_data.tgl_mulai, pkl_data.tgl_selesai,
-                pkl_data.status, pkl_data.id_depag,
+                pkl_data.status, pkl_data.id_depag, pkl_data.foto,
                 depag.nama_depag,
                 r1.id_divisi AS top1_id_divisi, r1.skor AS top1_skor, r1.keyakinan AS top1_keyakinan,
                 divisi1.nama AS top1_nama_divisi

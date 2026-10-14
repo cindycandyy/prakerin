@@ -275,7 +275,7 @@
                         <tr>
                             <td>
                                 <div class="peserta-cell">
-                                    <img class="peserta-foto" src="<?php echo base_url(); ?>assets/images/avatar-default.png" alt="">
+                                    <img class="peserta-foto" src="<?php echo foto_pelamar_url($p->id, $p->foto); ?>" alt="">
                                     <div>
                                         <div class="peserta-nama"><?php echo htmlspecialchars($p->nama); ?></div>
                                         <div class="peserta-sub"><span class="institusi"><?php echo htmlspecialchars($p->institusi); ?></span><br><span class="jurusan"><?php echo htmlspecialchars($p->jurusan); ?></span></div>
@@ -318,54 +318,51 @@
                         <h2>Agenda magang terdekat</h2>
                         <a class="panel-head link link-arrow" href="<?php echo base_url(); ?>analisis/kalender">Buka kalender <?php icon_analisis('arrow-right', 14); ?></a>
                     </div>
-                    <div class="panel-sub">Oktober 2026 · mulai dan berakhir</div>
+                    <div class="panel-sub"><?php echo tanggal_indo(date('Y-m-d')); ?> · 4 hari ke depan</div>
                     <div class="agenda-grid">
-                        <div class="agenda-day today">
-                            <div class="agenda-weekday">Kam</div>
-                            <div class="agenda-date">8</div>
+                        <?php
+                        $nama_hari_pendek = array('Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab');
+                        $i = 0;
+                        foreach ($agenda_per_hari as $tgl => $daftar) {
+                            $ts = strtotime($tgl);
+                            $kelas_hari = $i === 0 ? ' today' : '';
+                        ?>
+                        <div class="agenda-day<?php echo $kelas_hari; ?>">
+                            <div class="agenda-weekday"><?php echo $nama_hari_pendek[(int) date('w', $ts)]; ?></div>
+                            <div class="agenda-date"><?php echo (int) date('j', $ts); ?></div>
+                            <?php if ($i === 0) { ?>
                             <div class="agenda-tag today">Hari ini</div>
+                            <?php } elseif (empty($daftar)) { ?>
+                            <div class="agenda-tag">-</div>
+                            <?php } else { foreach (array_slice($daftar, 0, 2) as $teks) { ?>
+                            <div class="agenda-tag <?php echo strpos($teks, 'Mulai') === 0 ? 'warn' : ''; ?>"><?php echo htmlspecialchars($teks); ?></div>
+                            <?php } } ?>
                         </div>
-                        <div class="agenda-day">
-                            <div class="agenda-weekday">Min</div>
-                            <div class="agenda-date">11</div>
-                            <div class="agenda-tag">Selesai · Nadia</div>
-                        </div>
-                        <div class="agenda-day">
-                            <div class="agenda-weekday">Sen</div>
-                            <div class="agenda-date">12</div>
-                            <div class="agenda-tag warn">Mulai · Rizky</div>
-                        </div>
-                        <div class="agenda-day">
-                            <div class="agenda-weekday">Kam</div>
-                            <div class="agenda-date">15</div>
-                            <div class="agenda-tag warn">Selesai · Fajar</div>
-                        </div>
+                        <?php $i++; } ?>
                     </div>
-                    <div class="status-sub" style="margin-top:12px;">48 peserta aktif hari ini · 1 peserta disetujui akan mulai 12 Oktober.</div>
+                    <div class="status-sub" style="margin-top:12px;"><?php echo $kpi_peserta_aktif; ?> peserta aktif hari ini.</div>
                 </div>
 
                 <div class="panel">
                     <div class="panel-head">
                         <h2>Segera tinjau kontrak</h2>
-                        <span class="badge badge-warn">2 pengingat</span>
+                        <span class="badge badge-warn"><?php echo count($perlu_tindakan); ?> pengingat</span>
                     </div>
                     <div class="panel-sub">Notifikasi dalam aplikasi · hanya untuk HR</div>
+                    <?php if (empty($perlu_tindakan)) { ?>
+                    <div class="status-sub">Tidak ada kontrak yang perlu ditinjau saat ini.</div>
+                    <?php } else { foreach ($perlu_tindakan as $k) {
+                        $h_tersisa = (int) floor((strtotime($k->tanggal_selesai) - strtotime(date('Y-m-d'))) / 86400);
+                    ?>
                     <div class="reminder-item">
-                        <img class="reminder-foto" src="<?php echo base_url(); ?>assets/images/avatar-default.png" alt="">
+                        <img class="reminder-foto" src="<?php echo foto_pelamar_url($k->id_transaksi, $k->foto); ?>" alt="">
                         <div>
-                            <div class="reminder-nama">Nadia Safitri</div>
-                            <div class="reminder-sub">Berakhir 11 Okt 2026 · tinjau kontrak</div>
+                            <div class="reminder-nama"><?php echo htmlspecialchars($k->nama); ?></div>
+                            <div class="reminder-sub">Berakhir <?php echo date('d M Y', strtotime($k->tanggal_selesai)); ?> · tinjau kontrak</div>
                         </div>
-                        <span class="reminder-h">H-3</span>
+                        <span class="reminder-h">H-<?php echo max(0, $h_tersisa); ?></span>
                     </div>
-                    <div class="reminder-item">
-                        <img class="reminder-foto" src="<?php echo base_url(); ?>assets/images/avatar-default.png" alt="">
-                        <div>
-                            <div class="reminder-nama">Fajar Maulana</div>
-                            <div class="reminder-sub">Berakhir 15 Okt 2026 · tinjau kontrak</div>
-                        </div>
-                        <span class="reminder-h">H-7</span>
-                    </div>
+                    <?php } } ?>
                     <div class="status-sub" style="margin-top:8px;">Tentukan perpanjang atau akhiri sebelum atau pada tanggal selesai. Status pendaftaran dicek otomatis Tidak aktif setelah tanggal akhir.</div>
                 </div>
             </div>

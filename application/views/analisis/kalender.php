@@ -261,7 +261,7 @@ $qs_bulan = function ($t, $b) use ($id_departemen_filter) {
                         ?>
                         <div class="tindakan-item">
                             <div class="tindakan-top">
-                                <img class="tindakan-avatar" src="<?php echo base_url(); ?>assets/images/avatar-default.png" alt="">
+                                <img class="tindakan-avatar" src="<?php echo foto_pelamar_url($k->id_transaksi, $k->foto); ?>" alt="">
                                 <div>
                                     <div class="tindakan-nama"><?php echo htmlspecialchars($k->nama); ?></div>
                                     <div class="tindakan-sub">Berakhir <?php echo date('d M Y', strtotime($k->tanggal_selesai)); ?> · <?php echo htmlspecialchars($k->nama_divisi ?: '-'); ?></div>
@@ -313,7 +313,7 @@ $qs_bulan = function ($t, $b) use ($id_departemen_filter) {
                         <tr>
                             <td>
                                 <div class="pk-peserta">
-                                    <img class="pk-foto" src="<?php echo base_url(); ?>assets/images/avatar-default.png" alt="">
+                                    <img class="pk-foto" src="<?php echo foto_pelamar_url($k->id_transaksi, $k->foto); ?>" alt="">
                                     <div>
                                         <div class="pk-nama"><?php echo htmlspecialchars($k->nama); ?></div>
                                         <div class="pk-sub"><?php echo htmlspecialchars($k->institusi); ?></div>

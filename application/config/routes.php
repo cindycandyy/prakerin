@@ -70,3 +70,4 @@ $route['analisis/surat/(:num)/pratinjau'] = 'analisis/surat_pratinjau/$1';
 $route['analisis/surat/(:num)/kirim'] = 'analisis/surat_kirim/$1';
 $route['analisis/surat/(:num)/unduh'] = 'analisis/surat_unduh/$1';
 $route['analisis/surat/(:num)/pengganti'] = 'analisis/surat_pengganti/$1';
+$route['analisis/surat/(:num)/gabung'] = 'analisis/surat_gabung/$1';

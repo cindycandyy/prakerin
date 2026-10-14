@@ -63,8 +63,8 @@
         .berkas-file { font-size: 11px; color: var(--abu-600); margin: 0 0 4px; }
         .berkas-sub { font-size: 10px; color: var(--hijau-700); font-weight: 600; margin-bottom: 4px; }
         .berkas-peringatan {
-            display: flex; gap: 5px; align-items: flex-start; background: #fdebc8; border-radius: 6px;
-            padding: 6px 8px; font-size: 10px; color: #8a5209; margin-bottom: 8px; line-height: 1.4;
+            display: flex; gap: 5px; align-items: center; background: #fdebc8; border-radius: 6px;
+            padding: 6px 8px; font-size: 10px; font-weight: 600; color: #8a5209; margin-bottom: 8px; cursor: help;
         }
         .berkas-peringatan svg { flex-shrink: 0; margin-top: 1px; }
         .berkas-aksi { display: flex; gap: 8px; margin-top: auto; padding-top: 10px; }
@@ -234,7 +234,7 @@
             <!-- Profil pelamar -->
             <div class="panel" style="width:100%">
                 <div class="profil-card">
-                    <img class="profil-foto" src="<?php echo base_url(); ?>assets/images/avatar-default.png" alt="">
+                    <img class="profil-foto" src="<?php echo foto_pelamar_url($pelamar->id, $pelamar->foto); ?>" alt="">
                     <div class="profil-info">
                         <p class="profil-nama-besar"><?php echo htmlspecialchars($pelamar->nama); ?></p>
                         <p class="profil-institusi"><?php echo htmlspecialchars($pelamar->institusi); ?></p>
@@ -343,9 +343,9 @@
                         </div>
                         <?php if ($sub) { ?><div class="berkas-sub"><?php echo $sub; ?></div><?php } ?>
                         <?php if ($slot === 'foto' && $ada && $foto_cek && !$foto_cek->ok) { ?>
-                        <div class="berkas-peringatan">
+                        <div class="berkas-peringatan" title="<?php echo htmlspecialchars($foto_cek->catatan); ?>">
                             <?php icon_analisis('info', 12); ?>
-                            <span>Perlu ditinjau: <?php echo htmlspecialchars($foto_cek->catatan); ?></span>
+                            <span>Perlu ditinjau</span>
                         </div>
                         <?php } ?>
                         <?php if ($ada) { ?>

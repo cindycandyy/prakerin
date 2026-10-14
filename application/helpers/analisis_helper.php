@@ -55,3 +55,17 @@ if (!function_exists('tanggal_indo')) {
         return $teks;
     }
 }
+
+// URL foto pelamar untuk tag <img>: foto asli lewat Analisis::berkas_lihat() (FR-25/
+// FR-28, bukan tautan langsung ke gambar/) kalau nama file ada di pkl_data DAN
+// filenya benar ada di disk; fallback ke avatar bawaan kalau salah satu tidak
+// terpenuhi, supaya tidak pernah muncul ikon gambar rusak di halaman HR.
+if (!function_exists('foto_pelamar_url')) {
+
+    function foto_pelamar_url($id_transaksi, $nama_file) {
+        if (!empty($nama_file) && is_file(FCPATH . 'gambar/' . $nama_file)) {
+            return base_url() . 'analisis/peserta/' . (int) $id_transaksi . '/berkas/foto';
+        }
+        return base_url() . 'assets/images/avatar-default.png';
+    }
+}

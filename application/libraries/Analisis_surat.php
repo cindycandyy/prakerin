@@ -34,7 +34,7 @@ class Analisis_surat {
             'peserta' => $peserta,
             'jumlah_terbilang' => terbilang($jumlah),
             'kata_jenjang' => $jumlah > 1 ? ($jenjang === 'Siswa' ? 'Siswa' : 'Mahasiswa') : $jenjang,
-            'kepada' => $this->_susunKepada($peserta),
+            'kepada' => !empty($surat->kepada_override) ? $surat->kepada_override : $this->_susunKepada($peserta),
             'nomor_lengkap' => $this->_nomorLengkap($surat),
             'tanda_draf' => $tanda_draf,
             'penandatangan_nama' => $this->ci->model_prk_master->getPengaturan('surat_penandatangan_nama', '-'),
@@ -85,9 +85,8 @@ class Analisis_surat {
         return 'Mahasiswa';
     }
 
-    // "Kepada" bawaan dari instansi peserta pertama (bagian 8.1) -- HR dapat mengubah
-    // lewat kolom isian terpisah kalau disediakan di Halaman C (belum ada di rilis ini,
-    // teks ini dipakai langsung).
+    // "Kepada" bawaan dari instansi peserta pertama (bagian 8.1). HR dapat menimpanya
+    // lewat kolom kepada_override di Halaman C -- dipakai duluan di render() kalau diisi.
     private function _susunKepada($peserta) {
         if (empty($peserta)) {
             return '-';

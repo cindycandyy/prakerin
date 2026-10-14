@@ -138,7 +138,7 @@ class Model_prk_kontrak extends CI_Model {
             SELECT
                 k.id, k.urutan, k.tanggal_mulai, k.tanggal_selesai, k.status, k.tindak_lanjut, k.catatan,
                 p.id_transaksi, p.id_divisi,
-                d.nama AS nama, d.institusi AS institusi, d.status AS status_pelamar,
+                d.nama AS nama, d.institusi AS institusi, d.status AS status_pelamar, d.foto AS foto,
                 v.nama AS nama_divisi, dept.id AS id_departemen, dept.nama AS nama_departemen
             FROM prk_kontrak k
             JOIN prk_penempatan p ON p.id = k.id_penempatan

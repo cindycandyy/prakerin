@@ -66,7 +66,16 @@
                 </ul>
 
                 <?php if ($surat->status === 'draf' && !empty($kandidat_gabung)) { ?>
-                <p class="field-note">Pelamar lain dari instansi yang sama yang sudah diterima tapi belum punya surat: <?php echo implode(', ', array_map(function ($k) { return htmlspecialchars($k->nama); }, $kandidat_gabung)); ?>. Gabungkan lewat Master Data/kontak admin bila perlu (penggabungan lewat form belum tersedia di versi ini).</p>
+                <label class="field-label" style="margin-top:14px;">Gabungkan pelamar lain dari instansi yang sama</label>
+                <p class="field-note" style="margin-bottom:8px;">Sudah diterima, belum punya surat balasan lain.</p>
+                <form method="post" action="<?php echo base_url(); ?>analisis/surat/<?php echo (int) $surat->id; ?>/gabung" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                    <select class="field-select" name="id_transaksi" style="width:auto;">
+                        <?php foreach ($kandidat_gabung as $k) { ?>
+                        <option value="<?php echo (int) $k->id; ?>"><?php echo htmlspecialchars($k->nama); ?></option>
+                        <?php } ?>
+                    </select>
+                    <button type="submit" class="btn-outline">Gabungkan</button>
+                </form>
                 <?php } ?>
             </div>
 
@@ -109,6 +118,9 @@
                     </div>
                     <label class="field-label" style="margin-top:10px;">Keterangan pembekalan (opsional)</label>
                     <textarea class="field-textarea" name="pembekalan_keterangan"><?php echo htmlspecialchars($surat->pembekalan_keterangan ?: ''); ?></textarea>
+
+                    <label class="field-label" style="margin-top:10px;">Kepada (opsional, kosongkan untuk teks bawaan)</label>
+                    <textarea class="field-textarea" name="kepada_override" placeholder="Kepada bawaan disusun otomatis dari instansi &amp; jenjang peserta pertama."><?php echo htmlspecialchars($surat->kepada_override ?: ''); ?></textarea>
 
                     <div class="footer-aksi">
                         <button type="submit" class="btn-outline">Simpan draf</button>

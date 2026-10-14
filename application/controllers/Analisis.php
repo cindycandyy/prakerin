@@ -72,6 +72,30 @@ class Analisis extends CI_Controller {
         $data['kpi_menunggu_keputusan'] = isset($data['jumlah_status']['pending']) ? $data['jumlah_status']['pending'] : 0;
         $data['kpi_berakhir_7_hari'] = $berakhir_7_hari;
 
+        // "Agenda magang terdekat": 4 hari ke depan (termasuk hari ini) + event
+        // mulai/selesai yang jatuh di tiap hari itu, dari kontrak yang sama
+        // ($semua_kontrak) -- bukan data contoh terpisah.
+        $agenda_per_hari = array();
+        for ($i = 0; $i < 4; $i++) {
+            $tgl = date('Y-m-d', strtotime("+{$i} day"));
+            $agenda_per_hari[$tgl] = array();
+        }
+        foreach ($semua_kontrak as $k) {
+            if (isset($agenda_per_hari[$k->tanggal_mulai])) {
+                $agenda_per_hari[$k->tanggal_mulai][] = 'Mulai · ' . explode(' ', $k->nama)[0];
+            }
+            if (in_array($k->status, array('selesai', 'diakhiri_awal', 'akan_berakhir')) && isset($agenda_per_hari[$k->tanggal_selesai])) {
+                $agenda_per_hari[$k->tanggal_selesai][] = 'Selesai · ' . explode(' ', $k->nama)[0];
+            }
+        }
+        $data['agenda_per_hari'] = $agenda_per_hari;
+
+        // "Segera tinjau kontrak": kontrak akan_berakhir yang belum ada tindak
+        // lanjut HR, sama logic dengan panel "Perlu tindakan" di Kalender magang.
+        $data['perlu_tindakan'] = array_values(array_filter($semua_kontrak, function ($k) {
+            return $k->status === 'akan_berakhir' && $k->tindak_lanjut === 'belum';
+        }));
+
         // Navigasi minggu (Senin-Minggu) relatif ke hari ini, digeser lewat ?minggu=-1/0/1/dst.
         $offset_minggu = (int) $this->input->get('minggu');
         $hari_ini = new DateTime();
@@ -459,6 +483,44 @@ class Analisis extends CI_Controller {
         redirect(base_url() . 'analisis/surat/' . $id_surat);
     }
 
+    // POST /analisis/surat/{id}/gabung — tambahkan satu kandidat (instansi sama, sudah
+    // Accept, belum punya surat) ke surat draf ini (bagian 8.3, "gabung peserta").
+    function surat_gabung($id_surat = null) {
+        $surat = $this->model_prk_surat->getById($id_surat);
+        if (!$surat) {
+            show_404();
+        }
+        if ($surat->status !== 'draf') {
+            $this->session->set_flashdata('error', 'Surat yang sudah terkirim tidak bisa diedit.');
+            redirect(base_url() . 'analisis/surat/' . $id_surat);
+            return;
+        }
+
+        $id_transaksi = (int) $this->input->post('id_transaksi');
+        $peserta = $this->model_prk_surat->listPeserta($id_surat);
+        $valid = false;
+        if ($id_transaksi && !empty($peserta)) {
+            $kandidat = $this->model_prk_surat->listKandidatGabung($peserta[0]->institusi, $peserta[0]->id);
+            foreach ($kandidat as $k) {
+                if ((int) $k->id === $id_transaksi) {
+                    $valid = true;
+                    break;
+                }
+            }
+        }
+        if (!$valid) {
+            $this->session->set_flashdata('error', 'Pelamar ini tidak bisa digabung (sudah punya surat atau bukan dari instansi yang sama).');
+            redirect(base_url() . 'analisis/surat/' . $id_surat);
+            return;
+        }
+
+        $this->model_prk_surat->tambahPeserta($id_surat, $id_transaksi);
+        $auth_user = $this->session->userdata('SES_ID');
+        $this->model_prk_audit->catat('hr:' . $auth_user, 'surat', $id_surat, 'gabung_peserta', null, array('id_transaksi' => $id_transaksi));
+        $this->session->set_flashdata('sukses', 'Pelamar berhasil digabungkan ke surat ini.');
+        redirect(base_url() . 'analisis/surat/' . $id_surat);
+    }
+
     // GET /analisis/surat/{id} — Halaman C (form isian surat balasan, bagian 8.3).
     function surat($id_surat = null) {
         $surat = $this->model_prk_surat->getById($id_surat);
@@ -500,6 +562,7 @@ class Analisis extends CI_Controller {
             'pembekalan_pukul' => trim((string) $this->input->post('pembekalan_pukul')) ?: $this->model_prk_master->getPengaturan('surat_pembekalan_pukul'),
             'pembekalan_tempat' => trim((string) $this->input->post('pembekalan_tempat')) ?: null,
             'pembekalan_keterangan' => trim((string) $this->input->post('pembekalan_keterangan')) ?: null,
+            'kepada_override' => trim((string) $this->input->post('kepada_override')) ?: null,
         );
 
         if ($nomor_urut !== '') {
