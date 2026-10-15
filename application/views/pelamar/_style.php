@@ -15,8 +15,12 @@
     .btn-primary:disabled { background: var(--abu-100); color: var(--abu-400); cursor: not-allowed; }
     .btn-outline { background: #fff; border: 1px solid var(--abu-200); color: var(--abu-900); border-radius: 8px; padding: 10px 18px; font-size: 13px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-block; }
     .field-label { font-size: 12px; font-weight: 600; margin-bottom: 6px; display: block; }
-    .field-input, .field-select, .field-textarea { width: 100%; border: 1px solid var(--abu-200); border-radius: 8px; padding: 9px 12px; font-size: 12px; font-family: inherit; }
-    .field-textarea { min-height: 70px; resize: vertical; }
+    .field-input, .field-select, .field-textarea { width: 100%; box-sizing: border-box; border: 1px solid var(--abu-200); border-radius: 8px; padding: 9px 12px; font-size: 12px; font-family: inherit; height: 36px; background: #fff; color: var(--abu-900); }
+    .field-input:focus, .field-select:focus, .field-textarea:focus { outline: none; border-color: var(--hijau-700); box-shadow: 0 0 0 3px var(--hijau-100); }
+    .field-textarea { min-height: 70px; height: auto; resize: vertical; }
+    .field-select { appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23667a73' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 32px; cursor: pointer; }
+    .field-input[type="date"] { cursor: pointer; }
+    .field-input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity: .6; }
     .field-note { font-size: 11px; color: var(--abu-600); margin: 4px 0 0; }
     .field-error { font-size: 11px; color: var(--merah-700); margin: 4px 0 0; }
     .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
@@ -39,4 +43,18 @@
     .timeline li.selesai .timeline-dot { background: var(--hijau-700); border-color: var(--hijau-700); }
     .timeline-judul { font-size: 12px; font-weight: 600; }
     .timeline-sub { font-size: 11px; color: var(--abu-600); }
+
+    /* ---- modal konfirmasi custom (pengganti confirm() bawaan browser) ---- */
+    .modal-overlay {
+        position: fixed; inset: 0; background: rgba(23,45,39,.45); z-index: 100;
+        display: flex; align-items: center; justify-content: center; padding: 20px;
+        opacity: 0; transition: opacity .15s ease;
+    }
+    .modal-overlay.tampil { opacity: 1; }
+    .modal-kartu {
+        background: #fff; border-radius: 12px; padding: 24px; max-width: 360px; width: 100%;
+        box-shadow: 0 8px 24px rgba(0,0,0,.18); transform: translateY(8px); transition: transform .15s ease;
+    }
+    .modal-overlay.tampil .modal-kartu { transform: translateY(0); }
+    .modal-kartu h3 { font-size: 16px; font-weight: 700; color: var(--abu-900); margin: 0; }
 </style>

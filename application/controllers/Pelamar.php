@@ -42,7 +42,7 @@ class Pelamar extends CI_Controller {
         redirect(base_url() . 'pelamar/beranda');
     }
 
-    // P1 — sapaan, kartu status pengajuan terbaru, langkah berikutnya.
+    // P1 - sapaan, kartu status pengajuan terbaru, langkah berikutnya.
     function beranda() {
         $data['nama_user'] = $this->session->userdata('SES_USERNAME');
         $data['daftar'] = $this->model_pelamar->listPengajuan($this->user_id);
@@ -51,7 +51,7 @@ class Pelamar extends CI_Controller {
         $this->load->view('pelamar/beranda', $data);
     }
 
-    // P3 — daftar semua pengajuan milik pelamar ini.
+    // P3 - daftar semua pengajuan milik pelamar ini.
     function pengajuan($id = null) {
         if ($id !== null) {
             $this->detail($id);
@@ -62,7 +62,7 @@ class Pelamar extends CI_Controller {
         $this->load->view('pelamar/pengajuan', $data);
     }
 
-    // P4 — detail satu pengajuan: timeline, data ringkas, checklist berkas, aksi.
+    // P4 - detail satu pengajuan: timeline, data ringkas, checklist berkas, aksi.
     private function detail($id) {
         $p = $this->model_pelamar->getPengajuanMilik($id, $this->user_id);
         if (!$p) {
@@ -74,7 +74,7 @@ class Pelamar extends CI_Controller {
         $this->load->view('pelamar/detail', $data);
     }
 
-    // POST /pelamar/pengajuan/{id}/ubah — whitelist kolom (B6), hanya saat Pending.
+    // POST /pelamar/pengajuan/{id}/ubah - whitelist kolom (B6), hanya saat Pending.
     function ubah($id = null) {
         $p = $this->model_pelamar->getPengajuanMilik($id, $this->user_id);
         if (!$p) {
@@ -104,7 +104,7 @@ class Pelamar extends CI_Controller {
         redirect(base_url() . 'pelamar/pengajuan/' . $id);
     }
 
-    // POST /pelamar/pengajuan/{id}/berkas/{slot} — ganti satu dokumen. Pending untuk
+    // POST /pelamar/pengajuan/{id}/berkas/{slot} - ganti satu dokumen. Pending untuk
     // doc_1,2,3,5,6,7,foto; Accept khusus doc_7 kalau belum ada (unggah surat pernyataan).
     function berkas($id = null, $slot = null) {
         $p = $this->model_pelamar->getPengajuanMilik($id, $this->user_id);
@@ -147,7 +147,7 @@ class Pelamar extends CI_Controller {
         redirect(base_url() . 'pelamar/pengajuan/' . $id);
     }
 
-    // POST /pelamar/pengajuan/{id}/batal — D3: status baru 'Cancelled', bukan hapus baris.
+    // POST /pelamar/pengajuan/{id}/batal - D3: status baru 'Cancelled', bukan hapus baris.
     function batal($id = null) {
         $p = $this->model_pelamar->getPengajuanMilik($id, $this->user_id);
         if (!$p) {
@@ -162,7 +162,7 @@ class Pelamar extends CI_Controller {
         redirect(base_url() . 'pelamar/pengajuan');
     }
 
-    // P2 — wizard pendaftaran baru.
+    // P2 - wizard pendaftaran baru.
     function daftar() {
         if ($this->input->post('kirim')) {
             $this->_simpanDaftar();
@@ -193,6 +193,9 @@ class Pelamar extends CI_Controller {
         $data['idkey'] = $this->user_id . $data['nama'] . $data['telp'];
 
         $error = $this->_validasiData($data, null);
+        if (!$error && $this->model_prk_master->depagPenuh($data['id_depag'])) {
+            $error = 'Departemen tujuan sudah penuh. Pilih departemen lain.';
+        }
         if (!$error && $this->model_pelamar->idkeyDipakai($data['idkey'])) {
             $error = 'Pengajuan dengan data ini sudah pernah dikirim dan masih diproses.';
         }
@@ -238,14 +241,14 @@ class Pelamar extends CI_Controller {
         redirect(base_url() . 'pelamar/pengajuan/' . $id);
     }
 
-    // P5 — syarat umum + syarat khusus departemen.
+    // P5 - syarat umum + syarat khusus departemen.
     function panduan() {
         $data['nama_user'] = $this->session->userdata('SES_USERNAME');
         $data['depag'] = $this->model_prk_master->listSisaTempatDepag();
         $this->load->view('pelamar/panduan', $data);
     }
 
-    // P6 — profil & akun.
+    // P6 - profil & akun.
     function akun() {
         $data['nama_user'] = $this->session->userdata('SES_USERNAME');
         $data['user'] = $this->db->where('user_id', $this->user_id)->get('user')->row();
@@ -271,7 +274,7 @@ class Pelamar extends CI_Controller {
         redirect(base_url() . 'pelamar/akun');
     }
 
-    // GET /pelamar/berkas/{id}/{slot} — B8: hanya pemilik (atau HR/Admin) yang boleh
+    // GET /pelamar/berkas/{id}/{slot} - B8: hanya pemilik (atau HR/Admin) yang boleh
     // membaca, nama file selalu dari DB (tidak pernah dari URL), tidak pernah tautan
     // langsung ke gambar/.
     function berkas_lihat($id = null, $slot = null) {
@@ -301,7 +304,7 @@ class Pelamar extends CI_Controller {
         readfile($path_absolut);
     }
 
-    // GET /pelamar/surat/{id}/unduh — C7: pelamar baru punya jalur resmi mengunduh
+    // GET /pelamar/surat/{id}/unduh - C7: pelamar baru punya jalur resmi mengunduh
     // surat balasan (sebelumnya hanya peran 1-2 lewat Analisis::surat_unduh).
     function surat_unduh($id = null) {
         $p = $this->model_pelamar->getPengajuanMilik($id, $this->user_id);

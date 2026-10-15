@@ -14,7 +14,7 @@ class Model_prk_notifikasi extends CI_Model {
         parent::__construct();
     }
 
-    // buat() — satu titik masuk, dedupe_key mencegah notifikasi dobel untuk
+    // buat() - satu titik masuk, dedupe_key mencegah notifikasi dobel untuk
     // kejadian yang sama (mis. H-3 kontrak #5 cuma dibuat sekali). $untuk/$id_pelamar
     // (bagian B6/B7 spesifikasi pelamar): default 'hr'/null supaya pemanggil lama
     // (notifikasi HR) tidak perlu diubah; notifikasi pelamar mengisi id_pelamar =
@@ -105,7 +105,7 @@ class Model_prk_notifikasi extends CI_Model {
         foreach (array(7 => 'h7', 3 => 'h3') as $h => $jenis) {
             $tanggal = date('Y-m-d', strtotime("+{$h} days"));
             $peserta = $this->db
-                ->select('id, nama, tgl_selesai')
+                ->select('id, user_id, nama, tgl_selesai')
                 ->from('pkl_data')
                 ->where('status', 'Accept')
                 ->where('tgl_selesai', $tanggal)
@@ -121,6 +121,15 @@ class Model_prk_notifikasi extends CI_Model {
                 if ($baru) {
                     $dibuat++;
                 }
+                // Pelamar juga diberi tahu magangnya akan berakhir (bagian B7
+                // spesifikasi sisi pelamar).
+                $this->buat(
+                    $jenis, $p->id, "Magang berakhir dalam {$h} hari",
+                    "Magangmu berakhir pada " . date('d M Y', strtotime($p->tgl_selesai)) . ".",
+                    base_url() . 'pelamar/pengajuan/' . $p->id,
+                    "pelamar_{$jenis}:{$p->id}:{$tanggal}",
+                    null, 'pelamar', $p->user_id
+                );
             }
         }
         return $dibuat;

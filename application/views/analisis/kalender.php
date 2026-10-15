@@ -49,7 +49,7 @@ $qs_bulan = function ($t, $b) use ($id_departemen_filter) {
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Kalender Magang — Analisis Penempatan | E-Prakerin</title>
+    <title>Kalender Magang - Analisis Penempatan | E-Prakerin</title>
     <link href="//fonts.googleapis.com/css?family=Inter:400,500,600,700,800" rel="stylesheet">
     <link href="<?php echo base_url(); ?>assets/css/analisis-shell.css" rel="stylesheet">
     <style>

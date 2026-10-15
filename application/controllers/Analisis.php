@@ -111,7 +111,7 @@ class Analisis extends CI_Controller {
         $this->load->view('analisis/dashboard', $data);
     }
 
-    // GET /analisis/pelamar — Halaman A (daftar pendaftar + top 3) dari spesifikasi
+    // GET /analisis/pelamar - Halaman A (daftar pendaftar + top 3) dari spesifikasi
     // bagian 7.3. Data asli dari pkl_data + prk_rekomendasi (Tahap 2); kolom top-3
     // skor tampil "belum tersedia" selama mesin skoring belum mengisi prk_rekomendasi.
     function pelamar() {
@@ -126,7 +126,7 @@ class Analisis extends CI_Controller {
         $this->load->view('analisis/pelamar', $data);
     }
 
-    // GET /analisis/peserta/{id} — Halaman B (detail pelamar) dari spesifikasi.
+    // GET /analisis/peserta/{id} - Halaman B (detail pelamar) dari spesifikasi.
     // Data asli dari pkl_data; rekomendasi dari prk_rekomendasi kalau sudah ada
     // (kosong sampai mesin skoring Tahap 2 selesai).
     function peserta($id = null) {
@@ -147,7 +147,7 @@ class Analisis extends CI_Controller {
         $this->load->view('analisis/detail_pelamar', $data);
     }
 
-    // POST /analisis/peserta/{id}/analisis_ulang — tombol "Analisis ulang" (FR-04):
+    // POST /analisis/peserta/{id}/analisis_ulang - tombol "Analisis ulang" (FR-04):
     // paksa job baru masuk antrean meski berkas sama persis dengan analisis
     // terakhir. Hasil baru baru muncul setelah Cli_analisis::antrean() berjalan
     // (cron tiap menit), bukan seketika -- makanya cuma pesan status, bukan hasil.
@@ -163,15 +163,15 @@ class Analisis extends CI_Controller {
         if ($masuk_antrean) {
             $this->session->set_flashdata('sukses', 'Analisis ulang diantrekan. Hasil baru akan muncul dalam beberapa menit.');
         } else {
-            $this->session->set_flashdata('error', 'Belum bisa mengantrekan analisis ulang — proposal/transkrip belum lengkap, atau masih ada proses analisis yang berjalan.');
+            $this->session->set_flashdata('error', 'Belum bisa mengantrekan analisis ulang - proposal/transkrip belum lengkap, atau masih ada proses analisis yang berjalan.');
         }
 
         redirect(base_url() . 'analisis/peserta/' . $id);
     }
 
-    // GET /analisis/peserta/{id}/berkas_unduh — zip semua berkas pelamar yang
+    // GET /analisis/peserta/{id}/berkas_unduh - zip semua berkas pelamar yang
     // ada secara fisik di gambar/, untuk tombol "Unduh semua berkas".
-    // GET /analisis/peserta/{id}/berkas/{slot} — satu berkas pelamar (FR-25/FR-28,
+    // GET /analisis/peserta/{id}/berkas/{slot} - satu berkas pelamar (FR-25/FR-28,
     // bagian 7.7): disajikan lewat PHP setelah controller ini mengecek SES_PRIV 1/2
     // (lihat constructor), bukan tautan langsung ke gambar/ yang bisa ditebak siapa
     // pun. $slot dicocokkan ke whitelist lalu nama filenya diambil dari pkl_data --
@@ -253,7 +253,7 @@ class Analisis extends CI_Controller {
         unlink($path_zip);
     }
 
-    // POST /analisis/peserta/{id}/terima — cek sisa kuota divisi (row lock, bagian 9.2),
+    // POST /analisis/peserta/{id}/terima - cek sisa kuota divisi (row lock, bagian 9.2),
     // simpan penempatan (prk_penempatan), ubah status pkl_data jadi Accept lewat
     // Analisis_status, dan buat kontrak ke-1 (bagian 6.1, baris "pending -> accept").
     function terima($id = null) {
@@ -341,7 +341,7 @@ class Analisis extends CI_Controller {
         redirect(base_url() . 'analisis/peserta/' . $id);
     }
 
-    // POST /analisis/peserta/{id}/tolak — alasan wajib (min. 5 karakter, bagian 6.1),
+    // POST /analisis/peserta/{id}/tolak - alasan wajib (min. 5 karakter, bagian 6.1),
     // ubah status pkl_data jadi Rejected lewat Analisis_status.
     function tolak($id = null) {
         $pelamar = $this->model_prk_pelamar->getPelamar($id);
@@ -381,7 +381,7 @@ class Analisis extends CI_Controller {
         redirect(base_url() . 'analisis/pelamar');
     }
 
-    // POST /analisis/kontrak/{id}/perpanjang — kontrak lama ditandai diperpanjang,
+    // POST /analisis/kontrak/{id}/perpanjang - kontrak lama ditandai diperpanjang,
     // kontrak baru urutan berikutnya dibuat (bagian 6.1 & 7.1 spesifikasi).
     function kontrak_perpanjang($id_kontrak = null) {
         $kontrak = $this->model_prk_kontrak->getByIdDenganPelamar($id_kontrak);
@@ -426,7 +426,7 @@ class Analisis extends CI_Controller {
         redirect(base_url() . 'analisis/peserta/' . $kontrak->id_transaksi);
     }
 
-    // POST /analisis/kontrak/{id}/akhiri — akhiri lebih awal, alasan wajib (bagian 6.1),
+    // POST /analisis/kontrak/{id}/akhiri - akhiri lebih awal, alasan wajib (bagian 6.1),
     // ubah status pkl_data jadi Inactive lewat Analisis_status.
     function kontrak_akhiri($id_kontrak = null) {
         $kontrak = $this->model_prk_kontrak->getByIdDenganPelamar($id_kontrak);
@@ -465,7 +465,7 @@ class Analisis extends CI_Controller {
         redirect(base_url() . 'analisis/peserta/' . $kontrak->id_transaksi);
     }
 
-    // POST /analisis/peserta/{id}/surat_buat — tombol "Buat surat balasan" di Halaman B
+    // POST /analisis/peserta/{id}/surat_buat - tombol "Buat surat balasan" di Halaman B
     // (bagian 8.3 langkah 1). Kalau pelamar lain dari instansi+rujukan sama sudah punya
     // surat draf, gabung ke situ; kalau pelamar ini sendiri sudah punya draf, buka itu;
     // selain itu buat surat baru.
@@ -498,7 +498,7 @@ class Analisis extends CI_Controller {
         redirect(base_url() . 'analisis/surat/' . $id_surat);
     }
 
-    // POST /analisis/surat/{id}/gabung — tambahkan satu kandidat (instansi sama, sudah
+    // POST /analisis/surat/{id}/gabung - tambahkan satu kandidat (instansi sama, sudah
     // Accept, belum punya surat) ke surat draf ini (bagian 8.3, "gabung peserta").
     function surat_gabung($id_surat = null) {
         $surat = $this->model_prk_surat->getById($id_surat);
@@ -536,7 +536,7 @@ class Analisis extends CI_Controller {
         redirect(base_url() . 'analisis/surat/' . $id_surat);
     }
 
-    // GET /analisis/surat/{id} — Halaman C (form isian surat balasan, bagian 8.3).
+    // GET /analisis/surat/{id} - Halaman C (form isian surat balasan, bagian 8.3).
     function surat($id_surat = null) {
         $surat = $this->model_prk_surat->getById($id_surat);
         if (!$surat) {
@@ -553,7 +553,7 @@ class Analisis extends CI_Controller {
         $this->load->view('analisis/surat', $data);
     }
 
-    // POST /analisis/surat/{id}/simpan — simpan isian, tetap draf (bagian 8.3 langkah 2).
+    // POST /analisis/surat/{id}/simpan - simpan isian, tetap draf (bagian 8.3 langkah 2).
     function surat_simpan($id_surat = null) {
         $surat = $this->model_prk_surat->getById($id_surat);
         if (!$surat) {
@@ -602,7 +602,7 @@ class Analisis extends CI_Controller {
         redirect(base_url() . 'analisis/surat/' . $id_surat);
     }
 
-    // GET /analisis/surat/{id}/pratinjau — PDF inline dengan watermark DRAF (bagian 8.3
+    // GET /analisis/surat/{id}/pratinjau - PDF inline dengan watermark DRAF (bagian 8.3
     // langkah 3), dari isian terakhir yang tersimpan.
     function surat_pratinjau($id_surat = null) {
         $surat = $this->model_prk_surat->getById($id_surat);
@@ -619,7 +619,7 @@ class Analisis extends CI_Controller {
         echo $pdf;
     }
 
-    // POST /analisis/surat/{id}/kirim — finalkan: PDF tanpa watermark disimpan,
+    // POST /analisis/surat/{id}/kirim - finalkan: PDF tanpa watermark disimpan,
     // status jadi terkirim, isian terkunci (bagian 8.3 langkah 4).
     function surat_kirim($id_surat = null) {
         $surat = $this->model_prk_surat->getById($id_surat);
@@ -671,7 +671,7 @@ class Analisis extends CI_Controller {
         redirect(base_url() . 'analisis/surat/' . $id_surat);
     }
 
-    // GET /analisis/surat/{id}/unduh — PDF final, hanya untuk surat berstatus terkirim.
+    // GET /analisis/surat/{id}/unduh - PDF final, hanya untuk surat berstatus terkirim.
     function surat_unduh($id_surat = null) {
         $surat = $this->model_prk_surat->getById($id_surat);
         if (!$surat || $surat->status === 'draf' || empty($surat->file_path)) {
@@ -690,7 +690,7 @@ class Analisis extends CI_Controller {
         readfile($path_absolut);
     }
 
-    // POST /analisis/surat/{id}/pengganti — surat lama -> diganti, surat baru draf
+    // POST /analisis/surat/{id}/pengganti - surat lama -> diganti, surat baru draf
     // dengan peserta sama (bagian 8.3 langkah 5).
     function surat_pengganti($id_surat = null) {
         $auth_user = $this->session->userdata('SES_ID');
@@ -706,14 +706,14 @@ class Analisis extends CI_Controller {
         redirect(base_url() . 'analisis/surat/' . $id_baru);
     }
 
-    // GET /analisis/riwayat — Riwayat keputusan HR (terima/tolak), dari prk_audit.
+    // GET /analisis/riwayat - Riwayat keputusan HR (terima/tolak), dari prk_audit.
     function riwayat() {
         $data['nama_user'] = $this->session->userdata('SES_USERNAME');
         $data['daftar_riwayat'] = $this->model_prk_audit->listKeputusanPelamar();
         $this->load->view('analisis/riwayat', $data);
     }
 
-    // GET /analisis/kalender — peserta Accept yang mulai/selesai magang dalam 30 hari.
+    // GET /analisis/kalender - peserta Accept yang mulai/selesai magang dalam 30 hari.
     function kalender() {
         $data['nama_user'] = $this->session->userdata('SES_USERNAME');
 
@@ -797,7 +797,7 @@ class Analisis extends CI_Controller {
         $this->load->view('analisis/kalender', $data);
     }
 
-    // GET /analisis/jalankan_pengingat — generate notifikasi H-7/H-3 kontrak.
+    // GET /analisis/jalankan_pengingat - generate notifikasi H-7/H-3 kontrak.
     // Dipanggil berkala lewat Windows Task Scheduler/cron (curl ke URL ini),
     // bukan proses background bawaan app. Aman dipanggil berkali-kali sehari
     // karena dedupe_key per tanggal mencegah notifikasi dobel.
@@ -806,7 +806,7 @@ class Analisis extends CI_Controller {
         echo json_encode(array('ok' => true, 'notifikasi_dibuat' => $jumlah));
     }
 
-    // POST /analisis/notifikasi_baca — tandai satu notifikasi sudah dibaca user ini.
+    // POST /analisis/notifikasi_baca - tandai satu notifikasi sudah dibaca user ini.
     function notifikasi_baca() {
         $id_notifikasi = (int) $this->input->post('id_notifikasi');
         $auth_user = $this->session->userdata('SES_ID');
@@ -851,7 +851,7 @@ class Analisis extends CI_Controller {
         echo json_encode(array('ok' => true));
     }
 
-    // GET /analisis/pengaturan — hanya Admin (SES_PRIV 1), HR hanya lihat
+    // GET /analisis/pengaturan - hanya Admin (SES_PRIV 1), HR hanya lihat
     function pengaturan() {
         $kunci = array(
             'bobot_f1', 'bobot_f2', 'bobot_f3', 'bobot_f4',
@@ -868,7 +868,7 @@ class Analisis extends CI_Controller {
         $this->load->view('analisis/pengaturan', $data);
     }
 
-    // POST /analisis/pengaturan_simpan — hanya Admin
+    // POST /analisis/pengaturan_simpan - hanya Admin
     function pengaturan_simpan() {
         if ($this->session->userdata('SES_PRIV') != 1) {
             redirect(base_url() . 'analisis/pengaturan');

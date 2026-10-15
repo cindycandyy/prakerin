@@ -82,7 +82,7 @@ class Cli_analisis extends CI_Controller {
         $batas_tanggal = date('Y-m-d', strtotime("+{$ambang} days"));
 
         $daftar = $this->db
-            ->select('id, nama, tgl_mulai')
+            ->select('id, user_id, nama, tgl_mulai')
             ->from('pkl_data')
             ->where('LOWER(status)', 'pending')
             ->where('tgl_mulai <=', $batas_tanggal)
@@ -99,6 +99,16 @@ class Cli_analisis extends CI_Controller {
                     ($lewat ? 'Ditolak otomatis (lewat): ' : 'Ditolak otomatis (mepet): ') . $p->nama,
                     $alasan, base_url() . 'analisis/peserta/' . $p->id,
                     ($lewat ? 'lewat' : 'mepet') . ':' . $p->id . ':' . date('Y-m-d')
+                );
+                // Pelamar juga wajib tahu pengajuannya ditolak otomatis (bagian B7
+                // spesifikasi sisi pelamar), dengan tautan ke form daftar ulang,
+                // bukan ke halaman detail HR yang tidak bisa dia buka.
+                $this->model_prk_notifikasi->buat(
+                    $lewat ? 'lewat' : 'mepet', $p->id, 'Pengajuan ditolak otomatis',
+                    'Tanggal mulai terlalu dekat/sudah lewat. Silakan ajukan ulang dengan jadwal baru.',
+                    base_url() . 'pelamar/daftar',
+                    'pelamar_' . ($lewat ? 'lewat' : 'mepet') . ':' . $p->id . ':' . date('Y-m-d'),
+                    null, 'pelamar', $p->user_id
                 );
                 $jumlah++;
             }
@@ -144,7 +154,7 @@ class Cli_analisis extends CI_Controller {
     private function _notifikasiHariH() {
         $hari_ini = date('Y-m-d');
         $daftar = $this->db
-            ->select('id, nama, tgl_selesai')
+            ->select('id, user_id, nama, tgl_selesai')
             ->from('pkl_data')
             ->where('LOWER(status)', 'accept')
             ->where('tgl_selesai', $hari_ini)
@@ -161,6 +171,14 @@ class Cli_analisis extends CI_Controller {
             if ($baru) {
                 $jumlah++;
             }
+            // Pelamar juga diberi tahu (bagian B7 spesifikasi sisi pelamar).
+            $this->model_prk_notifikasi->buat(
+                'hari_h', $p->id, 'Magang berakhir hari ini',
+                'Magangmu resmi berakhir hari ini (' . date('d M Y', strtotime($p->tgl_selesai)) . ').',
+                base_url() . 'pelamar/pengajuan/' . $p->id,
+                'pelamar_hari_h:' . $p->id . ':' . $hari_ini,
+                null, 'pelamar', $p->user_id
+            );
         }
         return $jumlah;
     }

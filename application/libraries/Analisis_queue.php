@@ -3,7 +3,7 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-// Analisis_queue::enqueue() — dipanggil dari hook di Transaksi.php (bagian 1 spesifikasi
+// Analisis_queue::enqueue() - dipanggil dari hook di Transaksi.php (bagian 1 spesifikasi
 // teknis) setiap kali proposal (doc_2) atau transkrip (doc_3) selesai diunggah/diganti,
 // dan setelah pendaftaran baru selesai. Hanya menyisipkan baris prk_analisis_job;
 // pemrosesan sesungguhnya (panggil layanan Python) dilakukan Cli_analisis::antrean().

@@ -4,9 +4,11 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Pelamar — Analisis Penempatan | E-Prakerin</title>
+    <title>Pelamar - Analisis Penempatan | E-Prakerin</title>
     <link href="//fonts.googleapis.com/css?family=Inter:400,600,700,800" rel="stylesheet">
     <link href="<?php echo base_url(); ?>assets/css/analisis-shell.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css" rel="stylesheet">
+    <link href="<?php echo base_url(); ?>assets/css/analisis-form.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
     <style>
@@ -247,5 +249,7 @@
         new TomSelect(el, { controlInput: null, allowEmptyOption: true });
     });
 </script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/js/analisis-form.js"></script>
 </body>
 </html>

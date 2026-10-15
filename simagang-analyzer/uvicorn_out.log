@@ -4,3 +4,7 @@ INFO:     127.0.0.1:63327 - "POST /v1/validasi_foto HTTP/1.1" 200 OK
 INFO:     127.0.0.1:64861 - "POST /v1/validasi_foto HTTP/1.1" 200 OK
 INFO:     127.0.0.1:64864 - "POST /v1/validasi_foto HTTP/1.1" 200 OK
 INFO:     127.0.0.1:64870 - "POST /v1/validasi_foto HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52780 - "POST /v1/validasi_foto HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52783 - "POST /v1/validasi_foto HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52126 - "POST /v1/validasi_foto HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49646 - "POST /v1/validasi_foto HTTP/1.1" 200 OK

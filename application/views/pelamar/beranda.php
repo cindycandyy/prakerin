@@ -4,10 +4,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Beranda — E-Prakerin</title>
+    <title>Beranda - E-Prakerin</title>
     <link href="//fonts.googleapis.com/css?family=Inter:400,500,600,700,800" rel="stylesheet">
     <link href="<?php echo base_url(); ?>assets/css/analisis-shell.css" rel="stylesheet">
-    <?php include 'pelamar/_style.php'; ?>
+    <link href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css" rel="stylesheet">
+    <link href="<?php echo base_url(); ?>assets/css/analisis-form.css" rel="stylesheet">
+    <?php include APPPATH . 'views/pelamar/_style.php'; ?>
 </head>
 <body>
 <div class="layout">
@@ -74,7 +76,7 @@
                 <div class="panel-head"><h2>Langkah berikutnya</h2></div>
                 <?php
                 $status_l = strtolower($terbaru->status);
-                if ($status_l === 'pending') { echo '<p class="field-note">Berkas kamu sedang ditinjau HR. Pastikan semua dokumen sudah lengkap dan benar — kamu masih bisa mengubah data atau mengganti berkas selama status masih menunggu.</p>';
+                if ($status_l === 'pending') { echo '<p class="field-note">Berkas kamu sedang ditinjau HR. Pastikan semua dokumen sudah lengkap dan benar, kamu masih bisa mengubah data atau mengganti berkas selama status masih menunggu.</p>';
                 } else if ($status_l === 'accept') { echo '<p class="field-note">Selamat! Siapkan surat pernyataan kalau belum diunggah, dan pantau jadwal magangmu di halaman pengajuan.</p>';
                 } else if ($status_l === 'rejected') { echo '<p class="field-note">Pengajuan ini belum dapat diproses. Kamu bisa mengajukan kembali dengan data terbaru.</p>';
                 } else { echo '<p class="field-note">Riwayat pengajuanmu bisa dilihat kapan saja di halaman Pengajuan saya.</p>'; }
@@ -85,5 +87,7 @@
         </main>
     </div>
 </div>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/js/analisis-form.js"></script>
 </body>
 </html>

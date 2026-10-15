@@ -9,7 +9,7 @@ class Model_prk_audit extends CI_Model {
         parent::__construct();
     }
 
-    // catat() — satu titik masuk untuk semua pencatatan audit modul Analisis Penempatan.
+    // catat() - satu titik masuk untuk semua pencatatan audit modul Analisis Penempatan.
     // $pelaku: string seperti 'hr:12' atau 'sistem' (lihat tab Spesifikasi teknis bagian 2).
     function catat($pelaku, $entitas, $id_entitas, $aksi, $sebelum = NULL, $sesudah = NULL, $alasan = NULL) {
         $this->db->insert('prk_audit', array(

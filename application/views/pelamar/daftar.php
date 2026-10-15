@@ -4,10 +4,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Daftar magang — E-Prakerin</title>
+    <title>Daftar magang - E-Prakerin</title>
     <link href="//fonts.googleapis.com/css?family=Inter:400,500,600,700,800" rel="stylesheet">
     <link href="<?php echo base_url(); ?>assets/css/analisis-shell.css" rel="stylesheet">
-    <?php include 'pelamar/_style.php'; ?>
+    <link href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css" rel="stylesheet">
+    <link href="<?php echo base_url(); ?>assets/css/analisis-form.css" rel="stylesheet">
+    <?php include APPPATH . 'views/pelamar/_style.php'; ?>
     <style>
         .langkah { display: none; }
         .langkah.aktif { display: block; }
@@ -38,27 +40,31 @@
 
                     <div class="langkah aktif" data-langkah="1">
                         <div class="form-grid">
-                            <div><label class="field-label">Jenis kegiatan *</label>
+                            <div><label class="field-label wajib">Jenis kegiatan</label>
                                 <select class="field-select" name="kegiatan" required>
                                     <option value="Magang">Magang</option>
                                     <option value="Penelitian">Penelitian</option>
                                 </select>
                             </div>
-                            <div><label class="field-label">Departemen tujuan *</label>
+                            <div><label class="field-label wajib">Departemen tujuan</label>
                                 <select class="field-select" name="id_depag" required>
                                     <option value="">Pilih departemen</option>
                                     <?php foreach ($depag as $d) {
-                                        $info = $d->sisa === null ? 'Belum diatur' : ($d->sisa <= 0 ? 'Penuh' : ($d->sisa <= 2 ? 'Terbatas' : 'Tersedia'));
+                                        $penuh = $d->sisa !== null && $d->sisa <= 0;
+                                        if ($d->sisa === null) { $kelas_status = 'netral'; $info = 'Belum diatur'; }
+                                        else if ($penuh) { $kelas_status = 'penuh'; $info = 'Penuh'; }
+                                        else if ($d->sisa <= 2) { $kelas_status = 'terbatas'; $info = 'Terbatas'; }
+                                        else { $kelas_status = 'tersedia'; $info = 'Tersedia'; }
                                     ?>
-                                    <option value="<?php echo (int) $d->id; ?>"><?php echo htmlspecialchars($d->nama_depag); ?> — <?php echo $info; ?></option>
+                                    <option value="<?php echo (int) $d->id; ?>" <?php echo $penuh ? 'disabled' : ''; ?> data-status="<?php echo $kelas_status; ?>" data-status-label="<?php echo $info; ?>"><?php echo htmlspecialchars($d->nama_depag); ?></option>
                                     <?php } ?>
                                 </select>
-                                <p class="field-note">Status tempat bersifat informasi; keputusan akhir ditentukan HR.</p>
+                                <p class="field-note">Departemen yang penuh tidak bisa dipilih. Penempatan divisi akhir tetap ditentukan HR.</p>
                             </div>
-                            <div><label class="field-label">Tanggal mulai *</label><input class="field-input" type="date" name="tgl_mulai" required min="<?php echo date('Y-m-d', strtotime('+' . ($ambang_mepet_hari + 1) . ' days')); ?>">
+                            <div><label class="field-label wajib">Tanggal mulai</label><input class="field-input" type="date" name="tgl_mulai" required min="<?php echo date('Y-m-d', strtotime('+' . ($ambang_mepet_hari + 1) . ' days')); ?>">
                                 <p class="field-note">Paling cepat mulai <?php echo tanggal_indo(date('Y-m-d', strtotime('+' . ($ambang_mepet_hari + 1) . ' days'))); ?>.</p>
                             </div>
-                            <div><label class="field-label">Tanggal selesai *</label><input class="field-input" type="date" name="tgl_selesai" required>
+                            <div><label class="field-label wajib">Tanggal selesai</label><input class="field-input" type="date" name="tgl_selesai" data-link-min-from="tgl_mulai" required>
                                 <p class="field-note">Durasi 30–180 hari.</p>
                             </div>
                         </div>
@@ -66,52 +72,60 @@
 
                     <div class="langkah" data-langkah="2">
                         <div class="form-grid">
-                            <div><label class="field-label">Nama lengkap *</label><input class="field-input" name="nama" required></div>
-                            <div><label class="field-label">Jenis kelamin *</label>
+                            <div><label class="field-label wajib">Nama lengkap</label><input class="field-input" name="nama" required></div>
+                            <div><label class="field-label wajib">Jenis kelamin</label>
                                 <select class="field-select" name="jk" required><option value="L">Laki-laki</option><option value="P">Perempuan</option></select>
                             </div>
-                            <div><label class="field-label">Tempat lahir *</label><input class="field-input" name="tmpt_lahir" required></div>
-                            <div><label class="field-label">Tanggal lahir *</label><input class="field-input" type="date" name="tgl_lahir" required></div>
-                            <div style="grid-column:1/-1;"><label class="field-label">Alamat *</label><input class="field-input" name="alamat" required></div>
-                            <div><label class="field-label">Telepon *</label><input class="field-input" name="telp" pattern="(0|62)[0-9]{8,14}" required></div>
-                            <div><label class="field-label">Email *</label><input class="field-input" type="email" name="email" required></div>
-                            <div><label class="field-label">Nama orang tua *</label><input class="field-input" name="nm_ortu" required></div>
-                            <div><label class="field-label">HP orang tua *</label><input class="field-input" name="hp_ortu" required></div>
+                            <div><label class="field-label wajib">Tempat lahir</label><input class="field-input" name="tmpt_lahir" required></div>
+                            <div><label class="field-label wajib">Tanggal lahir</label><input class="field-input" type="date" name="tgl_lahir" required></div>
+                            <div style="grid-column:1/-1;"><label class="field-label wajib">Alamat</label><input class="field-input" name="alamat" required></div>
+                            <div><label class="field-label wajib">Telepon</label><input class="field-input" name="telp" pattern="(0|62)[0-9]{8,14}" required></div>
+                            <div><label class="field-label wajib">Email</label><input class="field-input" type="email" name="email" required></div>
+                            <div><label class="field-label wajib">Nama orang tua</label><input class="field-input" name="nm_ortu" required></div>
+                            <div><label class="field-label wajib">HP orang tua</label><input class="field-input" name="hp_ortu" required></div>
                         </div>
                     </div>
 
                     <div class="langkah" data-langkah="3">
                         <div class="form-grid">
-                            <div><label class="field-label">Jenjang *</label>
+                            <div><label class="field-label wajib">Jenjang</label>
                                 <select class="field-select" name="pendidikan" required>
-                                    <option value="SMK">SMK</option><option value="D3">D3</option><option value="D4">D4</option><option value="S1">S1</option><option value="S2">S2</option>
+                                    <option value="SMK">SMK</option><option value="D3">D3</option><option value="D4">D4</option><option value="S1">S1</option>
                                 </select>
                             </div>
-                            <div><label class="field-label">Institusi *</label><input class="field-input" name="institusi" required></div>
-                            <div><label class="field-label">Jurusan *</label><input class="field-input" name="jurusan" required></div>
-                            <div><label class="field-label">Alamat institusi *</label><input class="field-input" name="almt_institusi" required></div>
-                            <div><label class="field-label">Pembimbing *</label><input class="field-input" name="pembimbing" required></div>
-                            <div><label class="field-label">HP pembimbing *</label><input class="field-input" name="hp_pembimbing" required></div>
+                            <div><label class="field-label wajib">Institusi</label><input class="field-input" name="institusi" required></div>
+                            <div><label class="field-label wajib">Jurusan</label><input class="field-input" name="jurusan" required></div>
+                            <div><label class="field-label wajib">Alamat institusi</label><input class="field-input" name="almt_institusi" required></div>
+                            <div><label class="field-label wajib">Pembimbing</label><input class="field-input" name="pembimbing" required></div>
+                            <div><label class="field-label wajib">HP pembimbing</label><input class="field-input" name="hp_pembimbing" required></div>
                         </div>
                     </div>
 
                     <div class="langkah" data-langkah="4">
                         <?php
-                        $berkas_input = array('file_1' => array('Surat pengantar', 'application/pdf,.pdf'), 'file_2' => array('Proposal', 'application/pdf,.pdf'),
-                            'file_3' => array('Transkrip', 'application/pdf,.pdf'), 'file_5' => array('Kartu asuransi', 'application/pdf,.pdf'),
-                            'file_6' => array('Kartu pelajar', 'application/pdf,.pdf'), 'file_7' => array('Surat pernyataan', 'application/pdf,.pdf'),
-                            'foto' => array('Foto (JPG, maks 2MB)', '.jpg,.jpeg'));
+                        $berkas_input = array(
+                            'file_1' => array('Surat pengantar', 'application/pdf,.pdf', null),
+                            'file_2' => array('Proposal', 'application/pdf,.pdf', 'Gunakan struktur bab baku (Latar Belakang, Tujuan, Ruang Lingkup/Bidang PKL, Mata Kuliah, Objek PKL) dan sebutkan tools/software yang dikuasai, sistem membaca proposal untuk menilai kecocokan divisi. Lihat <a href="' . base_url() . 'pelamar/panduan" target="_blank" style="color:var(--hijau-700); font-weight:600;">format lengkap di Syarat &amp; panduan</a>.'),
+                            'file_3' => array('Transkrip', 'application/pdf,.pdf', null),
+                            'file_5' => array('Kartu asuransi', 'application/pdf,.pdf', null),
+                            'file_6' => array('Kartu pelajar', 'application/pdf,.pdf', null),
+                            'file_7' => array('Surat pernyataan', 'application/pdf,.pdf', null),
+                            'foto' => array('Foto (JPG, maks 2MB)', '.jpg,.jpeg', 'Foto terbaru, formal, setengah badan (bukan close-up wajah). Bukan foto KTM/kartu pelajar, dan bukan hasil AI/edit berlebihan.'),
+                        );
                         foreach ($berkas_input as $input_name => $info) { ?>
-                        <div class="berkas-kartu">
+                        <div class="berkas-kartu" style="align-items:flex-start;">
                             <span class="berkas-kartu-icon"><?php icon_analisis($input_name === 'foto' ? 'image' : 'file-text', 16); ?></span>
                             <div style="flex:1;">
                                 <div class="berkas-kartu-nama"><?php echo $info[0]; ?></div>
                                 <div class="berkas-kartu-status" data-nama-file="<?php echo $input_name; ?>">Belum diunggah</div>
+                                <?php if ($info[2]) { ?>
+                                <div class="field-note" style="margin-top:6px;"><?php echo $info[2]; ?></div>
+                                <?php } ?>
                             </div>
-                            <label class="btn-outline" style="padding:6px 10px; font-size:11px; cursor:pointer;">
+                            <label class="btn-outline" style="padding:6px 10px; font-size:11px; cursor:pointer; flex-shrink:0;">
                                 Pilih <?php echo $input_name === 'foto' ? 'JPG' : 'PDF'; ?>
                                 <input type="file" name="<?php echo $input_name; ?>" accept="<?php echo $info[1]; ?>" required style="display:none;"
-                                    onchange="document.querySelector('[data-nama-file=\'<?php echo $input_name; ?>\']').textContent = this.files[0] ? this.files[0].name : 'Belum diunggah';">
+                                    onchange="document.querySelector('[data-nama-file=\'<?php echo $input_name; ?>\']').textContent = this.files[0] ? this.files[0].name : 'Belum diunggah'; this.closest('.berkas-kartu').classList.remove('field-invalid');">
                             </label>
                         </div>
                         <?php } ?>
@@ -119,13 +133,24 @@
                     </div>
 
                     <div class="footer-aksi" style="display:flex; gap:10px; margin-top:20px;">
-                        <button type="button" class="btn-chip" id="btn-kembali" style="display:none;">Kembali</button>
+                        <button type="button" class="btn-outline" id="btn-kembali" style="display:none;">Kembali</button>
                         <button type="button" class="btn-primary" id="btn-lanjut">Lanjut</button>
                         <button type="submit" class="btn-primary" id="btn-kirim" style="display:none;">Kirim pengajuan</button>
                     </div>
                 </form>
             </div>
         </main>
+    </div>
+</div>
+
+<div id="modal-kirim" class="modal-overlay" style="display:none;">
+    <div class="modal-kartu">
+        <h3>Kirim pengajuan ini?</h3>
+        <p class="field-note" style="margin-top:6px;">Data tidak bisa diubah lagi setelah diproses HR.</p>
+        <div class="footer-aksi" style="margin-top:16px;">
+            <button type="button" class="btn-outline" id="modal-kirim-batal">Batal</button>
+            <button type="button" class="btn-primary" id="modal-kirim-ok">Kirim</button>
+        </div>
     </div>
 </div>
 <script>
@@ -147,39 +172,121 @@
         document.getElementById('btn-kirim').style.display = n === total ? 'inline-block' : 'none';
     }
 
+    // Validasi halus: field kosong/invalid digaris merah + goyang sebentar, bukan
+    // balon validasi bawaan browser (reportValidity()) yang terlihat kasar.
+    function tandaiInvalid(el, invalid) {
+        var pembungkus = el.closest('div');
+        if (!pembungkus) { return; }
+        pembungkus.classList.remove('field-invalid');
+        if (invalid) {
+            // reflow supaya animasi goyang bisa diulang kalau field sama ditandai invalid dua kali berturut-turut
+            void pembungkus.offsetWidth;
+            pembungkus.classList.add('field-invalid');
+        }
+    }
+
     document.getElementById('btn-lanjut').addEventListener('click', function () {
         var aktif = document.querySelector('.langkah.aktif');
         var wajib = aktif.querySelectorAll('[required]');
-        for (var i = 0; i < wajib.length; i++) { if (!wajib[i].reportValidity()) { return; } }
+        var field_pertama_invalid = null;
+        wajib.forEach(function (el) {
+            var invalid = !el.checkValidity();
+            tandaiInvalid(el, invalid);
+            if (invalid && !field_pertama_invalid) { field_pertama_invalid = el; }
+        });
+        if (field_pertama_invalid) {
+            field_pertama_invalid.closest('div').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        }
         simpanDraf();
         langkahSekarang = Math.min(total, langkahSekarang + 1);
         tampilkanLangkah(langkahSekarang);
     });
+    document.querySelectorAll('[required]').forEach(function (el) {
+        el.addEventListener('input', function () { tandaiInvalid(el, false); });
+        el.addEventListener('change', function () { tandaiInvalid(el, false); });
+    });
     document.getElementById('btn-kembali').addEventListener('click', function () {
         langkahSekarang = Math.max(1, langkahSekarang - 1);
         tampilkanLangkah(langkahSekarang);
+        simpanDraf();
     });
+
+    // Auto-save tiap field berubah (bukan cuma saat pindah langkah) supaya ketikan
+    // di langkah yang sama tidak hilang kalau tab di-refresh tanpa sempat klik Lanjut.
+    form.addEventListener('input', simpanDraf);
+    form.addEventListener('change', simpanDraf);
 
     function simpanDraf() {
         try {
-            var data = {};
+            var data = { _langkah: langkahSekarang };
             form.querySelectorAll('input:not([type=file]), select, textarea').forEach(function (el) { data[el.name] = el.value; });
             localStorage.setItem(KUNCI_DRAF, JSON.stringify(data));
         } catch (e) {}
     }
-    try {
-        var draf = JSON.parse(localStorage.getItem(KUNCI_DRAF) || '{}');
-        Object.keys(draf).forEach(function (nama) {
-            var el = form.querySelector('[name="' + nama + '"]');
-            if (el) { el.value = draf[nama]; }
-        });
-    } catch (e) {}
+
+    // Draft dipulihkan setelah seluruh halaman (termasuk analisis-form.js yang
+    // memperkaya select/date) selesai dimuat, supaya tampilan dropdown custom &
+    // kalender ikut tersinkron -- bukan cuma <select>/<input> aslinya yang
+    // disembunyikan.
+    function pulihkanDraf() {
+        try {
+            var draf = JSON.parse(localStorage.getItem(KUNCI_DRAF) || '{}');
+            Object.keys(draf).forEach(function (nama) {
+                if (nama === '_langkah') { return; }
+                var el = form.querySelector('[name="' + nama + '"]');
+                if (el && draf[nama]) { el.value = draf[nama]; el.dispatchEvent(new Event('change', { bubbles: true })); }
+            });
+            if (draf._langkah) {
+                langkahSekarang = Math.min(total, Math.max(1, draf._langkah));
+                tampilkanLangkah(langkahSekarang);
+            }
+        } catch (e) {}
+    }
+    window.addEventListener('load', pulihkanDraf);
+
+    // Modal konfirmasi custom bergaya GSM, pengganti confirm() bawaan browser yang
+    // tidak bisa di-styling sama sekali.
+    var modalKirim = document.getElementById('modal-kirim');
+    var sudahDikonfirmasi = false;
+
+    function bukaModal() {
+        modalKirim.style.display = 'flex';
+        requestAnimationFrame(function () { modalKirim.classList.add('tampil'); });
+    }
+    function tutupModal() {
+        modalKirim.classList.remove('tampil');
+        setTimeout(function () { modalKirim.style.display = 'none'; }, 150);
+    }
+    document.getElementById('modal-kirim-batal').addEventListener('click', tutupModal);
+    document.getElementById('modal-kirim-ok').addEventListener('click', function () {
+        sudahDikonfirmasi = true;
+        tutupModal();
+        try { localStorage.removeItem(KUNCI_DRAF); } catch (e2) {}
+        form.submit();
+    });
 
     form.addEventListener('submit', function (e) {
-        if (!confirm('Kirim pengajuan ini? Data tidak bisa diubah lagi setelah diproses HR.')) { e.preventDefault(); return; }
-        try { localStorage.removeItem(KUNCI_DRAF); } catch (e2) {}
+        var berkas_kosong = null;
+        document.querySelectorAll('.langkah[data-langkah="4"] input[type=file][required]').forEach(function (el) {
+            var kartu = el.closest('.berkas-kartu');
+            var invalid = el.files.length === 0;
+            kartu.classList.toggle('field-invalid', invalid);
+            if (invalid && !berkas_kosong) { berkas_kosong = kartu; }
+        });
+        if (berkas_kosong) {
+            e.preventDefault();
+            berkas_kosong.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        }
+        if (!sudahDikonfirmasi) {
+            e.preventDefault();
+            bukaModal();
+        }
     });
 })();
 </script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/js/analisis-form.js"></script>
 </body>
 </html>

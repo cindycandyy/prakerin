@@ -4,10 +4,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Akun saya — E-Prakerin</title>
+    <title>Akun saya - E-Prakerin</title>
     <link href="//fonts.googleapis.com/css?family=Inter:400,500,600,700,800" rel="stylesheet">
     <link href="<?php echo base_url(); ?>assets/css/analisis-shell.css" rel="stylesheet">
-    <?php include 'pelamar/_style.php'; ?>
+    <link href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css" rel="stylesheet">
+    <link href="<?php echo base_url(); ?>assets/css/analisis-form.css" rel="stylesheet">
+    <?php include APPPATH . 'views/pelamar/_style.php'; ?>
 </head>
 <body>
 <div class="layout">
@@ -48,5 +50,7 @@
         </main>
     </div>
 </div>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/js/analisis-form.js"></script>
 </body>
 </html>

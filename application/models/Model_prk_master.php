@@ -55,7 +55,7 @@ class Model_prk_master extends CI_Model {
     }
 
     // Jumlah peserta aktif (kontrak belum selesai/diakhiri_awal) per divisi saat ini,
-    // tanpa batas periode — dipakai halaman Kuota divisi untuk kolom "Keterisian".
+    // tanpa batas periode - dipakai halaman Kuota divisi untuk kolom "Keterisian".
     function listTerisiPerDivisi() {
         $rows = $this->db
             ->select('p.id_divisi, COUNT(*) AS jumlah')
@@ -113,6 +113,22 @@ class Model_prk_master extends CI_Model {
             $d->sisa = $d->kuota > 0 ? max(0, (int) $d->kuota - $jumlah_terisi) : null;
         }
         return $depag;
+    }
+
+    // Dipakai server-side sebelum menyimpan pengajuan baru (bagian B4 spesifikasi
+    // pelamar): opsi "Penuh" sudah di-disable di dropdown, tapi POST langsung tetap
+    // harus ditolak di server -- sumber kebenaran sisa tempat sama persis dengan
+    // listSisaTempatDepag() supaya tidak bisa berbeda hasil.
+    function depagPenuh($id_depag) {
+        $depag = $this->db->where('id', $id_depag)->get('depag')->row();
+        if (!$depag || (int) $depag->kuota <= 0) {
+            return false; // "Belum diatur" tetap boleh dipilih, sama seperti di dropdown.
+        }
+        $terisi = (int) $this->db
+            ->where('id_depag', $id_depag)
+            ->where_in('status', array('Pending', 'Accept'))
+            ->count_all_results('pkl_data');
+        return $terisi >= (int) $depag->kuota;
     }
 
     function getIdDepartemenUntukDepag($id_depag) {

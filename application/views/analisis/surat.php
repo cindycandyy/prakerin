@@ -4,9 +4,11 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Surat Balasan — Analisis Penempatan | E-Prakerin</title>
+    <title>Surat Balasan - Analisis Penempatan | E-Prakerin</title>
     <link href="//fonts.googleapis.com/css?family=Inter:400,600,700,800" rel="stylesheet">
     <link href="<?php echo base_url(); ?>assets/css/analisis-shell.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css" rel="stylesheet">
+    <link href="<?php echo base_url(); ?>assets/css/analisis-form.css" rel="stylesheet">
     <style>
         .back-link { display: flex; align-items: center; gap: 8px; color: var(--hijau-700); font-size: 12px; }
         .field-label { font-size: 12px; font-weight: 600; margin-bottom: 6px; display: block; }
@@ -61,7 +63,7 @@
                 <label class="field-label" style="margin-top:14px;">Peserta dalam surat ini</label>
                 <ul class="peserta-list">
                     <?php foreach ($peserta as $p) { ?>
-                    <li><?php echo htmlspecialchars($p->nama); ?> — <?php echo htmlspecialchars($p->institusi); ?> (<?php echo htmlspecialchars($p->jurusan); ?>)</li>
+                    <li><?php echo htmlspecialchars($p->nama); ?> - <?php echo htmlspecialchars($p->institusi); ?> (<?php echo htmlspecialchars($p->jurusan); ?>)</li>
                     <?php } ?>
                 </ul>
 
@@ -137,7 +139,7 @@
             <?php } else { ?>
             <div class="panel">
                 <div class="panel-head"><h2>Surat sudah <?php echo htmlspecialchars($surat->status); ?></h2></div>
-                <p class="field-note">Dikirim pada <?php echo $surat->dikirim_pada ? date('d M Y H:i', strtotime($surat->dikirim_pada)) : '-'; ?>. Isian terkunci — buat surat pengganti untuk koreksi.</p>
+                <p class="field-note">Dikirim pada <?php echo $surat->dikirim_pada ? date('d M Y H:i', strtotime($surat->dikirim_pada)) : '-'; ?>. Isian terkunci, buat surat pengganti untuk koreksi.</p>
                 <div class="footer-aksi">
                     <?php if ($surat->status === 'terkirim') { ?>
                     <a class="btn-outline" href="<?php echo base_url(); ?>analisis/surat/<?php echo (int) $surat->id; ?>/unduh">Unduh PDF</a>
@@ -151,5 +153,7 @@
         </main>
     </div>
 </div>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/js/analisis-form.js"></script>
 </body>
 </html>
