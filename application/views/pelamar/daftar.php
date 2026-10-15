@@ -70,19 +70,26 @@
                         </div>
                     </div>
 
+                    <?php if ($salinan) { ?>
+                    <div class="field-note" style="background:var(--hijau-100); color:var(--hijau-800); border-radius:10px; padding:10px 12px; margin-bottom:16px;">Biodata dan pendidikan disalin dari pengajuanmu sebelumnya. Periksa kembali sebelum mengirim.</div>
+                    <?php } ?>
+
                     <div class="langkah" data-langkah="2">
                         <div class="form-grid">
-                            <div><label class="field-label wajib">Nama lengkap</label><input class="field-input" name="nama" required></div>
+                            <div><label class="field-label wajib">Nama lengkap</label><input class="field-input" name="nama" value="<?php echo $salinan ? htmlspecialchars($salinan->nama) : ''; ?>" required></div>
                             <div><label class="field-label wajib">Jenis kelamin</label>
-                                <select class="field-select" name="jk" required><option value="L">Laki-laki</option><option value="P">Perempuan</option></select>
+                                <select class="field-select" name="jk" required>
+                                    <option value="L" <?php echo ($salinan && $salinan->jk === 'L') ? 'selected' : ''; ?>>Laki-laki</option>
+                                    <option value="P" <?php echo ($salinan && $salinan->jk === 'P') ? 'selected' : ''; ?>>Perempuan</option>
+                                </select>
                             </div>
-                            <div><label class="field-label wajib">Tempat lahir</label><input class="field-input" name="tmpt_lahir" required></div>
-                            <div><label class="field-label wajib">Tanggal lahir</label><input class="field-input" type="date" name="tgl_lahir" required></div>
-                            <div style="grid-column:1/-1;"><label class="field-label wajib">Alamat</label><input class="field-input" name="alamat" required></div>
-                            <div><label class="field-label wajib">Telepon</label><input class="field-input" name="telp" pattern="(0|62)[0-9]{8,14}" required></div>
-                            <div><label class="field-label wajib">Email</label><input class="field-input" type="email" name="email" required></div>
-                            <div><label class="field-label wajib">Nama orang tua</label><input class="field-input" name="nm_ortu" required></div>
-                            <div><label class="field-label wajib">HP orang tua</label><input class="field-input" name="hp_ortu" required></div>
+                            <div><label class="field-label wajib">Tempat lahir</label><input class="field-input" name="tmpt_lahir" value="<?php echo $salinan ? htmlspecialchars($salinan->tmpt_lahir) : ''; ?>" required></div>
+                            <div><label class="field-label wajib">Tanggal lahir</label><input class="field-input" type="date" name="tgl_lahir" value="<?php echo $salinan ? htmlspecialchars($salinan->tgl_lahir) : ''; ?>" required></div>
+                            <div style="grid-column:1/-1;"><label class="field-label wajib">Alamat</label><input class="field-input" name="alamat" value="<?php echo $salinan ? htmlspecialchars($salinan->alamat) : ''; ?>" required></div>
+                            <div><label class="field-label wajib">Telepon</label><input class="field-input" name="telp" value="<?php echo $salinan ? htmlspecialchars($salinan->telp) : ''; ?>" pattern="(0|62)[0-9]{8,14}" required></div>
+                            <div><label class="field-label wajib">Email</label><input class="field-input" type="email" name="email" value="<?php echo $salinan ? htmlspecialchars($salinan->email) : ''; ?>" required></div>
+                            <div><label class="field-label wajib">Nama orang tua</label><input class="field-input" name="nm_ortu" value="<?php echo $salinan ? htmlspecialchars($salinan->nm_ortu) : ''; ?>" required></div>
+                            <div><label class="field-label wajib">HP orang tua</label><input class="field-input" name="hp_ortu" value="<?php echo $salinan ? htmlspecialchars($salinan->hp_ortu) : ''; ?>" required></div>
                         </div>
                     </div>
 
@@ -90,14 +97,16 @@
                         <div class="form-grid">
                             <div><label class="field-label wajib">Jenjang</label>
                                 <select class="field-select" name="pendidikan" required>
-                                    <option value="SMK">SMK</option><option value="D3">D3</option><option value="D4">D4</option><option value="S1">S1</option>
+                                    <?php foreach (array('SMK', 'D3', 'D4', 'S1') as $jenjang) { ?>
+                                    <option value="<?php echo $jenjang; ?>" <?php echo ($salinan && $salinan->pendidikan === $jenjang) ? 'selected' : ''; ?>><?php echo $jenjang; ?></option>
+                                    <?php } ?>
                                 </select>
                             </div>
-                            <div><label class="field-label wajib">Institusi</label><input class="field-input" name="institusi" required></div>
-                            <div><label class="field-label wajib">Jurusan</label><input class="field-input" name="jurusan" required></div>
-                            <div><label class="field-label wajib">Alamat institusi</label><input class="field-input" name="almt_institusi" required></div>
-                            <div><label class="field-label wajib">Pembimbing</label><input class="field-input" name="pembimbing" required></div>
-                            <div><label class="field-label wajib">HP pembimbing</label><input class="field-input" name="hp_pembimbing" required></div>
+                            <div><label class="field-label wajib">Institusi</label><input class="field-input" name="institusi" value="<?php echo $salinan ? htmlspecialchars($salinan->institusi) : ''; ?>" required></div>
+                            <div><label class="field-label wajib">Jurusan</label><input class="field-input" name="jurusan" value="<?php echo $salinan ? htmlspecialchars($salinan->jurusan) : ''; ?>" required></div>
+                            <div><label class="field-label wajib">Alamat institusi</label><input class="field-input" name="almt_institusi" value="<?php echo $salinan ? htmlspecialchars($salinan->almt_institusi) : ''; ?>" required></div>
+                            <div><label class="field-label wajib">Pembimbing</label><input class="field-input" name="pembimbing" value="<?php echo $salinan ? htmlspecialchars($salinan->pembimbing) : ''; ?>" required></div>
+                            <div><label class="field-label wajib">HP pembimbing</label><input class="field-input" name="hp_pembimbing" value="<?php echo $salinan ? htmlspecialchars($salinan->hp_pembimbing) : ''; ?>" required></div>
                         </div>
                     </div>
 
@@ -130,6 +139,14 @@
                         </div>
                         <?php } ?>
                         <p class="field-note">Maks 5MB untuk PDF, 2MB untuk foto.</p>
+
+                        <div id="kartu-persetujuan" class="berkas-kartu" style="align-items:flex-start; cursor:pointer;" onclick="if(event.target.tagName!=='INPUT'){document.getElementById('cek-persetujuan').click();}">
+                            <input type="checkbox" id="cek-persetujuan" name="persetujuan_privasi" value="1" style="margin-top:2px; width:16px; height:16px; flex-shrink:0;" onchange="this.closest('.berkas-kartu').classList.remove('field-invalid');">
+                            <div style="flex:1;">
+                                <div class="berkas-kartu-nama">Saya menyetujui analisis otomatis dokumen</div>
+                                <div class="field-note" style="margin-top:4px;">Proposal dan transkrip yang diunggah akan dibaca otomatis oleh sistem untuk membantu HR menilai kecocokan divisi. Data lain hanya dilihat HR secara manual.</div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="footer-aksi" style="display:flex; gap:10px; margin-top:20px;">
@@ -277,6 +294,13 @@
         if (berkas_kosong) {
             e.preventDefault();
             berkas_kosong.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        }
+        var kartuPersetujuan = document.getElementById('kartu-persetujuan');
+        if (!document.getElementById('cek-persetujuan').checked) {
+            e.preventDefault();
+            kartuPersetujuan.classList.add('field-invalid');
+            kartuPersetujuan.scrollIntoView({ behavior: 'smooth', block: 'center' });
             return;
         }
         if (!sudahDikonfirmasi) {

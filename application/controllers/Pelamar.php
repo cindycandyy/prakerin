@@ -176,6 +176,11 @@ class Pelamar extends CI_Controller {
         $data['nama_user'] = $this->session->userdata('SES_USERNAME');
         $data['depag'] = $this->model_prk_master->listSisaTempatDepag();
         $data['ambang_mepet_hari'] = (int) $this->model_prk_master->getPengaturan('ambang_mepet_hari', 3);
+        // B5: pengajuan baru menyalin biodata dari pengajuan terakhir (Rejected/Inactive/
+        // Cancelled) supaya pelamar tidak mengetik ulang semua -- bukan jadwal/berkas,
+        // itu tetap harus diisi baru.
+        $riwayat = $this->model_pelamar->listPengajuan($this->user_id);
+        $data['salinan'] = !empty($riwayat) ? $riwayat[0] : null;
         $this->load->view('pelamar/daftar', $data);
     }
 
@@ -204,6 +209,11 @@ class Pelamar extends CI_Controller {
             if (!$error && empty($_FILES[$input_name]['name'])) {
                 $error = 'Semua berkas wajib diunggah.';
             }
+        }
+        // D7: persetujuan analisis otomatis dokumen wajib dicentang, dicek ulang di
+        // server karena checkbox hanya ditegakkan di klien.
+        if (!$error && !$this->input->post('persetujuan_privasi')) {
+            $error = 'Kamu wajib menyetujui analisis otomatis dokumen sebelum mengirim.';
         }
         if ($error) {
             $this->session->set_flashdata('error', $error);
@@ -239,6 +249,153 @@ class Pelamar extends CI_Controller {
 
         $this->session->set_flashdata('sukses', 'Pengajuan terkirim. HR akan meninjau berkas kamu.');
         redirect(base_url() . 'pelamar/pengajuan/' . $id);
+    }
+
+    // GET /pelamar/kartu/{id} - kartu magang (B5). Accept ATAU Inactive (bagian B3:
+    // "Inactive - kartu & surat tetap bisa diunduh"), dengan no_pkl terisi. Reuse
+    // persis tata letak PHPExcel dari Transaksi::cetak (D4: tetap Excel, bukan PDF
+    // baru), tapi ambil data lewat getPengajuanMilik() (ownership-checked) -- bukan
+    // trik session SES_01..SES_04 yang dipakai endpoint HR lama.
+    function kartu($id = null) {
+        $p = $this->model_pelamar->getPengajuanMilik($id, $this->user_id);
+        if (!$p || !in_array(strtolower($p->status), array('accept', 'inactive'), true) || empty($p->no_pkl)) {
+            show_404();
+        }
+
+        $this->load->model('model_all_function');
+
+        $nama = $p->nama;
+        $badge = $p->no_pkl;
+        $institusi = $p->institusi;
+        $waktu = $this->model_all_function->sql2date($p->tgl_mulai) . ' s/d ' . $this->model_all_function->sql2date($p->tgl_selesai);
+
+        include APPPATH . 'third_party/Classes/PHPExcel.php';
+        $excel = new PHPExcel();
+        $excel->getProperties()->setCreator('Admin SDM')
+            ->setLastModifiedBy('Admin SDM')
+            ->setTitle('Data Siswa Magang')
+            ->setSubject('PKL')
+            ->setDescription('Laporan Semua Data Magang')
+            ->setKeywords('Data PKL');
+
+        $default_border = array('style' => PHPExcel_Style_Border::BORDER_THIN, 'color' => array('rgb' => '000000'));
+        $style_border = array('borders' => array(
+            'bottom' => $default_border, 'left' => $default_border, 'top' => $default_border, 'right' => $default_border,
+        ));
+        $excel->getSheet(0)->getStyle('A2:L19')->applyFromArray($style_border);
+        $excel->getSheet(0)->getStyle('B12:B18')->applyFromArray($style_border);
+        $excel->getSheet(0)->getStyle('D12:H15')->applyFromArray($style_border);
+        $excel->getSheet(0)->getStyle('J12:K15')->applyFromArray($style_border);
+
+        $excel->getActiveSheet()->getColumnDimension('A')->setWidth(1);
+        $excel->getActiveSheet()->getColumnDimension('B')->setWidth(11);
+        $excel->getActiveSheet()->getColumnDimension('C')->setWidth(1);
+        $excel->getActiveSheet()->getColumnDimension('D')->setWidth(2);
+        $excel->getActiveSheet()->getColumnDimension('E')->setWidth(2);
+        $excel->getActiveSheet()->getColumnDimension('F')->setWidth(9);
+        $excel->getActiveSheet()->getColumnDimension('G')->setWidth(2);
+        $excel->getActiveSheet()->getColumnDimension('H')->setWidth(2);
+        $excel->getActiveSheet()->getColumnDimension('I')->setWidth(1);
+        $excel->getActiveSheet()->getColumnDimension('J')->setWidth(14);
+        $excel->getActiveSheet()->getColumnDimension('K')->setWidth(4);
+        $excel->getActiveSheet()->getColumnDimension('L')->setWidth(1);
+        $excel->getActiveSheet()->getColumnDimension('M')->setWidth(1);
+
+        $excel->getActiveSheet()->getRowDimension(1)->setRowHeight(5);
+        $excel->getActiveSheet()->getRowDimension(2)->setRowHeight(5);
+        $excel->getActiveSheet()->getRowDimension(3)->setRowHeight(10);
+        $excel->getActiveSheet()->getRowDimension(4)->setRowHeight(10);
+        $excel->getActiveSheet()->getRowDimension(5)->setRowHeight(10);
+        $excel->getActiveSheet()->getRowDimension(6)->setRowHeight(5);
+        $excel->getActiveSheet()->getRowDimension(7)->setRowHeight(10);
+        $excel->getActiveSheet()->getRowDimension(8)->setRowHeight(10);
+        $excel->getActiveSheet()->getRowDimension(9)->setRowHeight(10);
+        $excel->getActiveSheet()->getRowDimension(10)->setRowHeight(10);
+        $excel->getActiveSheet()->getRowDimension(11)->setRowHeight(5);
+        $excel->getActiveSheet()->getRowDimension(12)->setRowHeight(10);
+        $excel->getActiveSheet()->getRowDimension(13)->setRowHeight(10);
+        $excel->getActiveSheet()->getRowDimension(14)->setRowHeight(10);
+        $excel->getActiveSheet()->getRowDimension(15)->setRowHeight(10);
+        $excel->getActiveSheet()->getRowDimension(16)->setRowHeight(5);
+        $excel->getActiveSheet()->getRowDimension(17)->setRowHeight(10);
+        $excel->getActiveSheet()->getRowDimension(18)->setRowHeight(10);
+        $excel->getActiveSheet()->getRowDimension(19)->setRowHeight(10);
+        $excel->getActiveSheet()->getRowDimension(20)->setRowHeight(10);
+
+        $objDrawing = new PHPExcel_Worksheet_Drawing();
+        $objDrawing->setName('Data SDM Dan Umum');
+        $objDrawing->setDescription('Image logo');
+        $objDrawing->setPath('gambar\Logo Petrosidax.png');
+        $objDrawing->setHeight(39);
+        $objDrawing->setCoordinates('B3');
+        $objDrawing->setWorksheet($excel->getActiveSheet());
+
+        $objDrawing = new PHPExcel_Worksheet_Drawing();
+        $objDrawing->setName('Data SDM Dan Umum');
+        $objDrawing->setDescription('Image footer');
+        $objDrawing->setPath('gambar\Footer.png');
+        $objDrawing->setHeight(31);
+        $objDrawing->setCoordinates('D17');
+        $objDrawing->setWorksheet($excel->getActiveSheet());
+
+        $excel->getActiveSheet()->setCellValue('E4', 'KARTU TANDA PENGENAL');
+        $excel->getActiveSheet()->getStyle('E4')->getFont()->setSize(10);
+        $excel->getActiveSheet()->getStyle('E4')->getFont()->setBold(true);
+        $excel->getSheet(0)->getStyle('E4')->getFont()->setUnderline(PHPExcel_Style_Font::UNDERLINE_SINGLE);
+
+        $excel->getActiveSheet()->setCellValue('B7', 'Nama');
+        $excel->getActiveSheet()->setCellValue('B8', 'No. Badge');
+        $excel->getActiveSheet()->setCellValue('B9', 'Sekolah/PT');
+        $excel->getActiveSheet()->setCellValue('B10', 'Masa Berlaku');
+        $excel->getActiveSheet()->setCellValue('D7', ':');
+        $excel->getActiveSheet()->setCellValue('D8', ':');
+        $excel->getActiveSheet()->setCellValue('D9', ':');
+        $excel->getActiveSheet()->setCellValue('D10', ':');
+        $excel->getActiveSheet()->setCellValue('E7', $nama);
+        $excel->getActiveSheet()->setCellValue('E8', $badge);
+        $excel->getActiveSheet()->setCellValue('E9', $institusi);
+        $excel->getActiveSheet()->setCellValue('E10', $waktu);
+
+        foreach (array('B7', 'B8', 'B9', 'B10', 'D7', 'D8', 'D9', 'D10', 'E7', 'E8', 'E9', 'E10') as $sel) {
+            $excel->getActiveSheet()->getStyle($sel)->getFont()->setSize(8);
+        }
+
+        $excel->getActiveSheet()->mergeCells('B12:B18');
+        $excel->getActiveSheet()->getStyle('B12:B18')->getAlignment()->applyFromArray(array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER));
+        $excel->getActiveSheet()->getStyle('B12:B18')->getAlignment()->applyFromArray(array('vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER));
+        $excel->getActiveSheet()->setCellValue('B12', 'Foto');
+
+        $excel->getActiveSheet()->mergeCells('D12:H12');
+        $excel->getActiveSheet()->getStyle('D12:H12')->getAlignment()->applyFromArray(array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER));
+        $excel->getActiveSheet()->setCellValue('D12', 'Peserta Magang');
+        $excel->getActiveSheet()->getStyle('D12')->getFont()->setSize(9);
+
+        $excel->getActiveSheet()->mergeCells('J12:K12');
+        $excel->getActiveSheet()->getStyle('J12:K12')->getAlignment()->applyFromArray(array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER));
+        $excel->getActiveSheet()->setCellValue('J12', 'Manager SDM & Umum');
+        $excel->getActiveSheet()->getStyle('J12')->getFont()->setSize(9);
+
+        $excel->getActiveSheet()->mergeCells('D15:H15');
+        $excel->getActiveSheet()->getStyle('D15:H15')->getAlignment()->applyFromArray(array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER));
+        $excel->getActiveSheet()->getStyle('D15:H15')->getAlignment()->applyFromArray(array('vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER));
+        $excel->getActiveSheet()->setCellValue('D15', $nama);
+        $excel->getActiveSheet()->getStyle('D15')->getFont()->setSize(9);
+
+        $excel->getActiveSheet()->mergeCells('J15:K15');
+        $excel->getActiveSheet()->getStyle('J15:K15')->getAlignment()->applyFromArray(array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER));
+        $excel->getActiveSheet()->getStyle('J15:K15')->getAlignment()->applyFromArray(array('vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER));
+        $excel->getActiveSheet()->setCellValue('J15', $this->model_prk_master->getPengaturan('surat_penandatangan_nama', '-'));
+        $excel->getActiveSheet()->getStyle('J15')->getFont()->setSize(9);
+
+        $excel->getActiveSheet()->getDefaultRowDimension()->setRowHeight(-1);
+        $excel->getActiveSheet(0)->setTitle('Kartu Siswa Magang');
+        $excel->setActiveSheetIndex(0);
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="Kartu Siswa Magang.xlsx"');
+        header('Cache-Control: max-age=0');
+        $write = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
+        $write->save('php://output');
     }
 
     // P5 - syarat umum + syarat khusus departemen.

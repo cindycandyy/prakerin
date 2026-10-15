@@ -134,9 +134,14 @@
                     <?php if ($status_l === 'accept' || $status_l === 'inactive') { ?>
                     <div class="panel-head" style="margin-top:14px;"><h2>Dokumen magang</h2></div>
                     <?php if ($surat) { ?>
-                    <a class="btn-outline" style="width:100%; text-align:center; box-sizing:border-box;" href="<?php echo base_url(); ?>pelamar/surat/<?php echo (int) $p->id; ?>/unduh">Unduh surat balasan</a>
+                    <a class="btn-outline" style="width:100%; text-align:center; box-sizing:border-box; margin-bottom:8px;" href="<?php echo base_url(); ?>pelamar/surat/<?php echo (int) $p->id; ?>/unduh">Unduh surat balasan</a>
                     <?php } else { ?>
                     <p class="field-note">Surat balasan belum tersedia.</p>
+                    <?php } ?>
+                    <?php if (!empty($p->no_pkl)) { ?>
+                    <a class="btn-outline" style="width:100%; text-align:center; box-sizing:border-box;" href="<?php echo base_url(); ?>pelamar/kartu/<?php echo (int) $p->id; ?>">Unduh kartu magang</a>
+                    <?php } else { ?>
+                    <p class="field-note">Kartu magang belum tersedia.</p>
                     <?php } ?>
                     <?php } ?>
                 </div>
