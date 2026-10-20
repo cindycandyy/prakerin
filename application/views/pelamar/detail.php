@@ -21,11 +21,21 @@
                 <?php icon_analisis('arrow-left', 16); ?> Kembali ke pengajuan saya
             </a>
 
-            <?php $CI = &get_instance();
-            if ($CI->session->flashdata('sukses')) { ?>
-            <div style="background:var(--hijau-100); color:var(--hijau-800); border-radius:10px; padding:12px 14px; font-size:12px;"><?php echo htmlspecialchars($CI->session->flashdata('sukses')); ?></div>
-            <?php } if ($CI->session->flashdata('error')) { ?>
-            <div style="background:var(--merah-100); color:var(--merah-700); border-radius:10px; padding:12px 14px; font-size:12px;"><?php echo htmlspecialchars($CI->session->flashdata('error')); ?></div>
+            <?php
+            // Flashdata CI3 dibaca lalu langsung dibuang manual (unset_userdata) --
+            // mengandalkan expiry otomatis "request berikutnya" membuat pesan lama bisa
+            // nyangkut ke halaman lain yang kebetulan dibuka sebelum generasi flashdata
+            // itu berputar, jadi pesan gagal dari percobaan sebelumnya ikut muncul lagi
+            // di halaman yang tidak terkait.
+            $CI = &get_instance();
+            $pesan_sukses = $CI->session->flashdata('sukses');
+            $pesan_error = $CI->session->flashdata('error');
+            $CI->session->unset_userdata('sukses');
+            $CI->session->unset_userdata('error');
+            if ($pesan_sukses) { ?>
+            <div style="background:var(--hijau-100); color:var(--hijau-800); border-radius:10px; padding:12px 14px; font-size:12px;"><?php echo htmlspecialchars($pesan_sukses); ?></div>
+            <?php } if ($pesan_error) { ?>
+            <div style="background:var(--merah-100); color:var(--merah-700); border-radius:10px; padding:12px 14px; font-size:12px;"><?php echo htmlspecialchars($pesan_error); ?></div>
             <?php }
 
             $status_l = strtolower($p->status);
@@ -72,33 +82,12 @@
                     </div>
 
                     <?php if ($status_l === 'pending') { ?>
-                    <form method="post" action="<?php echo base_url(); ?>pelamar/pengajuan/<?php echo (int) $p->id; ?>/ubah" style="margin-top:16px;">
-                        <div class="form-grid">
-                            <div><label class="field-label">Alamat</label><input class="field-input" name="alamat" value="<?php echo htmlspecialchars($p->alamat); ?>"></div>
-                            <div><label class="field-label">Telepon</label><input class="field-input" name="telp" value="<?php echo htmlspecialchars($p->telp); ?>"></div>
-                            <div><label class="field-label">Email</label><input class="field-input" type="email" name="email" value="<?php echo htmlspecialchars($p->email); ?>"></div>
-                            <div><label class="field-label">Pembimbing</label><input class="field-input" name="pembimbing" value="<?php echo htmlspecialchars($p->pembimbing); ?>"></div>
-                        </div>
-                        <input type="hidden" name="kegiatan" value="<?php echo htmlspecialchars($p->kegiatan); ?>">
-                        <input type="hidden" name="nama" value="<?php echo htmlspecialchars($p->nama); ?>">
-                        <input type="hidden" name="jk" value="<?php echo htmlspecialchars($p->jk); ?>">
-                        <input type="hidden" name="tmpt_lahir" value="<?php echo htmlspecialchars($p->tmpt_lahir); ?>">
-                        <input type="hidden" name="tgl_lahir" value="<?php echo htmlspecialchars($p->tgl_lahir); ?>">
-                        <input type="hidden" name="nm_ortu" value="<?php echo htmlspecialchars($p->nm_ortu); ?>">
-                        <input type="hidden" name="hp_ortu" value="<?php echo htmlspecialchars($p->hp_ortu); ?>">
-                        <input type="hidden" name="pendidikan" value="<?php echo htmlspecialchars($p->pendidikan); ?>">
-                        <input type="hidden" name="jurusan" value="<?php echo htmlspecialchars($p->jurusan); ?>">
-                        <input type="hidden" name="institusi" value="<?php echo htmlspecialchars($p->institusi); ?>">
-                        <input type="hidden" name="almt_institusi" value="<?php echo htmlspecialchars($p->almt_institusi); ?>">
-                        <input type="hidden" name="id_depag" value="<?php echo (int) $p->id_depag; ?>">
-                        <input type="hidden" name="hp_pembimbing" value="<?php echo htmlspecialchars($p->hp_pembimbing); ?>">
-                        <input type="hidden" name="tgl_mulai" value="<?php echo htmlspecialchars($p->tgl_mulai); ?>">
-                        <input type="hidden" name="tgl_selesai" value="<?php echo htmlspecialchars($p->tgl_selesai); ?>">
-                        <button type="submit" class="btn-outline">Simpan perubahan</button>
-                    </form>
-                    <form method="post" action="<?php echo base_url(); ?>pelamar/pengajuan/<?php echo (int) $p->id; ?>/batal" style="margin-top:10px;" onsubmit="return confirm('Batalkan pengajuan ini?');">
-                        <button type="submit" class="btn-outline" style="color:var(--merah-700); border-color:var(--merah-100);">Batalkan pengajuan</button>
-                    </form>
+                    <div style="background:var(--abu-100); border-radius:10px; padding:14px 16px; margin-top:20px;">
+                        <p class="field-note" style="margin:0;">Data pengajuan terkunci sejak dikirim dan tidak dapat diubah. Apabila terdapat kesalahan, silakan batalkan pengajuan ini dan ajukan kembali dengan data yang benar.</p>
+                        <form method="post" action="<?php echo base_url(); ?>pelamar/pengajuan/<?php echo (int) $p->id; ?>/batal" id="form-batal" style="margin-top:14px;">
+                            <button type="button" class="btn-bahaya" id="btn-batal-buka">Batalkan Pengajuan</button>
+                        </form>
+                    </div>
                     <?php } ?>
                 </div>
 
@@ -109,7 +98,11 @@
                         'doc_5' => 'Kartu asuransi', 'doc_6' => 'Kartu pelajar', 'doc_7' => 'Surat pernyataan', 'foto' => 'Foto');
                     foreach ($label as $slot => $nama_label) {
                         $ada = !empty($p->{$slot});
-                        $bisa_ganti = $status_l === 'pending' || ($status_l === 'accept' && $slot === 'doc_7' && !$ada);
+                        // Pending: berkas terkunci sejak dikirim, sama seperti data. Satu-satunya
+                        // pengecualian: doc_7 (surat pernyataan) masih boleh DILENGKAPI setelah
+                        // Accept kalau belum pernah ada -- itu bukan "mengganti", tapi menambah
+                        // dokumen yang memang belum diminta saat Pending.
+                        $bisa_ganti = ($status_l === 'accept' && $slot === 'doc_7' && !$ada);
                     ?>
                     <div class="berkas-kartu">
                         <span class="berkas-kartu-icon"><?php icon_analisis($slot === 'foto' ? 'image' : 'file-text', 16); ?></span>
@@ -149,6 +142,44 @@
         </main>
     </div>
 </div>
+
+<?php if ($status_l === 'pending') { ?>
+<div id="modal-batal" class="modal-overlay" style="display:none;">
+    <div class="modal-kartu">
+        <h3>Batalkan Pengajuan Ini?</h3>
+        <p class="field-note" style="margin-top:6px;">Pengajuan akan ditandai sebagai dibatalkan dan tidak dapat dipulihkan. Pengajuan baru dapat diajukan kembali kapan saja.</p>
+        <div class="footer-aksi" style="margin-top:16px;">
+            <button type="button" class="btn-outline" id="modal-batal-batal">Batal</button>
+            <button type="button" class="btn-bahaya" id="modal-batal-ok">Batalkan Pengajuan</button>
+        </div>
+    </div>
+</div>
+<script>
+(function () {
+    var modal = document.getElementById('modal-batal');
+    function buka() {
+        modal.style.display = 'flex';
+        requestAnimationFrame(function () { modal.classList.add('tampil'); });
+    }
+    function tutup() {
+        modal.classList.remove('tampil');
+        setTimeout(function () { modal.style.display = 'none'; }, 150);
+    }
+    document.getElementById('btn-batal-buka').addEventListener('click', buka);
+    document.getElementById('modal-batal-batal').addEventListener('click', tutup);
+    document.getElementById('modal-batal-ok').addEventListener('click', function () {
+        document.getElementById('form-batal').submit();
+    });
+})();
+</script>
+<?php } ?>
+    <?php if ($CI->session->flashdata('sukses')) { ?>
+    <script>
+    // Pengajuan baru berhasil terkirim -- draf wizard (termasuk posisi langkah)
+    // tidak dibutuhkan lagi, bersihkan supaya pengajuan berikutnya mulai kosong.
+    try { localStorage.removeItem('pelamar_draf_daftar'); } catch (e) {}
+    </script>
+    <?php } ?>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/js/analisis-form.js"></script>
 </body>

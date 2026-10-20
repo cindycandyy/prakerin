@@ -33,6 +33,10 @@ if (!function_exists('icon_analisis')) {
             'user' => '<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
             'log-out' => '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/>',
             'upload' => '<path d="M12 3v12"/><path d="m17 8-5-5-5 5"/><path d="M6 21h12a2 2 0 0 0 2-2v-5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2Z" fill="none"/>',
+            'linkedin' => '<path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/>',
+            'instagram' => '<rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>',
+            'twitter' => '<path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5 2 12.9 2 10c1.5.9 3.2 1.5 5 1.5-3.6-2.7-3.9-7.2-1.6-9.5C9.6 5.8 13.4 7.6 17 8c-.1-2.9 2.9-5.1 6-3.5z"/>',
+            'tiktok' => '<path d="M9 12a4 4 0 1 0 4 4V4c.8 2.3 2.7 4 5 4"/>',
         );
         if (!isset($paths[$nama])) {
             return;

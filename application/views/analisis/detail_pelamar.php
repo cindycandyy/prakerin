@@ -41,7 +41,9 @@
             border-top: 1px solid var(--abu-100); margin-top: 18px; padding-top: 14px; font-size: 12px;
         }
         .profil-footer-lbl { font-weight: 600; color: var(--abu-900); margin-bottom: 4px; }
-        .sosmed-list { color: var(--abu-600); font-size: 12px; }
+        .sosmed-list { color: var(--abu-600); font-size: 12px; display: flex; flex-wrap: wrap; align-items: center; }
+        .sosmed-item { display: inline-flex; align-items: center; gap: 5px; }
+        .sosmed-item svg { flex-shrink: 0; }
         .sosmed-item a { color: var(--hijau-700); font-weight: 600; }
         .sosmed-item a:hover { text-decoration: underline; }
         .sosmed-item.kosong { color: var(--abu-400, #a8b3af); }
@@ -263,14 +265,14 @@
                 </div>
                 <div class="profil-footer">
                     <?php
-                    // Daftar contoh/ilustrasi (Tahap 1). Platform yang tidak diisi
-                    // pelamar tetap ditampilkan tapi abu-abu, bukan dihilangkan.
-                    // url_dasar menyusun link profil asli dari handle yang tersimpan.
+                    // Link diisi pelamar sendiri saat mendaftar (pkl_data.sosmed_*, opsional --
+                    // lihat Pelamar::daftar()). Platform yang tidak diisi tetap ditampilkan
+                    // abu-abu, bukan dihilangkan, supaya HR tahu ada 4 platform yang didukung.
                     $sosmed = array(
-                        'LinkedIn' => array('akun' => 'linkedin.com/in/ayu-putri-lestari', 'url_dasar' => 'https://'),
-                        'Instagram' => array('akun' => '@ayu.lestari', 'url_dasar' => 'https://instagram.com/'),
-                        'TikTok' => array('akun' => '', 'url_dasar' => 'https://tiktok.com/@'),
-                        'Twitter' => array('akun' => '', 'url_dasar' => 'https://twitter.com/'),
+                        'LinkedIn' => array('ikon' => 'linkedin', 'url' => $pelamar->sosmed_linkedin),
+                        'Instagram' => array('ikon' => 'instagram', 'url' => $pelamar->sosmed_instagram),
+                        'TikTok' => array('ikon' => 'tiktok', 'url' => $pelamar->sosmed_tiktok),
+                        'Twitter' => array('ikon' => 'twitter', 'url' => $pelamar->sosmed_twitter),
                     );
                     ?>
                     <div class="profil-footer-lbl">Media sosial</div>
@@ -278,14 +280,13 @@
                         <?php
                         $i = 0;
                         foreach ($sosmed as $platform => $s) {
-                            $akun = $s['akun'];
-                            $handle = ltrim($akun, '@');
                             if ($i > 0) { echo '<span class="sosmed-sep">·</span>'; }
                             $i++;
                         ?>
-                            <span class="sosmed-item <?php echo $akun ? '' : 'kosong'; ?>">
-                                <?php if ($akun) { ?>
-                                    <a href="<?php echo htmlspecialchars($s['url_dasar'] . $handle); ?>" target="_blank" rel="noopener"><?php echo $platform; ?></a>
+                            <span class="sosmed-item <?php echo $s['url'] ? '' : 'kosong'; ?>">
+                                <?php icon_analisis($s['ikon'], 13); ?>
+                                <?php if ($s['url']) { ?>
+                                    <a href="<?php echo htmlspecialchars($s['url']); ?>" target="_blank" rel="noopener"><?php echo $platform; ?></a>
                                 <?php } else { ?>
                                     <?php echo $platform; ?>
                                 <?php } ?>

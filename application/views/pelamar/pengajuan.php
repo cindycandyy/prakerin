@@ -18,7 +18,7 @@
         <?php $breadcrumb_akhir = 'Pengajuan saya'; include APPPATH . 'views/pelamar/_topbar.php'; ?>
         <main class="content">
             <div class="page-head">
-                <div><h1>Pengajuan saya</h1><p>Semua pengajuan magang/penelitian yang pernah kamu kirim.</p></div>
+                <div><h1>Pengajuan Saya</h1><p>Seluruh pengajuan magang atau penelitian yang telah dikirim.</p></div>
                 <a class="btn-primary" href="<?php echo base_url(); ?>pelamar/daftar">Ajukan magang baru</a>
             </div>
 

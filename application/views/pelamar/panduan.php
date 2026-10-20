@@ -34,14 +34,14 @@
                 <div class="panel-head"><h2>Format proposal (wajib dibaca)</h2></div>
                 <p class="panel-sub">Proposal dibaca otomatis oleh sistem untuk menilai kecocokan divisi, pakai struktur bab di bawah ini dengan judul bab persis seperti tertulis, supaya terbaca benar.</p>
                 <ul style="font-size:12px; color:var(--abu-900); margin:0; padding-left:18px; line-height:1.9;">
-                    <li><strong>Halaman sampul</strong>: tulis "Proposal [judul topik PKL/penelitianmu]" di baris pertama.</li>
-                    <li><strong>Bab/bagian "Latar Belakang"</strong>: alasan memilih bidang/divisi ini.</li>
-                    <li><strong>Bab/bagian "Tujuan"</strong>: tujuan PKL/penelitianmu secara spesifik (bukan "Tujuan Sekolah").</li>
-                    <li><strong>Bab/bagian "Ruang Lingkup" atau "Bidang PKL"/"Bidang Kerja"</strong>: jelaskan bidang kerja yang diminati, dan sebutkan nama tools/software/alat/metode yang kamu kuasai secara eksplisit (mis. "AutoCAD", "Python", "HPLC", "SAP"), bukan hanya kategori umum seperti "komputer".</li>
-                    <li><strong>Bab/bagian "Objek PKL"</strong> (boleh di tabel surat permohonan): nama bagian/divisi atau proses yang ingin dipelajari.</li>
-                    <li><strong>Bab/bagian "Mata Kuliah"</strong>: daftar mata kuliah/pelajaran relevan dengan bidang yang dituju, satu per baris.</li>
+                    <li><strong>Halaman sampul</strong>: cantumkan "Proposal [judul topik PKL/penelitian]" pada baris pertama.</li>
+                    <li><strong>Bab/bagian "Latar Belakang"</strong>: alasan pemilihan bidang atau divisi tersebut.</li>
+                    <li><strong>Bab/bagian "Tujuan"</strong>: tujuan PKL/penelitian secara spesifik (bukan "Tujuan Sekolah").</li>
+                    <li><strong>Bab/bagian "Ruang Lingkup" atau "Bidang PKL"/"Bidang Kerja"</strong>: jelaskan bidang kerja yang diminati, serta sebutkan nama tools, software, alat, atau metode yang dikuasai secara eksplisit (mis. "AutoCAD", "Python", "HPLC", "SAP"), bukan hanya kategori umum seperti "komputer".</li>
+                    <li><strong>Bab/bagian "Objek PKL"</strong> (dapat dicantumkan pada tabel surat permohonan): nama bagian, divisi, atau proses yang ingin dipelajari.</li>
+                    <li><strong>Bab/bagian "Mata Kuliah"</strong>: daftar mata kuliah atau pelajaran yang relevan dengan bidang yang dituju, satu per baris.</li>
                 </ul>
-                <p class="field-note" style="margin-top:10px;">Skor kecocokan dihitung dari 4 hal: kesesuaian jurusan, tools/nilai relevan yang disebutkan, topik proposal, dan ketersediaan kuota divisi. Makin spesifik proposalnya, makin akurat rekomendasi HR.</p>
+                <p class="field-note" style="margin-top:10px;">Skor kecocokan dihitung berdasarkan empat faktor: kesesuaian jurusan, tools/nilai relevan yang disebutkan, topik proposal, dan ketersediaan kuota divisi. Semakin spesifik proposal yang disusun, semakin akurat rekomendasi yang dihasilkan untuk HR.</p>
             </div>
 
             <div class="panel">

@@ -104,8 +104,8 @@ class Cli_analisis extends CI_Controller {
                 // spesifikasi sisi pelamar), dengan tautan ke form daftar ulang,
                 // bukan ke halaman detail HR yang tidak bisa dia buka.
                 $this->model_prk_notifikasi->buat(
-                    $lewat ? 'lewat' : 'mepet', $p->id, 'Pengajuan ditolak otomatis',
-                    'Tanggal mulai terlalu dekat/sudah lewat. Silakan ajukan ulang dengan jadwal baru.',
+                    $lewat ? 'lewat' : 'mepet', $p->id, 'Pengajuan Ditolak Secara Otomatis',
+                    'Tanggal mulai terlalu dekat dengan hari ini atau telah terlewat. Silakan ajukan kembali dengan jadwal baru.',
                     base_url() . 'pelamar/daftar',
                     'pelamar_' . ($lewat ? 'lewat' : 'mepet') . ':' . $p->id . ':' . date('Y-m-d'),
                     null, 'pelamar', $p->user_id
@@ -173,8 +173,8 @@ class Cli_analisis extends CI_Controller {
             }
             // Pelamar juga diberi tahu (bagian B7 spesifikasi sisi pelamar).
             $this->model_prk_notifikasi->buat(
-                'hari_h', $p->id, 'Magang berakhir hari ini',
-                'Magangmu resmi berakhir hari ini (' . date('d M Y', strtotime($p->tgl_selesai)) . ').',
+                'hari_h', $p->id, 'Magang Telah Berakhir',
+                'Masa magang Anda resmi berakhir hari ini (' . date('d M Y', strtotime($p->tgl_selesai)) . ').',
                 base_url() . 'pelamar/pengajuan/' . $p->id,
                 'pelamar_hari_h:' . $p->id . ':' . $hari_ini,
                 null, 'pelamar', $p->user_id

@@ -1,7 +1,5 @@
-INFO:     Started server process [72836]
+INFO:     Started server process [25344]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://127.0.0.1:8001 (Press CTRL+C to quit)
-[ WARN:0@129.167] global net_impl_backend.cpp:345 cv::dnn::dnn5_v20260605::Net::Impl::setPreferableTarget Targets are not supported by the new graph engine for now
-Corrupt JPEG data: premature end of data segment
-Corrupt JPEG data: 67 extraneous bytes before marker 0xf0
+[ WARN:0@2912.238] global net_impl_backend.cpp:345 cv::dnn::dnn5_v20260605::Net::Impl::setPreferableTarget Targets are not supported by the new graph engine for now

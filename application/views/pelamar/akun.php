@@ -37,13 +37,13 @@
                 </div>
 
                 <div class="panel">
-                    <div class="panel-head"><h2>Ganti password</h2></div>
+                    <div class="panel-head"><h2>Ubah Kata Sandi</h2></div>
                     <form method="post" action="<?php echo base_url(); ?>pelamar/akun/ganti_password">
-                        <label class="field-label">Password lama</label>
+                        <label class="field-label">Kata Sandi Lama</label>
                         <input class="field-input" type="password" name="password_lama" required style="margin-bottom:12px;">
-                        <label class="field-label">Password baru (minimal 8 karakter)</label>
+                        <label class="field-label">Kata Sandi Baru (minimal 8 karakter)</label>
                         <input class="field-input" type="password" name="password_baru" minlength="8" required style="margin-bottom:12px;">
-                        <button type="submit" class="btn-primary">Simpan password baru</button>
+                        <button type="submit" class="btn-primary">Simpan Kata Sandi Baru</button>
                     </form>
                 </div>
             </div>

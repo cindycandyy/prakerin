@@ -14,6 +14,7 @@
     .btn-primary { background: var(--hijau-700); color: #fff; border: none; border-radius: 8px; padding: 10px 18px; font-size: 13px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-block; }
     .btn-primary:disabled { background: var(--abu-100); color: var(--abu-400); cursor: not-allowed; }
     .btn-outline { background: #fff; border: 1px solid var(--abu-200); color: var(--abu-900); border-radius: 8px; padding: 10px 18px; font-size: 13px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-block; }
+    .btn-bahaya { background: var(--merah-700); color: #fff; border: none; border-radius: 8px; padding: 10px 18px; font-size: 13px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-block; }
     .field-label { font-size: 12px; font-weight: 600; margin-bottom: 6px; display: block; }
     .field-input, .field-select, .field-textarea { width: 100%; box-sizing: border-box; border: 1px solid var(--abu-200); border-radius: 8px; padding: 9px 12px; font-size: 12px; font-family: inherit; height: 36px; background: #fff; color: var(--abu-900); }
     .field-input:focus, .field-select:focus, .field-textarea:focus { outline: none; border-color: var(--hijau-700); box-shadow: 0 0 0 3px var(--hijau-100); }
@@ -21,6 +22,11 @@
     .field-select { appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23667a73' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 32px; cursor: pointer; }
     .field-input[type="date"] { cursor: pointer; }
     .field-input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity: .6; }
+
+    /* ---- input dengan ikon platform di kiri (link sosmed) ---- */
+    .field-icon-wrap { position: relative; }
+    .field-icon-wrap .field-icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--abu-600); display: flex; pointer-events: none; }
+    .field-icon-wrap .field-input { padding-left: 36px; }
     .field-note { font-size: 11px; color: var(--abu-600); margin: 4px 0 0; }
     .field-error { font-size: 11px; color: var(--merah-700); margin: 4px 0 0; }
     .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
@@ -57,4 +63,6 @@
     }
     .modal-overlay.tampil .modal-kartu { transform: translateY(0); }
     .modal-kartu h3 { font-size: 16px; font-weight: 700; color: var(--abu-900); margin: 0; }
+    .modal-kartu .footer-aksi { display: flex; gap: 10px; }
+    .modal-kartu .footer-aksi button { flex: 1; text-align: center; }
 </style>

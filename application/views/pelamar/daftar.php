@@ -21,7 +21,7 @@
     <div class="main">
         <?php $breadcrumb_akhir = 'Daftar magang'; include APPPATH . 'views/pelamar/_topbar.php'; ?>
         <main class="content">
-            <div class="page-head"><div><h1>Daftar magang/penelitian</h1><p>Lengkapi 4 langkah berikut. Isian tersimpan otomatis di perangkatmu.</p></div></div>
+            <div class="page-head"><div><h1>Daftar Magang/Penelitian</h1><p>Lengkapi empat langkah berikut. Isian akan tersimpan secara otomatis pada perangkat ini.</p></div></div>
 
             <?php $CI = &get_instance(); if ($CI->session->flashdata('error')) { ?>
             <div style="background:var(--merah-100); color:var(--merah-700); border-radius:10px; padding:12px 14px; font-size:12px;"><?php echo htmlspecialchars($CI->session->flashdata('error')); ?></div>
@@ -65,13 +65,13 @@
                                 <p class="field-note">Paling cepat mulai <?php echo tanggal_indo(date('Y-m-d', strtotime('+' . ($ambang_mepet_hari + 1) . ' days'))); ?>.</p>
                             </div>
                             <div><label class="field-label wajib">Tanggal selesai</label><input class="field-input" type="date" name="tgl_selesai" data-link-min-from="tgl_mulai" required>
-                                <p class="field-note">Durasi 30–180 hari.</p>
+                                <p class="field-note">Durasi minimal 30 hari.</p>
                             </div>
                         </div>
                     </div>
 
                     <?php if ($salinan) { ?>
-                    <div class="field-note" style="background:var(--hijau-100); color:var(--hijau-800); border-radius:10px; padding:10px 12px; margin-bottom:16px;">Biodata dan pendidikan disalin dari pengajuanmu sebelumnya. Periksa kembali sebelum mengirim.</div>
+                    <div class="field-note" style="background:var(--hijau-100); color:var(--hijau-800); border-radius:10px; padding:10px 12px; margin-bottom:16px;">Biodata dan data pendidikan disalin dari pengajuan sebelumnya. Mohon periksa kembali sebelum mengirim.</div>
                     <?php } ?>
 
                     <div class="langkah" data-langkah="2">
@@ -108,18 +108,39 @@
                             <div><label class="field-label wajib">Pembimbing</label><input class="field-input" name="pembimbing" value="<?php echo $salinan ? htmlspecialchars($salinan->pembimbing) : ''; ?>" required></div>
                             <div><label class="field-label wajib">HP pembimbing</label><input class="field-input" name="hp_pembimbing" value="<?php echo $salinan ? htmlspecialchars($salinan->hp_pembimbing) : ''; ?>" required></div>
                         </div>
+
+                        <label class="field-label" style="margin-top:10px;">Media sosial (opsional)</label>
+                        <p class="field-note" style="margin-bottom:10px;">Tempel link profil lengkap, bukan username.</p>
+                        <div class="form-grid">
+                            <?php
+                            $sosmed_input = array(
+                                'sosmed_linkedin' => array('linkedin', 'LinkedIn', 'https://linkedin.com/in/namamu'),
+                                'sosmed_instagram' => array('instagram', 'Instagram', 'https://instagram.com/namamu'),
+                                'sosmed_tiktok' => array('tiktok', 'TikTok', 'https://tiktok.com/@namamu'),
+                                'sosmed_twitter' => array('twitter', 'Twitter/X', 'https://twitter.com/namamu'),
+                            );
+                            foreach ($sosmed_input as $nama_field => $info) { ?>
+                            <div>
+                                <label class="field-label"><?php echo $info[1]; ?></label>
+                                <div class="field-icon-wrap">
+                                    <span class="field-icon"><?php icon_analisis($info[0], 15); ?></span>
+                                    <input class="field-input" type="url" name="<?php echo $nama_field; ?>" placeholder="<?php echo $info[2]; ?>" value="<?php echo $salinan ? htmlspecialchars($salinan->{$nama_field} ?: '') : ''; ?>">
+                                </div>
+                            </div>
+                            <?php } ?>
+                        </div>
                     </div>
 
                     <div class="langkah" data-langkah="4">
                         <?php
                         $berkas_input = array(
                             'file_1' => array('Surat pengantar', 'application/pdf,.pdf', null),
-                            'file_2' => array('Proposal', 'application/pdf,.pdf', 'Gunakan struktur bab baku (Latar Belakang, Tujuan, Ruang Lingkup/Bidang PKL, Mata Kuliah, Objek PKL) dan sebutkan tools/software yang dikuasai, sistem membaca proposal untuk menilai kecocokan divisi. Lihat <a href="' . base_url() . 'pelamar/panduan" target="_blank" style="color:var(--hijau-700); font-weight:600;">format lengkap di Syarat &amp; panduan</a>.'),
+                            'file_2' => array('Proposal', 'application/pdf,.pdf', 'Gunakan struktur bab baku (Latar Belakang, Tujuan, Ruang Lingkup/Bidang PKL, Mata Kuliah, Objek PKL) dan cantumkan tools/software yang dikuasai. Proposal akan dibaca sistem untuk menilai kecocokan divisi. Lihat <a href="' . base_url() . 'pelamar/panduan" target="_blank" style="color:var(--hijau-700); font-weight:600;">format lengkap pada Syarat &amp; Panduan</a>.'),
                             'file_3' => array('Transkrip', 'application/pdf,.pdf', null),
                             'file_5' => array('Kartu asuransi', 'application/pdf,.pdf', null),
                             'file_6' => array('Kartu pelajar', 'application/pdf,.pdf', null),
                             'file_7' => array('Surat pernyataan', 'application/pdf,.pdf', null),
-                            'foto' => array('Foto (JPG, maks 2MB)', '.jpg,.jpeg', 'Foto terbaru, formal, setengah badan (bukan close-up wajah). Bukan foto KTM/kartu pelajar, dan bukan hasil AI/edit berlebihan.'),
+                            'foto' => array('Foto (JPG/PNG, maks 2MB)', '.jpg,.jpeg,.png', 'Foto terbaru, formal, setengah badan (bukan close-up wajah). Bukan foto KTM/kartu pelajar, dan bukan hasil AI/edit berlebihan.'),
                         );
                         foreach ($berkas_input as $input_name => $info) { ?>
                         <div class="berkas-kartu" style="align-items:flex-start;">
@@ -132,7 +153,7 @@
                                 <?php } ?>
                             </div>
                             <label class="btn-outline" style="padding:6px 10px; font-size:11px; cursor:pointer; flex-shrink:0;">
-                                Pilih <?php echo $input_name === 'foto' ? 'JPG' : 'PDF'; ?>
+                                Pilih <?php echo $input_name === 'foto' ? 'foto' : 'PDF'; ?>
                                 <input type="file" name="<?php echo $input_name; ?>" accept="<?php echo $info[1]; ?>" required style="display:none;"
                                     onchange="document.querySelector('[data-nama-file=\'<?php echo $input_name; ?>\']').textContent = this.files[0] ? this.files[0].name : 'Belum diunggah'; this.closest('.berkas-kartu').classList.remove('field-invalid');">
                             </label>
@@ -143,8 +164,8 @@
                         <div id="kartu-persetujuan" class="berkas-kartu" style="align-items:flex-start; cursor:pointer;" onclick="if(event.target.tagName!=='INPUT'){document.getElementById('cek-persetujuan').click();}">
                             <input type="checkbox" id="cek-persetujuan" name="persetujuan_privasi" value="1" style="margin-top:2px; width:16px; height:16px; flex-shrink:0;" onchange="this.closest('.berkas-kartu').classList.remove('field-invalid');">
                             <div style="flex:1;">
-                                <div class="berkas-kartu-nama">Saya menyetujui analisis otomatis dokumen</div>
-                                <div class="field-note" style="margin-top:4px;">Proposal dan transkrip yang diunggah akan dibaca otomatis oleh sistem untuk membantu HR menilai kecocokan divisi. Data lain hanya dilihat HR secara manual.</div>
+                                <div class="berkas-kartu-nama">Saya menyetujui analisis otomatis terhadap dokumen yang diunggah</div>
+                                <div class="field-note" style="margin-top:4px;">Proposal dan transkrip akan dibaca secara otomatis oleh sistem untuk membantu HR menilai kecocokan divisi. Dokumen lainnya akan ditinjau secara manual oleh HR.</div>
                             </div>
                         </div>
                     </div>
@@ -162,8 +183,8 @@
 
 <div id="modal-kirim" class="modal-overlay" style="display:none;">
     <div class="modal-kartu">
-        <h3>Kirim pengajuan ini?</h3>
-        <p class="field-note" style="margin-top:6px;">Data tidak bisa diubah lagi setelah diproses HR.</p>
+        <h3>Kirim Pengajuan Ini?</h3>
+        <p class="field-note" style="margin-top:6px;">Data dan berkas akan terkunci segera setelah pengajuan dikirim dan tidak dapat diubah kembali.</p>
         <div class="footer-aksi" style="margin-top:16px;">
             <button type="button" class="btn-outline" id="modal-kirim-batal">Batal</button>
             <button type="button" class="btn-primary" id="modal-kirim-ok">Kirim</button>
@@ -279,7 +300,12 @@
     document.getElementById('modal-kirim-ok').addEventListener('click', function () {
         sudahDikonfirmasi = true;
         tutupModal();
-        try { localStorage.removeItem(KUNCI_DRAF); } catch (e2) {}
+        // Draf TIDAK dihapus di sini -- kalau server menolak pengajuan (mis. berkas
+        // tidak valid), halaman ini dimuat ulang dan draf harus tetap ada supaya
+        // langkah 1-3 tidak perlu diisi ulang. Draf baru dihapus setelah submit
+        // benar-benar sukses, lewat script di pelamar/detail.php yang jalan saat
+        // mendarat di halaman pengajuan baru (ditandai flashdata sukses).
+        simpanDraf();
         form.submit();
     });
 

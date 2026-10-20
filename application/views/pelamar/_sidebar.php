@@ -33,8 +33,8 @@ $halaman_aktif = isset($halaman_aktif) ? $halaman_aktif : '';
 
     <div class="sidebar-note">
         <?php icon_analisis('shield-check', 18); ?>
-        <strong>Datamu aman</strong>
-        <p>Hanya kamu dan HR yang bisa melihat pengajuanmu.</p>
+        <strong>Data Anda aman</strong>
+        <p>Hanya Anda dan HR yang dapat melihat pengajuan ini.</p>
     </div>
 
     <div>

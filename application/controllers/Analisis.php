@@ -330,8 +330,8 @@ class Analisis extends CI_Controller {
             'terima:' . $id . ':' . date('Y-m-d H:i:s')
         );
         $this->model_prk_notifikasi->buat(
-            'diterima', $id, 'Pengajuanmu diterima',
-            'Selamat! Periode magang ' . tanggal_indo($pelamar->tgl_mulai) . ' - ' . tanggal_indo($pelamar->tgl_selesai) . '.',
+            'diterima', $id, 'Pengajuan Anda Diterima',
+            'Selamat, pengajuan Anda telah diterima. Periode magang: ' . tanggal_indo($pelamar->tgl_mulai) . ' - ' . tanggal_indo($pelamar->tgl_selesai) . '.',
             base_url() . 'pelamar/pengajuan/' . $id,
             'pelamar_diterima:' . $id . ':' . date('Y-m-d H:i:s'),
             null, 'pelamar', $pelamar->user_id

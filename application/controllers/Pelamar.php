@@ -14,6 +14,11 @@ class Pelamar extends CI_Controller {
     const WHITELIST_UBAH = array('kegiatan', 'nama', 'alamat', 'jk', 'tmpt_lahir', 'tgl_lahir',
         'nm_ortu', 'hp_ortu', 'telp', 'email', 'pendidikan', 'jurusan', 'institusi',
         'almt_institusi', 'id_depag', 'pembimbing', 'hp_pembimbing', 'tgl_mulai', 'tgl_selesai');
+    // Link sosmed (opsional, bagian "Media sosial" di Halaman B HR -- detail_pelamar.php):
+    // domain wajib cocok nama platform supaya link yang disalin memang punya akun itu,
+    // bukan link asal.
+    const SOSMED_DOMAIN = array('sosmed_linkedin' => 'linkedin.com', 'sosmed_instagram' => 'instagram.com',
+        'sosmed_tiktok' => 'tiktok.com', 'sosmed_twitter' => array('twitter.com', 'x.com'));
 
     protected $user_id;
 
@@ -75,37 +80,24 @@ class Pelamar extends CI_Controller {
     }
 
     // POST /pelamar/pengajuan/{id}/ubah - whitelist kolom (B6), hanya saat Pending.
+    // Data pengajuan terkunci sejak dikirim (tidak ada status yang mengizinkan ubah
+    // lagi) -- pelamar yang salah isi wajib batal() lalu ajukan ulang. Endpoint ini
+    // sengaja ditutup total, bukan dihapus, supaya POST langsung ke URL lama tetap
+    // ditolak dengan pesan jelas alih-alih 404.
     function ubah($id = null) {
         $p = $this->model_pelamar->getPengajuanMilik($id, $this->user_id);
         if (!$p) {
             show_404();
         }
-        if (strtolower($p->status) !== 'pending') {
-            $this->session->set_flashdata('error', 'Data hanya bisa diubah selagi status masih menunggu keputusan.');
-            redirect(base_url() . 'pelamar/pengajuan/' . $id);
-            return;
-        }
-
-        $data = array();
-        foreach (self::WHITELIST_UBAH as $kolom) {
-            if ($this->input->post($kolom) !== null) {
-                $data[$kolom] = trim((string) $this->input->post($kolom));
-            }
-        }
-        $error = $this->_validasiData($data, $p);
-        if ($error) {
-            $this->session->set_flashdata('error', $error);
-            redirect(base_url() . 'pelamar/pengajuan/' . $id);
-            return;
-        }
-
-        $this->model_pelamar->ubah($id, $this->user_id, $data);
-        $this->session->set_flashdata('sukses', 'Data pengajuan tersimpan.');
+        $this->session->set_flashdata('error', 'Data pengajuan terkunci sejak dikirim dan tidak dapat diubah. Batalkan pengajuan ini untuk mengajukan kembali.');
         redirect(base_url() . 'pelamar/pengajuan/' . $id);
     }
 
-    // POST /pelamar/pengajuan/{id}/berkas/{slot} - ganti satu dokumen. Pending untuk
-    // doc_1,2,3,5,6,7,foto; Accept khusus doc_7 kalau belum ada (unggah surat pernyataan).
+    // POST /pelamar/pengajuan/{id}/berkas/{slot} - berkas terkunci sejak dikirim,
+    // sama seperti data (lihat ubah()). Satu-satunya pengecualian: doc_7 (surat
+    // pernyataan) boleh DILENGKAPI setelah Accept kalau belum pernah diunggah --
+    // itu bukan "mengganti" berkas yang sudah dikirim, melainkan melengkapi dokumen
+    // yang memang belum diminta saat Pending.
     function berkas($id = null, $slot = null) {
         $p = $this->model_pelamar->getPengajuanMilik($id, $this->user_id);
         if (!$p || !in_array($slot, self::BERKAS_SLOT, true)) {
@@ -113,18 +105,16 @@ class Pelamar extends CI_Controller {
         }
 
         $status = strtolower($p->status);
-        if ($status === 'pending') {
-            // semua slot boleh
-        } else if ($status === 'accept' && $slot === 'doc_7' && empty($p->doc_7)) {
+        if ($status === 'accept' && $slot === 'doc_7' && empty($p->doc_7)) {
             // unggah surat pernyataan pertama kali
         } else {
-            $this->session->set_flashdata('error', 'Berkas ini tidak bisa diganti pada status pengajuan saat ini.');
+            $this->session->set_flashdata('error', 'Berkas ini tidak dapat diganti pada status pengajuan saat ini.');
             redirect(base_url() . 'pelamar/pengajuan/' . $id);
             return;
         }
 
         if (empty($_FILES['berkas']['name'])) {
-            $this->session->set_flashdata('error', 'Pilih berkas terlebih dahulu.');
+            $this->session->set_flashdata('error', 'Silakan pilih berkas terlebih dahulu.');
             redirect(base_url() . 'pelamar/pengajuan/' . $id);
             return;
         }
@@ -154,11 +144,11 @@ class Pelamar extends CI_Controller {
             show_404();
         }
         if (!$this->analisis_status->ubah($id, Analisis_status::CANCELLED, 'pelamar:' . $this->user_id)) {
-            $this->session->set_flashdata('error', 'Pengajuan ini tidak bisa dibatalkan.');
+            $this->session->set_flashdata('error', 'Pengajuan ini tidak dapat dibatalkan.');
             redirect(base_url() . 'pelamar/pengajuan/' . $id);
             return;
         }
-        $this->session->set_flashdata('sukses', 'Pengajuan dibatalkan.');
+        $this->session->set_flashdata('sukses', 'Pengajuan berhasil dibatalkan.');
         redirect(base_url() . 'pelamar/pengajuan');
     }
 
@@ -169,7 +159,7 @@ class Pelamar extends CI_Controller {
             return;
         }
         if ($this->model_pelamar->adaPengajuanAktif($this->user_id)) {
-            $this->session->set_flashdata('error', 'Kamu masih punya pengajuan yang menunggu keputusan atau sedang magang. Selesaikan atau batalkan dulu sebelum mengajukan lagi.');
+            $this->session->set_flashdata('error', 'Terdapat pengajuan yang masih menunggu keputusan atau sedang berjalan. Selesaikan atau batalkan terlebih dahulu sebelum mengajukan kembali.');
             redirect(base_url() . 'pelamar/pengajuan');
             return;
         }
@@ -185,8 +175,14 @@ class Pelamar extends CI_Controller {
     }
 
     private function _simpanDaftar() {
+        // CI3 flashdata bisa "nyangkut" ke request setelahnya kalau dibaca di halaman
+        // tampilan lalu langsung di-submit ulang (bukan GET baru) -- bersihkan dulu
+        // supaya error dari percobaan submit sebelumnya tidak ikut tampil bareng
+        // pesan sukses percobaan yang berhasil.
+        $this->session->unset_userdata('error');
+
         if ($this->model_pelamar->adaPengajuanAktif($this->user_id)) {
-            $this->session->set_flashdata('error', 'Kamu masih punya pengajuan aktif.');
+            $this->session->set_flashdata('error', 'Terdapat pengajuan aktif yang masih berlangsung.');
             redirect(base_url() . 'pelamar/daftar');
             return;
         }
@@ -195,17 +191,25 @@ class Pelamar extends CI_Controller {
         foreach (array_merge(self::WHITELIST_UBAH, array('nm_ortu', 'hp_ortu')) as $kolom) {
             $data[$kolom] = trim((string) $this->input->post($kolom));
         }
+        foreach (self::SOSMED_DOMAIN as $kolom => $domain) {
+            $url = trim((string) $this->input->post($kolom));
+            $data[$kolom] = ($url !== '' && !preg_match('#^https?://#i', $url)) ? 'https://' . $url : ($url ?: null);
+        }
         $data['idkey'] = $this->user_id . $data['nama'] . $data['telp'];
 
         $error = $this->_validasiData($data, null);
+        if (!$error) {
+            $error = $this->_validasiSosmed($data);
+        }
         if (!$error && $this->model_prk_master->depagPenuh($data['id_depag'])) {
             $error = 'Departemen tujuan sudah penuh. Pilih departemen lain.';
         }
         if (!$error && $this->model_pelamar->idkeyDipakai($data['idkey'])) {
             $error = 'Pengajuan dengan data ini sudah pernah dikirim dan masih diproses.';
         }
-        foreach (array('file_1' => 'doc_1', 'file_2' => 'doc_2', 'file_3' => 'doc_3',
-                     'file_5' => 'doc_5', 'file_6' => 'doc_6', 'file_7' => 'doc_7', 'foto' => 'foto') as $input_name => $kolom) {
+        $peta_berkas = array('file_1' => 'doc_1', 'file_2' => 'doc_2', 'file_3' => 'doc_3',
+            'file_5' => 'doc_5', 'file_6' => 'doc_6', 'file_7' => 'doc_7', 'foto' => 'foto');
+        foreach ($peta_berkas as $input_name => $kolom) {
             if (!$error && empty($_FILES[$input_name]['name'])) {
                 $error = 'Semua berkas wajib diunggah.';
             }
@@ -213,7 +217,7 @@ class Pelamar extends CI_Controller {
         // D7: persetujuan analisis otomatis dokumen wajib dicentang, dicek ulang di
         // server karena checkbox hanya ditegakkan di klien.
         if (!$error && !$this->input->post('persetujuan_privasi')) {
-            $error = 'Kamu wajib menyetujui analisis otomatis dokumen sebelum mengirim.';
+            $error = 'Persetujuan analisis otomatis dokumen wajib dicentang sebelum pengajuan dikirim.';
         }
         if ($error) {
             $this->session->set_flashdata('error', $error);
@@ -221,33 +225,43 @@ class Pelamar extends CI_Controller {
             return;
         }
 
-        $id = $this->model_pelamar->buat($data);
-
-        $gagal_berkas = array();
-        foreach (array('file_1' => 'doc_1', 'file_2' => 'doc_2', 'file_3' => 'doc_3',
-                     'file_5' => 'doc_5', 'file_6' => 'doc_6', 'file_7' => 'doc_7', 'foto' => 'foto') as $input_name => $kolom) {
+        // Validasi SEMUA berkas (format/ukuran) sebelum baris DB dibuat -- kalau satu
+        // saja gagal, batalkan seluruh pengajuan dengan pesan jelas. Sebelumnya baris
+        // DB dibuat duluan lalu berkas diunggah belakangan tanpa pelamar diberi tahu
+        // kalau ada yang gagal, jadi pengajuan "sukses" padahal foto/dokumen hilang.
+        $hasil_berkas = array();
+        foreach ($peta_berkas as $input_name => $kolom) {
             $hasil = $this->_unggahBerkas($input_name, $kolom);
             if (isset($hasil['error'])) {
-                $gagal_berkas[] = $kolom;
-                continue;
+                $error = $hasil['error'];
+                break;
             }
-            $this->model_pelamar->ubah($id, $this->user_id, array($kolom => $hasil['nama_file']));
+            $hasil_berkas[$kolom] = $hasil['nama_file'];
         }
+        if ($error) {
+            foreach ($hasil_berkas as $nama_file) {
+                @unlink(FCPATH . 'gambar/' . $nama_file);
+            }
+            $this->session->set_flashdata('error', $error);
+            redirect(base_url() . 'pelamar/daftar');
+            return;
+        }
+
+        $data = array_merge($data, $hasil_berkas);
+        $id = $this->model_pelamar->buat($data);
 
         $this->_antrekanAnalisis($id);
-        if (!in_array('foto', $gagal_berkas, true)) {
-            $this->_periksaFoto($id);
-        }
+        $this->_periksaFoto($id);
 
         $this->model_prk_notifikasi->buat(
-            'pengajuan_terkirim', $id, 'Pengajuan diterima sistem',
-            'Berkas kamu sudah masuk dan menunggu tinjauan HR.',
+            'pengajuan_terkirim', $id, 'Pengajuan Diterima Sistem',
+            'Berkas telah diterima dan sedang menunggu tinjauan HR.',
             base_url() . 'pelamar/pengajuan/' . $id,
             'pelamar_kirim:' . $id,
             null, 'pelamar', $this->user_id
         );
 
-        $this->session->set_flashdata('sukses', 'Pengajuan terkirim. HR akan meninjau berkas kamu.');
+        $this->session->set_flashdata('sukses', 'Pengajuan berhasil dikirim. HR akan segera meninjau berkas yang telah diunggah.');
         redirect(base_url() . 'pelamar/pengajuan/' . $id);
     }
 
@@ -417,17 +431,17 @@ class Pelamar extends CI_Controller {
         $baru = (string) $this->input->post('password_baru');
         $user = $this->db->where('user_id', $this->user_id)->get('user')->row();
         if (!$user || $user->password !== $lama) {
-            $this->session->set_flashdata('error', 'Password lama salah.');
+            $this->session->set_flashdata('error', 'Kata sandi lama tidak sesuai.');
             redirect(base_url() . 'pelamar/akun');
             return;
         }
         if (strlen($baru) < 8) {
-            $this->session->set_flashdata('error', 'Password baru minimal 8 karakter.');
+            $this->session->set_flashdata('error', 'Kata sandi baru harus terdiri dari minimal 8 karakter.');
             redirect(base_url() . 'pelamar/akun');
             return;
         }
         $this->db->where('id', $user->id)->update('user', array('password' => $baru));
-        $this->session->set_flashdata('sukses', 'Password berhasil diganti.');
+        $this->session->set_flashdata('sukses', 'Kata sandi berhasil diperbarui.');
         redirect(base_url() . 'pelamar/akun');
     }
 
@@ -503,7 +517,7 @@ class Pelamar extends CI_Controller {
 
         foreach (self::WHITELIST_UBAH as $kolom) {
             if ($ambil($kolom) === '') {
-                return 'Semua field wajib diisi.';
+                return 'Seluruh kolom wajib diisi.';
             }
         }
 
@@ -518,19 +532,46 @@ class Pelamar extends CI_Controller {
             return 'Tanggal mulai paling cepat ' . tanggal_indo($paling_awal) . '.';
         }
         $durasi_hari = (strtotime($tgl_selesai) - strtotime($tgl_mulai)) / 86400;
-        if ($durasi_hari < 30 || $durasi_hari > 180) {
-            return 'Durasi magang harus antara 30 dan 180 hari.';
+        if ($durasi_hari < 30) {
+            return 'Durasi magang minimal 30 hari.';
         }
 
         $telp = $ambil('telp');
         if (!preg_match('/^(0|62)[0-9]{8,14}$/', $telp)) {
-            return 'Nomor telepon tidak valid (hanya digit, diawali 0 atau 62).';
+            return 'Nomor telepon tidak valid. Gunakan hanya angka dan diawali 0 atau 62.';
         }
         $email = $ambil('email');
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             return 'Format email tidak valid.';
         }
 
+        return null;
+    }
+
+    // Link sosmed (opsional): kalau diisi, harus URL valid dan domainnya cocok
+    // platformnya -- supaya "LinkedIn" di Halaman B tidak pernah menampilkan link
+    // Instagram, dst.
+    private function _validasiSosmed($data) {
+        $label = array('sosmed_linkedin' => 'LinkedIn', 'sosmed_instagram' => 'Instagram',
+            'sosmed_tiktok' => 'TikTok', 'sosmed_twitter' => 'Twitter/X');
+        foreach (self::SOSMED_DOMAIN as $kolom => $domain) {
+            $url = $data[$kolom];
+            if (empty($url)) {
+                continue;
+            }
+            $host = strtolower((string) parse_url($url, PHP_URL_HOST));
+            $domain_list = is_array($domain) ? $domain : array($domain);
+            $cocok = false;
+            foreach ($domain_list as $d) {
+                if ($host === $d || substr($host, -strlen('.' . $d)) === '.' . $d) {
+                    $cocok = true;
+                    break;
+                }
+            }
+            if (!$cocok) {
+                return 'Link ' . $label[$kolom] . ' harus berupa URL ' . reset($domain_list) . '.';
+            }
+        }
         return null;
     }
 
@@ -565,16 +606,22 @@ class Pelamar extends CI_Controller {
             return array('error' => 'Ukuran berkas melebihi batas (' . ($is_foto ? '2MB' : '5MB') . ').');
         }
 
-        $ekstensi = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
         $mime = function_exists('mime_content_type') ? mime_content_type($file['tmp_name']) : $file['type'];
         if ($is_foto) {
-            if (!in_array($ekstensi, array('jpg', 'jpeg'), true) || $mime !== 'image/jpeg') {
-                return array('error' => 'Foto harus berformat JPG.');
+            // Terima JPG dan PNG (dua format paling umum dari kamera HP/screenshot) --
+            // simpan dengan ekstensi dari MIME yang TERDETEKSI, bukan klaim nama file
+            // user, supaya foto HEIC/WebP yang cuma di-rename .jpg tetap ketahuan.
+            $peta_mime_foto = array('image/jpeg' => 'jpg', 'image/png' => 'png');
+            if (!isset($peta_mime_foto[$mime])) {
+                return array('error' => 'Foto harus berformat JPG atau PNG.');
             }
+            $ekstensi = $peta_mime_foto[$mime];
         } else {
-            if ($ekstensi !== 'pdf' || $mime !== 'application/pdf') {
+            $ekstensi_asli = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+            if ($ekstensi_asli !== 'pdf' || $mime !== 'application/pdf') {
                 return array('error' => 'Berkas harus berformat PDF.');
             }
+            $ekstensi = 'pdf';
         }
 
         $nama_file = date('dmYHis') . '_' . bin2hex(random_bytes(4)) . '.' . $ekstensi;

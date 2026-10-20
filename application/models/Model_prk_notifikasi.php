@@ -124,8 +124,8 @@ class Model_prk_notifikasi extends CI_Model {
                 // Pelamar juga diberi tahu magangnya akan berakhir (bagian B7
                 // spesifikasi sisi pelamar).
                 $this->buat(
-                    $jenis, $p->id, "Magang berakhir dalam {$h} hari",
-                    "Magangmu berakhir pada " . date('d M Y', strtotime($p->tgl_selesai)) . ".",
+                    $jenis, $p->id, "Masa Magang Berakhir dalam {$h} Hari",
+                    "Masa magang Anda akan berakhir pada " . date('d M Y', strtotime($p->tgl_selesai)) . ".",
                     base_url() . 'pelamar/pengajuan/' . $p->id,
                     "pelamar_{$jenis}:{$p->id}:{$tanggal}",
                     null, 'pelamar', $p->user_id

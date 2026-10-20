@@ -35,7 +35,7 @@
             <div class="panel">
                 <div class="empty-state">
                     <?php icon_analisis('inbox', 28); ?>
-                    <p>Kamu belum punya pengajuan magang/penelitian.</p>
+                    <p>Belum ada pengajuan magang atau penelitian.</p>
                     <a class="btn-primary" href="<?php echo base_url(); ?>pelamar/daftar">Ajukan sekarang</a>
                 </div>
             </div>
@@ -76,10 +76,10 @@
                 <div class="panel-head"><h2>Langkah berikutnya</h2></div>
                 <?php
                 $status_l = strtolower($terbaru->status);
-                if ($status_l === 'pending') { echo '<p class="field-note">Berkas kamu sedang ditinjau HR. Pastikan semua dokumen sudah lengkap dan benar, kamu masih bisa mengubah data atau mengganti berkas selama status masih menunggu.</p>';
-                } else if ($status_l === 'accept') { echo '<p class="field-note">Selamat! Siapkan surat pernyataan kalau belum diunggah, dan pantau jadwal magangmu di halaman pengajuan.</p>';
-                } else if ($status_l === 'rejected') { echo '<p class="field-note">Pengajuan ini belum dapat diproses. Kamu bisa mengajukan kembali dengan data terbaru.</p>';
-                } else { echo '<p class="field-note">Riwayat pengajuanmu bisa dilihat kapan saja di halaman Pengajuan saya.</p>'; }
+                if ($status_l === 'pending') { echo '<p class="field-note">Berkas sedang ditinjau oleh HR. Data dan berkas telah terkunci; jika terdapat kesalahan, batalkan pengajuan ini dan ajukan kembali.</p>';
+                } else if ($status_l === 'accept') { echo '<p class="field-note">Selamat, pengajuan diterima. Lengkapi surat pernyataan jika belum diunggah, dan pantau jadwal magang pada halaman pengajuan.</p>';
+                } else if ($status_l === 'rejected') { echo '<p class="field-note">Pengajuan ini belum dapat diproses. Silakan ajukan kembali dengan data terbaru.</p>';
+                } else { echo '<p class="field-note">Riwayat pengajuan dapat dilihat kapan saja pada halaman Pengajuan Saya.</p>'; }
                 ?>
                 <a class="btn-outline" href="<?php echo base_url(); ?>pelamar/pengajuan/<?php echo (int) $terbaru->id; ?>">Lihat detail pengajuan</a>
             </div>
