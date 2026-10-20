@@ -158,19 +158,26 @@ class Pelamar extends CI_Controller {
             $this->_simpanDaftar();
             return;
         }
-        if ($this->model_pelamar->adaPengajuanAktif($this->user_id)) {
-            $this->session->set_flashdata('error', 'Terdapat pengajuan yang masih menunggu keputusan atau sedang berjalan. Selesaikan atau batalkan terlebih dahulu sebelum mengajukan kembali.');
-            redirect(base_url() . 'pelamar/pengajuan');
-            return;
+        $riwayat = $this->model_pelamar->listPengajuan($this->user_id);
+        $aktif = null;
+        foreach ($riwayat as $r) {
+            if (in_array(strtolower($r->status), array('pending', 'accept'), true)) {
+                $aktif = $r;
+                break;
+            }
         }
+
+        // Pengajuan aktif: wizard tetap dimuat (bukan redirect diam-diam ke halaman
+        // lain) supaya pelamar mendapat pemberitahuan jelas lewat modal, dengan jalan
+        // keluar langsung ke pengajuan yang sedang berjalan itu.
+        $data['pengajuan_aktif'] = $aktif;
         $data['nama_user'] = $this->session->userdata('SES_USERNAME');
         $data['depag'] = $this->model_prk_master->listSisaTempatDepag();
         $data['ambang_mepet_hari'] = (int) $this->model_prk_master->getPengaturan('ambang_mepet_hari', 3);
         // B5: pengajuan baru menyalin biodata dari pengajuan terakhir (Rejected/Inactive/
         // Cancelled) supaya pelamar tidak mengetik ulang semua -- bukan jadwal/berkas,
         // itu tetap harus diisi baru.
-        $riwayat = $this->model_pelamar->listPengajuan($this->user_id);
-        $data['salinan'] = !empty($riwayat) ? $riwayat[0] : null;
+        $data['salinan'] = !$aktif && !empty($riwayat) ? $riwayat[0] : null;
         $this->load->view('pelamar/daftar', $data);
     }
 
@@ -473,6 +480,31 @@ class Pelamar extends CI_Controller {
         header('Content-Disposition: inline; filename="' . $slot . '-' . $id . '.' . $ekstensi . '"');
         header('Content-Length: ' . filesize($path_absolut));
         readfile($path_absolut);
+    }
+
+    // GET /pelamar/pengajuan/{id}/lihat/{slot} - halaman pembungkus berkas (bukan file
+    // mentah): dibuka di tab yang sama, ada tombol "Kembali" di bar atas, supaya
+    // pelamar tidak perlu paham konsep tab baru untuk kembali ke E-Prakerin. File
+    // sebenarnya tetap disajikan lewat berkas_lihat() di dalam <iframe>/<img>.
+    function berkas_pratinjau($id = null, $slot = null) {
+        if (!in_array($slot, self::BERKAS_SLOT, true)) {
+            show_404();
+        }
+        $p = $this->model_pelamar->getPengajuanMilik($id, $this->user_id);
+        if (!$p || empty($p->{$slot})) {
+            show_404();
+        }
+
+        $label = array('doc_1' => 'Surat Pengantar', 'doc_2' => 'Proposal', 'doc_3' => 'Transkrip',
+            'doc_5' => 'Kartu Asuransi', 'doc_6' => 'Kartu Pelajar', 'doc_7' => 'Surat Pernyataan', 'foto' => 'Foto');
+        $ekstensi = strtolower(pathinfo($p->{$slot}, PATHINFO_EXTENSION));
+
+        $data['nama_user'] = $this->session->userdata('SES_USERNAME');
+        $data['id_pengajuan'] = (int) $id;
+        $data['nama_label'] = $label[$slot];
+        $data['is_gambar'] = $ekstensi !== 'pdf';
+        $data['url_file'] = base_url() . 'pelamar/berkas/' . (int) $id . '/' . $slot;
+        $this->load->view('pelamar/berkas_pratinjau', $data);
     }
 
     // GET /pelamar/surat/{id}/unduh - C7: pelamar baru punya jalur resmi mengunduh

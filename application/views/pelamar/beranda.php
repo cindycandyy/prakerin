@@ -27,8 +27,12 @@
                 <?php } ?>
             </div>
 
-            <?php $CI = &get_instance(); if ($CI->session->flashdata('sukses')) { ?>
-            <div class="profil-note" style="margin:0; background:var(--hijau-100); color:var(--hijau-800); border-radius:10px; padding:12px 14px; font-size:12px;"><?php echo htmlspecialchars($CI->session->flashdata('sukses')); ?></div>
+            <?php
+            $CI = &get_instance();
+            $pesan_sukses = $CI->session->flashdata('sukses');
+            $CI->session->unset_userdata('sukses');
+            if ($pesan_sukses) { ?>
+            <div class="profil-note" style="margin:0; background:var(--hijau-100); color:var(--hijau-800); border-radius:10px; padding:12px 14px; font-size:12px;"><?php echo htmlspecialchars($pesan_sukses); ?></div>
             <?php } ?>
 
             <?php if (!$terbaru) { ?>
@@ -76,12 +80,12 @@
                 <div class="panel-head"><h2>Langkah berikutnya</h2></div>
                 <?php
                 $status_l = strtolower($terbaru->status);
-                if ($status_l === 'pending') { echo '<p class="field-note">Berkas sedang ditinjau oleh HR. Data dan berkas telah terkunci; jika terdapat kesalahan, batalkan pengajuan ini dan ajukan kembali.</p>';
-                } else if ($status_l === 'accept') { echo '<p class="field-note">Selamat, pengajuan diterima. Lengkapi surat pernyataan jika belum diunggah, dan pantau jadwal magang pada halaman pengajuan.</p>';
-                } else if ($status_l === 'rejected') { echo '<p class="field-note">Pengajuan ini belum dapat diproses. Silakan ajukan kembali dengan data terbaru.</p>';
-                } else { echo '<p class="field-note">Riwayat pengajuan dapat dilihat kapan saja pada halaman Pengajuan Saya.</p>'; }
+                if ($status_l === 'pending') { echo '<p class="field-note" style="margin-bottom:14px;">Berkas sedang ditinjau oleh HR. Data dan berkas telah terkunci; jika terdapat kesalahan, batalkan pengajuan ini dan ajukan kembali.</p>';
+                } else if ($status_l === 'accept') { echo '<p class="field-note" style="margin-bottom:14px;">Selamat, pengajuan diterima. Lengkapi surat pernyataan jika belum diunggah, dan pantau jadwal magang pada halaman pengajuan.</p>';
+                } else if ($status_l === 'rejected') { echo '<p class="field-note" style="margin-bottom:14px;">Pengajuan ini belum dapat diproses. Silakan ajukan kembali dengan data terbaru.</p>';
+                } else { echo '<p class="field-note" style="margin-bottom:14px;">Riwayat pengajuan dapat dilihat kapan saja pada halaman Pengajuan Saya.</p>'; }
                 ?>
-                <a class="btn-outline" href="<?php echo base_url(); ?>pelamar/pengajuan/<?php echo (int) $terbaru->id; ?>">Lihat detail pengajuan</a>
+                <a class="btn-primary" href="<?php echo base_url(); ?>pelamar/pengajuan/<?php echo (int) $terbaru->id; ?>">Lihat Detail Pengajuan</a>
             </div>
             <?php } ?>
         </main>

@@ -23,11 +23,15 @@
         <main class="content">
             <div class="page-head"><div><h1>Daftar Magang/Penelitian</h1><p>Lengkapi empat langkah berikut. Isian akan tersimpan secara otomatis pada perangkat ini.</p></div></div>
 
-            <?php $CI = &get_instance(); if ($CI->session->flashdata('error')) { ?>
-            <div style="background:var(--merah-100); color:var(--merah-700); border-radius:10px; padding:12px 14px; font-size:12px;"><?php echo htmlspecialchars($CI->session->flashdata('error')); ?></div>
+            <?php
+            $CI = &get_instance();
+            $pesan_error = $CI->session->flashdata('error');
+            $CI->session->unset_userdata('error');
+            if ($pesan_error) { ?>
+            <div style="background:var(--merah-100); color:var(--merah-700); border-radius:10px; padding:12px 14px; font-size:12px;"><?php echo htmlspecialchars($pesan_error); ?></div>
             <?php } ?>
 
-            <div class="panel">
+            <div class="panel" <?php echo $pengajuan_aktif ? 'style="pointer-events:none; opacity:.5;"' : ''; ?>>
                 <div class="stepper">
                     <div class="stepper-item aktif" data-stepper="1"><span class="stepper-num">1</span> Program &amp; jadwal</div>
                     <div class="stepper-item" data-stepper="2"><span class="stepper-num">2</span> Data diri</div>
@@ -181,6 +185,18 @@
     </div>
 </div>
 
+<?php if ($pengajuan_aktif) { ?>
+<div id="modal-aktif" class="modal-overlay" style="display:flex;">
+    <div class="modal-kartu">
+        <h3>Belum Bisa Mengajukan Pengajuan Baru</h3>
+        <p class="field-note" style="margin-top:6px;">Anda masih memiliki pengajuan yang berstatus "<?php echo strtolower($pengajuan_aktif->status) === 'accept' ? 'Diterima' : 'Menunggu Keputusan'; ?>" dan sedang dalam proses seleksi. Selesaikan atau batalkan pengajuan tersebut terlebih dahulu sebelum mengajukan yang baru.</p>
+        <div class="footer-aksi" style="margin-top:16px;">
+            <a class="btn-primary" style="flex:1; text-align:center;" href="<?php echo base_url(); ?>pelamar/pengajuan/<?php echo (int) $pengajuan_aktif->id; ?>">Lihat Pengajuan Saya</a>
+        </div>
+    </div>
+</div>
+<?php } ?>
+
 <div id="modal-kirim" class="modal-overlay" style="display:none;">
     <div class="modal-kartu">
         <h3>Kirim Pengajuan Ini?</h3>
@@ -193,6 +209,9 @@
 </div>
 <script>
 (function () {
+    var modalAktif = document.getElementById('modal-aktif');
+    if (modalAktif) { requestAnimationFrame(function () { modalAktif.classList.add('tampil'); }); }
+
     var langkahSekarang = 1;
     var total = 4;
     var form = document.getElementById('form-daftar');

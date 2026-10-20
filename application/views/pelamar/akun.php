@@ -17,13 +17,18 @@
     <div class="main">
         <?php $breadcrumb_akhir = 'Akun saya'; include APPPATH . 'views/pelamar/_topbar.php'; ?>
         <main class="content">
-            <div class="page-head"><div><h1>Akun saya</h1><p>Profil dan keamanan akunmu.</p></div></div>
+            <div class="page-head"><div><h1>Akun Saya</h1><p>Profil dan keamanan akun.</p></div></div>
 
-            <?php $CI = &get_instance();
-            if ($CI->session->flashdata('sukses')) { ?>
-            <div style="background:var(--hijau-100); color:var(--hijau-800); border-radius:10px; padding:12px 14px; font-size:12px;"><?php echo htmlspecialchars($CI->session->flashdata('sukses')); ?></div>
-            <?php } if ($CI->session->flashdata('error')) { ?>
-            <div style="background:var(--merah-100); color:var(--merah-700); border-radius:10px; padding:12px 14px; font-size:12px;"><?php echo htmlspecialchars($CI->session->flashdata('error')); ?></div>
+            <?php
+            $CI = &get_instance();
+            $pesan_sukses = $CI->session->flashdata('sukses');
+            $pesan_error = $CI->session->flashdata('error');
+            $CI->session->unset_userdata('sukses');
+            $CI->session->unset_userdata('error');
+            if ($pesan_sukses) { ?>
+            <div style="background:var(--hijau-100); color:var(--hijau-800); border-radius:10px; padding:12px 14px; font-size:12px;"><?php echo htmlspecialchars($pesan_sukses); ?></div>
+            <?php } if ($pesan_error) { ?>
+            <div style="background:var(--merah-100); color:var(--merah-700); border-radius:10px; padding:12px 14px; font-size:12px;"><?php echo htmlspecialchars($pesan_error); ?></div>
             <?php } ?>
 
             <div class="two-col">

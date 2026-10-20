@@ -111,7 +111,7 @@
                             <div class="berkas-kartu-status <?php echo $ada ? 'ok' : ''; ?>"><?php echo $ada ? 'Terunggah' : 'Belum diunggah'; ?></div>
                         </div>
                         <?php if ($ada) { ?>
-                        <a class="btn-outline" style="padding:6px 10px; font-size:11px;" target="_blank" href="<?php echo base_url(); ?>pelamar/berkas/<?php echo (int) $p->id; ?>/<?php echo $slot; ?>">Lihat</a>
+                        <a class="btn-outline" style="padding:6px 10px; font-size:11px;" href="<?php echo base_url(); ?>pelamar/pengajuan/<?php echo (int) $p->id; ?>/lihat/<?php echo $slot; ?>">Lihat</a>
                         <?php } ?>
                         <?php if ($bisa_ganti) { ?>
                         <form method="post" enctype="multipart/form-data" action="<?php echo base_url(); ?>pelamar/pengajuan/<?php echo (int) $p->id; ?>/berkas/<?php echo $slot; ?>">
@@ -173,7 +173,7 @@
 })();
 </script>
 <?php } ?>
-    <?php if ($CI->session->flashdata('sukses')) { ?>
+    <?php if ($pesan_sukses) { ?>
     <script>
     // Pengajuan baru berhasil terkirim -- draf wizard (termasuk posisi langkah)
     // tidak dibutuhkan lagi, bersihkan supaya pengajuan berikutnya mulai kosong.

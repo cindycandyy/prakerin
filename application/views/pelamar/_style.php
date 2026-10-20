@@ -65,4 +65,24 @@
     .modal-kartu h3 { font-size: 16px; font-weight: 700; color: var(--abu-900); margin: 0; }
     .modal-kartu .footer-aksi { display: flex; gap: 10px; }
     .modal-kartu .footer-aksi button { flex: 1; text-align: center; }
+
+    /* ---- accordion syarat khusus departemen (native <details>, tanpa JS) ---- */
+    .akordeon-item { border: 1px solid var(--abu-200); border-radius: 10px; margin-bottom: 10px; overflow: hidden; }
+    .akordeon-item:last-child { margin-bottom: 0; }
+    .akordeon-item summary {
+        list-style: none; cursor: pointer; padding: 14px 16px; display: flex; align-items: center;
+        justify-content: space-between; gap: 12px; font-size: 13px; font-weight: 600; color: var(--abu-900);
+    }
+    .akordeon-item summary::-webkit-details-marker { display: none; }
+    .akordeon-item summary .chevron { flex-shrink: 0; transition: transform .15s ease; color: var(--abu-600); }
+    .akordeon-item[open] summary .chevron { transform: rotate(180deg); }
+    .akordeon-item summary:hover { background: var(--abu-bg); }
+    .akordeon-isi { padding: 0 16px 16px; font-size: 12px; color: var(--abu-900); line-height: 1.7; }
+    .akordeon-desk { color: var(--abu-600); margin: 0 0 12px; }
+    .akordeon-posisi { border-top: 1px solid var(--abu-100); padding-top: 12px; margin-top: 12px; }
+    .akordeon-posisi:first-child { border-top: none; padding-top: 0; margin-top: 0; }
+    .akordeon-posisi-nama { font-weight: 600; margin-bottom: 4px; }
+    .akordeon-posisi-ket { color: var(--abu-600); font-size: 11px; margin-bottom: 6px; }
+    .jurusan-chip { display: inline-block; background: var(--hijau-100); color: var(--hijau-700); font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 100px; margin: 0 6px 6px 0; }
+    .jurusan-catatan { display: inline-block; background: var(--kuning-bg); color: var(--kuning-teks); font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 100px; margin: 0 6px 6px 0; }
 </style>
