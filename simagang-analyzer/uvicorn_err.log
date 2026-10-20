@@ -3,3 +3,6 @@ INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://127.0.0.1:8001 (Press CTRL+C to quit)
 [ WARN:0@2912.238] global net_impl_backend.cpp:345 cv::dnn::dnn5_v20260605::Net::Impl::setPreferableTarget Targets are not supported by the new graph engine for now
+2026-10-20 09:58:14,154 INFO job_id=10 status=perlu_tinjau durasi_ms=742
+2026-10-20 09:58:14,865 INFO job_id=13 status=perlu_tinjau durasi_ms=679
+2026-10-20 09:58:15,557 INFO job_id=16 status=perlu_tinjau durasi_ms=635
