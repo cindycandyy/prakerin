@@ -44,7 +44,14 @@ class Analisis_surat {
         $html = $this->ci->load->view('analisis/templat/surat_balasan', $data, true);
 
         $options = new Options();
-        $options->set('isRemoteEnabled', false); // tidak memuat gambar/font dari luar
+        // isRemoteEnabled=false menutup vektor SSRF/file-read dompdf terbaru (CVE-2026-56722,
+        // CVE-2026-59943: baca file lewat SVG data URI) -- dompdf tidak pernah memuat
+        // gambar/font dari URL atau path di luar yang kita render sendiri. isJavascriptEnabled
+        // dan isPhpEnabled sebenarnya default false di dompdf 3.x, di-set eksplisit di sini
+        // supaya tidak bergantung diam-diam pada default library yang bisa berubah.
+        $options->set('isRemoteEnabled', false);
+        $options->set('isJavascriptEnabled', false);
+        $options->set('isPhpEnabled', false);
         $options->set('isHtml5ParserEnabled', true);
         $dompdf = new Dompdf($options);
         $dompdf->loadHtml($html);
