@@ -309,8 +309,8 @@
                     array('Transkrip nilai', $pelamar->doc_3, 'Sumber analisis otomatis', 'doc_3'),
                     array('Foto', $pelamar->foto, '', 'foto'),
                     array('Kartu asuransi', $pelamar->doc_5, '', 'doc_5'),
-                    array('Kartu pelajar', $pelamar->doc_4, '', 'doc_4'),
-                    array('Surat pernyataan', $pelamar->doc_6, '', 'doc_6'),
+                    array('Kartu pelajar', $pelamar->doc_6, '', 'doc_6'),
+                    array('Surat pernyataan', $pelamar->doc_7, '', 'doc_7'),
                 );
                 $jumlah_lengkap = count(array_filter($berkas, function ($b) { return !empty($b[1]); }));
                 ?>
@@ -518,11 +518,11 @@
                     <h2>Tentukan keputusan dan penempatan</h2>
                 </div>
                 <div class="panel-sub">Pilih divisi berdasarkan rekomendasi. Tidak memengaruhi penempatan kepada departemen.</div>
-                <form method="post" action="<?php echo base_url(); ?>analisis/peserta/<?php echo (int) $id_transaksi; ?>/terima">
+                <form method="post" id="form-keputusan" action="<?php echo base_url(); ?>analisis/peserta/<?php echo (int) $id_transaksi; ?>/terima">
                     <div class="keputusan-grid">
                         <div>
                             <label class="field-label">Divisi pilihan HR</label>
-                            <select class="field-select" id="pilih-divisi" name="id_divisi">
+                            <select class="field-select" id="pilih-divisi" name="id_divisi" data-cs-skip>
                                 <?php
                                 $peringkat_per_divisi = array();
                                 foreach ($rekomendasi as $r) {
@@ -563,11 +563,99 @@
                     </div>
                     <p class="field-note">Kuota dicek ulang saat penempatan. Pending otomatis ditolak jika H-3 atau sisa tanggal mulai terlewat.</p>
                     <div class="keputusan-footer">
-                        <button type="submit" formaction="<?php echo base_url(); ?>analisis/peserta/<?php echo (int) $id_transaksi; ?>/tolak" formnovalidate class="btn-outline">Tolak pelamar</button>
-                        <button type="submit" class="btn-primary">Terima &amp; tetapkan penempatan</button>
+                        <button type="button" id="btn-buka-tolak" formaction="<?php echo base_url(); ?>analisis/peserta/<?php echo (int) $id_transaksi; ?>/tolak" formnovalidate class="btn-outline">Tolak pelamar</button>
+                        <button type="button" id="btn-buka-terima" class="btn-primary">Terima &amp; tetapkan penempatan</button>
                     </div>
                 </form>
             </div>
+
+            <div id="modal-terima" class="modal-overlay" style="display:none;">
+                <div class="modal-kartu">
+                    <h3>Terima Pelamar Ini?</h3>
+                    <p class="field-note" style="margin-top:6px;">Pelamar akan ditempatkan pada divisi yang dipilih, kontrak magang dibuat otomatis, dan kuota divisi berkurang satu. Pelamar akan menerima notifikasi penerimaan.</p>
+                    <div class="footer-aksi" style="margin-top:16px;">
+                        <button type="button" class="btn-outline" id="modal-terima-batal">Batal</button>
+                        <button type="button" class="btn-primary" id="modal-terima-ok">Terima</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="modal-tolak" class="modal-overlay" style="display:none;">
+                <div class="modal-kartu">
+                    <h3>Tolak Pelamar Ini?</h3>
+                    <p class="field-note" style="margin-top:6px;">Status pengajuan akan diubah menjadi "Tidak dapat diproses" dan alasan penolakan akan dikirimkan sebagai notifikasi kepada pelamar. Tindakan ini tidak dapat dibatalkan.</p>
+                    <div class="footer-aksi" style="margin-top:16px;">
+                        <button type="button" class="btn-outline" id="modal-tolak-batal">Batal</button>
+                        <button type="button" class="btn-bahaya" id="modal-tolak-ok">Tolak</button>
+                    </div>
+                </div>
+            </div>
+
+            <style>
+                .modal-overlay {
+                    position: fixed; inset: 0; background: rgba(23,45,39,.45); z-index: 100;
+                    display: flex; align-items: center; justify-content: center; padding: 20px;
+                    opacity: 0; transition: opacity .15s ease;
+                }
+                .modal-overlay.tampil { opacity: 1; }
+                .modal-kartu {
+                    background: #fff; border-radius: 12px; padding: 24px; max-width: 380px; width: 100%;
+                    box-shadow: 0 8px 24px rgba(0,0,0,.18); transform: translateY(8px); transition: transform .15s ease;
+                }
+                .modal-overlay.tampil .modal-kartu { transform: translateY(0); }
+                .modal-kartu h3 { font-size: 16px; font-weight: 700; color: var(--abu-900); margin: 0; }
+                .modal-kartu .footer-aksi { display: flex; gap: 10px; }
+                .modal-kartu .footer-aksi button { flex: 1; text-align: center; }
+                .btn-bahaya { background: var(--merah-700); color: #fff; border: none; border-radius: 8px; padding: 10px 18px; font-size: 13px; font-weight: 600; cursor: pointer; }
+            </style>
+            <script>
+            (function () {
+                var form = document.getElementById('form-keputusan');
+                var urlTerima = form.action;
+                var urlTolak = document.getElementById('btn-buka-tolak').getAttribute('formaction');
+
+                function bukaModal(modal) {
+                    modal.style.display = 'flex';
+                    requestAnimationFrame(function () { modal.classList.add('tampil'); });
+                }
+                function tutupModal(modal) {
+                    modal.classList.remove('tampil');
+                    setTimeout(function () { modal.style.display = 'none'; }, 150);
+                }
+
+                var modalTerima = document.getElementById('modal-terima');
+                document.getElementById('btn-buka-terima').addEventListener('click', function () {
+                    var divisi = document.getElementById('pilih-divisi');
+                    if (!divisi.value) {
+                        divisi.reportValidity ? divisi.focus() : null;
+                        alert('Pilih divisi sebelum menetapkan penempatan.');
+                        return;
+                    }
+                    bukaModal(modalTerima);
+                });
+                document.getElementById('modal-terima-batal').addEventListener('click', function () { tutupModal(modalTerima); });
+                document.getElementById('modal-terima-ok').addEventListener('click', function () {
+                    form.action = urlTerima;
+                    form.submit();
+                });
+
+                var modalTolak = document.getElementById('modal-tolak');
+                document.getElementById('btn-buka-tolak').addEventListener('click', function () {
+                    var alasan = form.querySelector('[name="alasan"]');
+                    if (alasan.value.trim().length < 5) {
+                        alasan.focus();
+                        alert('Alasan penolakan wajib diisi (minimal 5 karakter).');
+                        return;
+                    }
+                    bukaModal(modalTolak);
+                });
+                document.getElementById('modal-tolak-batal').addEventListener('click', function () { tutupModal(modalTolak); });
+                document.getElementById('modal-tolak-ok').addEventListener('click', function () {
+                    form.action = urlTolak;
+                    form.submit();
+                });
+            })();
+            </script>
 
             <?php if (!empty($kontrak)) { ?>
             <!-- Kontrak magang -->

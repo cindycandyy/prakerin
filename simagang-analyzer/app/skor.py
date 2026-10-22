@@ -153,17 +153,31 @@ def _teks_kekuatan(profil: dict, divisi: dict, master: dict) -> str:
 
 
 def _teks_kekurangan(divisi: dict, faktor: dict, profil: dict) -> str:
+    """Narasi kekurangan (spesifikasi bagian 5): ambang dinaikkan dari <30/<50 ke <60
+    supaya skor "pas-pasan" (lolos ambang lama tapi tetap bikin keyakinan rendah/
+    sedang secara keseluruhan) ikut dapat penjelasan, bukan cuma skor yang sangat
+    buruk. Proposal rendah dipecah dua: topik sama sekali tidak nyambung (<30) vs
+    nyambung tapi tipis/kurang detail (30-59) -- dua akar masalah beda, saran
+    perbaikannya juga beda.
+    """
     bagian = []
     if divisi.get("sisa_kuota") == 1:
         bagian.append("Sisa kuota divisi tinggal 1.")
-    if faktor["jurusan"] < 50:
-        bagian.append("Jurusan kurang sejalan dengan divisi.")
+    if faktor["jurusan"] < 60:
+        bagian.append("Latar belakang jurusan kurang sejalan dengan bidang kerja divisi ini.")
+
     if faktor["proposal"] < 30:
-        bagian.append("Proposal belum menyentuh bidang divisi.")
+        bagian.append("Topik proposal tidak menyinggung bidang kerja divisi ini sama sekali -- minat yang ditulis tampak mengarah ke bidang lain.")
+    elif faktor["proposal"] < 60:
+        bagian.append("Topik proposal menyinggung bidang divisi ini, tetapi kurang detail -- bagian Tujuan/Ruang Lingkup/Bidang PKL perlu menjelaskan lebih spesifik dan menyebut tools/metode yang relevan.")
+
     if not profil.get("alat"):
-        bagian.append("Proposal tidak menyebut alat atau metode yang dikenali.")
+        bagian.append("Proposal tidak menyebut tools, software, atau metode kerja yang dikenali sistem secara eksplisit.")
     if not profil.get("nilai"):
-        bagian.append("Nilai tidak terbaca.")
+        bagian.append("Nilai/transkrip tidak terbaca, sehingga faktor skill tidak bisa dinilai penuh.")
+    elif faktor["skill"] < 60:
+        bagian.append("Nilai mata kuliah yang relevan dengan divisi ini belum cukup menonjol.")
+
     return (" ".join(bagian))[:500] if bagian else "Tidak ada kekurangan menonjol."
 
 

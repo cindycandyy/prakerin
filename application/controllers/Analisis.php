@@ -184,7 +184,7 @@ class Analisis extends CI_Controller {
 
         $peta_slot = array(
             'doc_1' => $pelamar->doc_1, 'doc_2' => $pelamar->doc_2, 'doc_3' => $pelamar->doc_3,
-            'doc_4' => $pelamar->doc_4, 'doc_5' => $pelamar->doc_5, 'doc_6' => $pelamar->doc_6,
+            'doc_5' => $pelamar->doc_5, 'doc_6' => $pelamar->doc_6, 'doc_7' => $pelamar->doc_7,
             'foto' => $pelamar->foto,
         );
         if (!array_key_exists($slot, $peta_slot) || empty($peta_slot[$slot])) {
@@ -216,9 +216,9 @@ class Analisis extends CI_Controller {
             'surat_pengantar' => $pelamar->doc_1,
             'proposal_magang' => $pelamar->doc_2,
             'transkrip_nilai' => $pelamar->doc_3,
-            'kartu_pelajar' => $pelamar->doc_4,
             'kartu_asuransi' => $pelamar->doc_5,
-            'surat_pernyataan' => $pelamar->doc_6,
+            'kartu_pelajar' => $pelamar->doc_6,
+            'surat_pernyataan' => $pelamar->doc_7,
             'foto' => $pelamar->foto,
         );
 
@@ -338,7 +338,7 @@ class Analisis extends CI_Controller {
         );
 
         $this->session->set_flashdata('sukses', 'Pelamar diterima, penempatan dan kontrak tersimpan.');
-        redirect(base_url() . 'analisis/peserta/' . $id);
+        redirect(base_url() . 'analisis/pelamar');
     }
 
     // POST /analisis/peserta/{id}/tolak - alasan wajib (min. 5 karakter, bagian 6.1),

@@ -106,6 +106,18 @@
                 </div>
             </div>
 
+            <?php
+            $CI = &get_instance();
+            $pesan_sukses = $CI->session->flashdata('sukses');
+            $pesan_error = $CI->session->flashdata('error');
+            $CI->session->unset_userdata('sukses');
+            $CI->session->unset_userdata('error');
+            if ($pesan_sukses) { ?>
+            <div style="background:var(--hijau-100); color:var(--hijau-800); border-radius:10px; padding:12px 14px; font-size:12px; margin-bottom:16px;"><?php echo htmlspecialchars($pesan_sukses); ?></div>
+            <?php } if ($pesan_error) { ?>
+            <div style="background:var(--merah-100); color:var(--merah-700); border-radius:10px; padding:12px 14px; font-size:12px; margin-bottom:16px;"><?php echo htmlspecialchars($pesan_error); ?></div>
+            <?php } ?>
+
             <div class="panel" style="width:100%">
                 <?php
                 $daftar_tab = array(
@@ -130,24 +142,24 @@
                     <input type="hidden" name="tab" value="<?php echo htmlspecialchars($tab_aktif); ?>">
                     <input class="search-box" type="text" name="cari" placeholder="Cari nama, sekolah, atau kampus"
                            value="<?php echo htmlspecialchars(isset($cari) ? $cari : ''); ?>">
-                    <select class="select-mini" name="periode">
+                    <select class="select-mini" name="periode" data-cs-skip>
                         <option value="">Semua periode</option>
                         <option>Nov 2026 – Jan 2027</option>
                         <option>Okt 2026 – Des 2026</option>
                     </select>
-                    <select class="select-mini" name="jenjang">
+                    <select class="select-mini" name="jenjang" data-cs-skip>
                         <option value="">Semua jenjang</option>
                         <option>S1</option>
                         <option>D3</option>
                         <option>SMK</option>
                     </select>
-                    <select class="select-mini" name="status_analisis">
+                    <select class="select-mini" name="status_analisis" data-cs-skip>
                         <option value="">Semua status analisis</option>
                         <option>Siap ditinjau</option>
                         <option>Analisis diproses</option>
                         <option>Perlu tinjau manual</option>
                     </select>
-                    <select class="select-mini" name="confidence">
+                    <select class="select-mini" name="confidence" data-cs-skip>
                         <option value="">Semua keyakinan</option>
                         <option>Tinggi</option>
                         <option>Sedang</option>
