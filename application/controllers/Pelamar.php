@@ -437,7 +437,10 @@ class Pelamar extends CI_Controller {
         $lama = (string) $this->input->post('password_lama');
         $baru = (string) $this->input->post('password_baru');
         $user = $this->db->where('user_id', $this->user_id)->get('user')->row();
-        if (!$user || $user->password !== $lama) {
+        $cocok = $user && (strpos($user->password, '$2y$') === 0
+            ? password_verify($lama, $user->password)
+            : hash_equals($user->password, $lama));
+        if (!$cocok) {
             $this->session->set_flashdata('error', 'Kata sandi lama tidak sesuai.');
             redirect(base_url() . 'pelamar/akun');
             return;
@@ -447,7 +450,7 @@ class Pelamar extends CI_Controller {
             redirect(base_url() . 'pelamar/akun');
             return;
         }
-        $this->db->where('id', $user->id)->update('user', array('password' => $baru));
+        $this->db->where('id', $user->id)->update('user', array('password' => password_hash($baru, PASSWORD_DEFAULT)));
         $this->session->set_flashdata('sukses', 'Kata sandi berhasil diperbarui.');
         redirect(base_url() . 'pelamar/akun');
     }

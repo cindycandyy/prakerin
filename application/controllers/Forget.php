@@ -21,21 +21,15 @@ class Forget extends CI_Controller {
         
         $from_email = $this->model_setting->getSingleSetting()->email_send;//"pkl.petrosida@gmail.com";
         $to_email = $this->input->post('email');
-        $str = rand();
-        
-        $kunci = 'c89b29cb-493d-4ade-9cd7-0e147f8a7830';
-        for ($i = 0; $i < strlen($str); $i++) {
-            $karakter = substr($str, $i, 1);
-            $kuncikarakter = substr($kunci, ($i % strlen($kunci))-1, 1);
-            $karakter = chr(ord($karakter)+ord($kuncikarakter));
-            $hasil .= $karakter;
-        }
-        
-        $new_password = urlencode(base64_encode($hasil));
-            $data = array(
-                    'password' => $new_password
-                    );
-        
+
+        // Token acak asli (bukan cipher reversibel) -- ini yang dikirim lewat email ke
+        // pengguna; yang disimpan di DB cuma hash bcrypt-nya, jadi kalaupun DB bocor
+        // password baru ini tidak bisa dibalik.
+        $new_password = bin2hex(random_bytes(4));
+        $data = array(
+                'password' => password_hash($new_password, PASSWORD_DEFAULT)
+                );
+
         $this->model_forget->update($to_email, $data);
         
         //Load email library

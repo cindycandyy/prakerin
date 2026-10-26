@@ -2,34 +2,36 @@
 class Model_transaksi extends CI_Model{
 
     var $tabel = 'pkl_data';
-    
+
     function __construct() {
         parent::__construct();
     }
-    
+
     function viewalldata() {
-        $sql = "SELECT * FROM pkl_data where tgl_selesai != date(now()) order by tgl_mulai desc";
-        $query = $this->db->query($sql);
-        return $query->result();
+        return $this->db->where('tgl_selesai !=', date('Y-m-d'))
+            ->order_by('tgl_mulai', 'desc')
+            ->get('pkl_data')->result();
     }
-	
+
 	/*data pkl pengajuan*/
     function viewalldata_st($st) {
-        $sql = "SELECT * FROM pkl_data where status like '%$st%' order by tgl_mulai desc";//tgl_selesai >= date(now()) and 
-        $query = $this->db->query($sql);
-        return $query->result();
+        return $this->db->like('status', $st)
+            ->order_by('tgl_mulai', 'desc')
+            ->get('pkl_data')->result();
     }
 	//menghitung jumlah pending
 	function getCountPending($ses_user_id) {
-        $sql = "SELECT count(status) as jumlah FROM pkl_data where status='pending' and user_id='$ses_user_id' order by tgl_mulai desc";
-        $query = $this->db->query($sql);
-        return $query->result();
+        return $this->db->select('COUNT(status) as jumlah', false)
+            ->where('status', 'pending')
+            ->where('user_id', $ses_user_id)
+            ->order_by('tgl_mulai', 'desc')
+            ->get('pkl_data')->result();
     }
 	//menghitung jumlah data magang
 	function getCountMagang($ses_user_id) {
-        $sql = "SELECT COUNT(*) as jumlah FROM pkl_data where idkey='$ses_user_id'";
-        $query = $this->db->query($sql);
-        $temp = $query->row();
+        $temp = $this->db->select('COUNT(*) as jumlah', false)
+            ->where('idkey', $ses_user_id)
+            ->get('pkl_data')->row();
         if ($temp) {
             return (INT) $temp->jumlah;
         } else {
@@ -37,46 +39,39 @@ class Model_transaksi extends CI_Model{
         }
     }
     function getCountfield($field, $where = NULL, $key = NULL) {
-        $filter = "";
+        $this->db->select('COUNT(' . $field . ') as jumlah', false)->from('pkl_data');
         if (!empty($where)) {
-            $filter .= " where ".$where." = '$key'";
+            $this->db->where($where, $key);
         }
-        
-        $sql = "SELECT COUNT(".$field.") as jumlah FROM pkl_data".$filter;
-        $query = $this->db->query($sql);
-        $data = $query->result();
-
+        $data = $this->db->get()->result();
         return $data[0]->jumlah;
     }
-    
+
     function getSubJmlfield($where = NULL, $key = NULL, $year = NULL, $month = NULL) {
-        $filter = "";
+        $this->db->select('tgl_mulai, tgl_selesai')->from('pkl_data');
         if (!empty($where)) {
-            $filter .= " where ".$where." = '$key'";
+            $this->db->where($where, $key);
         }
         if (empty($where) && !empty($year)) {
-            $filter .= " where tgl_mulai like '".($year-1)."%'";
+            $this->db->like('tgl_mulai', ($year - 1), 'after');
         }
         if (!empty($where) && !empty($year)) {
-            $filter .= " and tgl_mulai like '".($year-1)."%'";
+            $this->db->like('tgl_mulai', ($year - 1), 'after');
         }
-        
-        $sql = "SELECT tgl_mulai, tgl_selesai FROM pkl_data".$filter;
-        $query = $this->db->query($sql);
-        $data = $query->result();
-        
+        $data = $this->db->get()->result();
+
         $jml = 0;
         $array = array();
         foreach ($data as $key => $rowdata){
             $pisah_start = explode("-",$rowdata->tgl_mulai);
             $pisah_end   = explode("-",$rowdata->tgl_selesai);
-            
+
             $year_start = $pisah_start[0];
             $year_end   = $pisah_end[0];
-            
+
             $start = $pisah_start[1];
             $end   = $pisah_end[1];
-            
+
             if($year_end == ($year)){
                 $start = "01";
                 $a = 0;
@@ -84,7 +79,7 @@ class Model_transaksi extends CI_Model{
                     $array[$a] = array($start);
                     $start = "0".($start+1);
                     $a++;
-                } 
+                }
                 $ODArray = array_map('current', $array);
                 if(in_array($month, $ODArray)){
                     $jml = $jml+1;
@@ -94,47 +89,44 @@ class Model_transaksi extends CI_Model{
         }
             return $jml;
     }
-    
+
     function getJmlfield($where = NULL, $key = NULL, $year = NULL, $month = NULL) {
-        
+
         $Subjml = $this->getSubJmlfield($where, $key, $year, $month);
-        
-        $filter = "";
+
+        $this->db->select('tgl_mulai, tgl_selesai')->from('pkl_data');
         if (!empty($where)) {
-            $filter .= " where ".$where." = '$key'";
+            $this->db->where($where, $key);
         }
         if (empty($where) && !empty($year)) {
-            $filter .= " where tgl_mulai >= '".$year."-01-01'";
+            $this->db->where('tgl_mulai >=', $year . '-01-01');
         }
         if (!empty($where) && !empty($year)) {
-            $filter .= " and tgl_mulai >= '".$year."-01-01'";
+            $this->db->where('tgl_mulai >=', $year . '-01-01');
         }
-        
-        $sql = "SELECT tgl_mulai, tgl_selesai FROM pkl_data".$filter;
-        $query = $this->db->query($sql);
-        $data = $query->result();
-        
+        $data = $this->db->get()->result();
+
         $jml = 0;
         foreach ($data as $key => $rowdata){
             $pisah_start = explode("-",$rowdata->tgl_mulai);
             $pisah_end   = explode("-",$rowdata->tgl_selesai);
-            
+
             $year_start = $pisah_start[0];
             $year_end   = $pisah_end[0];
-            
+
             $start = $pisah_start[1];
             if($year_end>$year_start){
                 $end   = 12;
             }else{
                 $end   = $pisah_end[1];
             }
-            
+
             $a = 0;
             while ($start <= $end) {
                 $array[$a] = array($start);
                 $start = "0".($start+1);
                 $a++;
-            } 
+            }
             @$ODArray = array_map('current', $array);
             if(@in_array($month, $ODArray)){
                 $jml = $jml+1;
@@ -143,87 +135,48 @@ class Model_transaksi extends CI_Model{
         }
         return ($Subjml+$jml);
     }
-    
+
     public function getSingleRowData($id, $field_where = NULL) {
-        $filter = "";
-        if (!empty($id) && empty($field_where)) {
-            $filter .= " and id = '" . $id . "'";
-        }else if (!empty($id) && !empty($field_where)) {
-            $filter .= " and ".$field_where." = '" . $id . "'";
+        $this->db->from('pkl_data')->where('true', null, false);
+        if (!empty($id)) {
+            $this->db->where($field_where ?: 'id', $id);
         }
-
-        $sql = "SELECT * FROM pkl_data WHERE true " . $filter;
-
-        $query = $this->db->query($sql);
-
-        $data = $query->result();
-//        $data = array($sql);
-
-        return $data[0];
+        $data = $this->db->get()->result();
+        return isset($data[0]) ? $data[0] : null;
     }
-    
+
     public function getSingleData($id, $field_where = NULL) {
-        $filter = "";
-        if (!empty($id) && empty($field_where)) {
-            $filter .= " and id = '" . $id . "'";
-        }else if (!empty($id) && !empty($field_where)) {
-            $filter .= " and ".$field_where." = '" . $id . "'";
+        $this->db->from('pkl_data')->where('true', null, false);
+        if (!empty($id)) {
+            $this->db->where($field_where ?: 'id', $id);
         }
-
-        $sql = "SELECT * FROM pkl_data WHERE true " . $filter;
-
-        $query = $this->db->query($sql);
-
-        $data = $query->result();
-//        $data = array($sql);
-
-        return $data;
+        return $this->db->get()->result();
     }
-    public function getSingleDatax($id, $field_where = NULL,$status = NULL) {
-        $filter = "";
-        if (!empty($id) && empty($field_where)) {
-            $filter .= " and id = '" . $id . "'";
-        }else if (!empty($id) && !empty($field_where)) {
-            $filter .= " and ".$field_where." = '" . $id . "'";
+
+    public function getSingleDatax($id, $field_where = NULL, $status = NULL) {
+        $this->db->from('pkl_data')->where('status', $status);
+        if (!empty($id)) {
+            $this->db->where($field_where ?: 'id', $id);
         }
-
-        $sql = "SELECT * FROM pkl_data WHERE status='$status' " . $filter;
-
-        $query = $this->db->query($sql);
-
-        $data = $query->result();
-//        $data = array($sql);
-
-        return $data;
+        return $this->db->get()->result();
     }
+
     public function getCountDepag($id) {
-        $filter = "";
+        $this->db->select('COUNT(*) AS total', false)->from('pkl_data')->where('true', null, false);
         if (!empty($id)) {
-            $filter .= " and id_depag= '$id'";
+            $this->db->where('id_depag', $id);
         }
-        $sql = "Select COUNT(*) AS total from pkl_data where true " . $filter . " ";
-        $query = $this->db->query($sql);
-        $temp = $query->row();
-        if ($temp) {
-            return (INT) $temp->total;
-        } else {
-            return 0;
-        }
+        $temp = $this->db->get()->row();
+        return $temp ? (INT) $temp->total : 0;
     }
-    
+
     public function getCountUserId($id) {
-        $filter = "";
+        $this->db->select('COUNT(*) AS total', false)->from('pkl_data')->where('true', null, false);
         if (!empty($id)) {
-            $filter .= " and user_id= '$id'";
+            $this->db->where('user_id', $id);
         }
-        $sql = "Select COUNT(*) AS total from pkl_data where true " . $filter . " ";
-        $query = $this->db->query($sql);
-        $temp = $query->row();
-        if ($temp) {
-            return (INT) $temp->total;
-        } else {
-            return 0;
-        }
+        $temp = $this->db->get()->row();
+        return $temp ? (INT) $temp->total : 0;
     }
 
     // Fungsi untuk melakukan proses upload file
@@ -268,4 +221,3 @@ class Model_transaksi extends CI_Model{
         return FALSE;
     }
 }
-

@@ -303,18 +303,18 @@ class Transaksi extends CI_Controller {
             } else if ($path1 == "delete") {
                 $id = $this->input->post("id");
                 $data = $this->model_transaksi->getSingleRowData($id);
-                unlink("gambar/" . $data->doc_1);
-                unlink("gambar/" . $data->doc_2);
-                unlink("gambar/" . $data->doc_3);
-                unlink("gambar/" . $data->doc_4);
-                unlink("gambar/" . $data->doc_5);
-                unlink("gambar/" . $data->foto);
-                unlink("gambar/" . $data->doc_6);
-                
+                foreach (array('doc_1', 'doc_2', 'doc_3', 'doc_4', 'doc_5', 'doc_6', 'doc_7', 'foto') as $slot) {
+                    if (!empty($data->{$slot}) && file_exists("gambar/" . $data->{$slot})) {
+                        unlink("gambar/" . $data->{$slot});
+                    }
+                }
+
                 $this->model_transaksi->delete($id);
             } else if ($path1 == "unlink") {
-                $url = $this->input->post("url");
-                unlink("gambar/" . $url);
+                $url = basename($this->input->post("url"));
+                if ($url !== '' && file_exists("gambar/" . $url)) {
+                    unlink("gambar/" . $url);
+                }
             } else if ($path1 == 'uploadGambarEdit1') {
                 // file name
                 $filename = date('dmYHis') . str_replace(" ", "", basename($_FILES["file1"]["name"]));

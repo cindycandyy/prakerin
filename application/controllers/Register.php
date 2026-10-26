@@ -33,7 +33,7 @@ class Register extends CI_Controller {
                     'name' => $username,
                     'email' => $email,
                     'type' => 3,
-                    'password' => $password
+                    'password' => password_hash($password, PASSWORD_DEFAULT)
                 );
 
                 $this->model_register->save($data);

@@ -20,63 +20,38 @@ class Model_user extends CI_Model{
     }
 
     public function getSingleRowUser($id) {
-        $filter = "";
+        $this->db->from('user')->where('true', null, false);
         if (!empty($id)) {
-            $filter .= " and id = '$id'";
+            $this->db->where('id', $id);
         }
-
-        $sql = "SELECT * FROM user WHERE true " . $filter . " ";
-
-        $query = $this->db->query($sql);
-
-        $data = $query->result();
-
-        return $data[0];
+        $data = $this->db->get()->result();
+        return isset($data[0]) ? $data[0] : null;
     }
-    
+
     public function getSingleUser($id) {
-        $filter = "";
+        $this->db->from('user')->where('true', null, false);
         if (!empty($id)) {
-            $filter .= " and id = '$id'";
+            $this->db->where('id', $id);
         }
-
-        $sql = "SELECT * FROM user WHERE true " . $filter . " ";
-
-        $query = $this->db->query($sql);
-
-        $data = $query->result();
-
-        return $data;
+        return $this->db->get()->result();
     }
-    
+
     public function getCountTypeUSer($id) {
-        $filter = "";
+        $this->db->select('COUNT(*) AS total', false)->from('user')->where('true', null, false);
         if (!empty($id)) {
-            $filter .= " and type= '$id'";
+            $this->db->where('type', $id);
         }
-        $sql = "Select COUNT(*) AS total from user where true " . $filter . " ";
-        $query = $this->db->query($sql);
-        $temp = $query->row();
-        if ($temp) {
-            return (INT) $temp->total;
-        } else {
-            return 0;
-        }
+        $temp = $this->db->get()->row();
+        return $temp ? (INT) $temp->total : 0;
     }
-    
+
     public function getCountEmailUSer($email) {
-        $filter = "";
+        $this->db->select('COUNT(*) AS total', false)->from('user')->where('true', null, false);
         if (!empty($email)) {
-            $filter .= " and email= '$email'";
+            $this->db->where('email', $email);
         }
-        $sql = "Select COUNT(*) AS total from user where true " . $filter . " ";
-        $query = $this->db->query($sql);
-        $temp = $query->row();
-        if ($temp) {
-            return (INT) $temp->total;
-        } else {
-            return 0;
-        }
+        $temp = $this->db->get()->row();
+        return $temp ? (INT) $temp->total : 0;
     }
 
     // Fungsi untuk melakukan proses upload file

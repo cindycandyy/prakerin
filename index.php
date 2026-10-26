@@ -66,7 +66,12 @@
 switch (ENVIRONMENT)
 {
 	case 'development':
-		error_reporting(-1);
+		// E_DEPRECATED dikecualikan: CI3 3.0.6 (dynamic properties di semua class inti)
+		// mendahului PHP 8.0+, jadi setiap request memuntahkan puluhan notice "Creation
+		// of dynamic property ... is deprecated" ke body response -- di route POST yang
+		// butuh session_start() (misal login), output ini terjadi sebelum header/cookie
+		// dikirim dan bikin "headers already sent", merusak session/login sepenuhnya.
+		error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
 		ini_set('display_errors', 1);
 	break;
 

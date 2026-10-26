@@ -42,7 +42,7 @@ class User extends CI_Controller {
                 $data = array(
                     'user_id' => $user_id,
                     'name' => $name,
-                    'password' => $password,
+                    'password' => password_hash($password, PASSWORD_DEFAULT),
                     'type' => $type_user,
                     'email' => $email,
                     'last_login' => ''
@@ -71,7 +71,7 @@ class User extends CI_Controller {
                 $password = $this->input->post('password');
 
                 $data = array(
-                    'password' => $password,
+                    'password' => password_hash($password, PASSWORD_DEFAULT),
                 );
 
                     $this->model_user->update($id, $data);
