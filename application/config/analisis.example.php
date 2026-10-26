@@ -21,4 +21,5 @@ $config['analisis_llm_aktif'] = false;
 $config['analisis_llm_penyedia'] = 'lokal';
 
 $config['analisis_storage_surat'] = FCPATH . '../storage/analisis/surat';
+// Tidak dipakai di kode manapun -- Analisis_surat.php selalu pakai Dompdf.
 $config['analisis_surat_mesin'] = 'libreoffice';

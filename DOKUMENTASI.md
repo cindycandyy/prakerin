@@ -66,7 +66,7 @@ Controller terbesar. Mengelola seluruh siklus pendaftaran:
 - Cetak kartu tanda peserta (ID card) dalam format Excel.
 - Delete data beserta file terkait.
 
-> **Bug diketahui**: beberapa key array pada `updateDoc1`–`updateDoc7` dan `updateFoto` punya trailing space pada nama kolom (`'doc_1 '`, `'Foto '`), kemungkinan menyebabkan update tidak mengenai kolom yang benar.
+> **Bug diketahui (sudah diperbaiki, lihat `DOKUMENTASI_ANALISIS.md` Tahap 1)**: beberapa key array pada `updateDoc1`–`updateDoc7` dan `updateFoto` sebelumnya punya trailing space pada nama kolom (`'doc_1 '`, `'Foto '`).
 
 ### Laporan
 - `data()` — list laporan, simpan filter tahun, cetak rekap seluruh data peserta magang ke Excel.
@@ -99,6 +99,10 @@ Hampir semua controller CRUD mengikuti pola yang sama: method `index()` redirect
 
 ## 8. Known Issues (untuk perbaikan ke depan)
 
-1. `Pengumuman::data()` → update memakai model yang salah/tidak di-load (`model_umum`).
-2. `Transaksi` → trailing space pada beberapa key kolom di `updateDoc1`–`7` dan `updateFoto`.
-3. Kredensial email di `Email.php` hardcoded di source code (sebaiknya dipindah ke config/env).
+Semua yang pernah tercatat di sini sudah diperbaiki:
+- `Pengumuman::data()` update memakai model yang salah (`model_umum`, tidak pernah
+  di-load) -- diperbaiki jadi `model_pengumuman`, konsisten dengan method lain di
+  controller yang sama.
+- Trailing space pada key kolom `updateDoc1`–`7`/`updateFoto` di `Transaksi.php`.
+- Kredensial email hardcoded di `Email.php` -- sudah dipindah ke
+  `application/config/email_smtp.php` (gitignored, tidak masuk repo).

@@ -45,6 +45,12 @@ fixture asli — belum ada contoh proposal/transkrip nyata di repo ini.
 - Model bahasa di server sendiri (`app/llm.py:panggil_model_lokal`) — placeholder,
   kembalikan `None`. Groq dipakai sementara sebagai pengganti untuk dev/testing (lihat
   di atas); pilihan model lokal/hosting tetap belum diputuskan (bagian 12.2 #17).
-- `POST /v1/foto-cek` (bagian 7.7).
 - Redaksi langkah 6 (pengenal nama lokal/NER) — pola regex (langkah 1-5) + pemeriksaan
   ulang jadi pengaman utama untuk saat ini.
+
+Pemeriksaan foto otomatis (bagian 7.7, FR-29) **sudah dikerjakan** sebagai
+`POST /v1/validasi_foto` (bukan `/v1/foto-cek` seperti rencana awal) — lihat
+`app/main.py` dan `app/validasi_foto.py`. Dipanggil otomatis dari PHP lewat
+`application/libraries/Analisis_foto.php` setiap kali foto diunggah (baik lewat
+`Transaksi.php` lama maupun wizard `Pelamar.php` baru), hasilnya disimpan dan
+ditampilkan ke HR lewat `Model_prk_pelamar::getFotoCek()` di halaman detail pelamar.

@@ -30,7 +30,8 @@ E-Prakerin yang sudah ada: prefix tabel baru `prk_`, controller `Analisis.php`, 
       redaksi, skor; lihat README di folder itu)
 - [x] **Tahap 4 — Keputusan HR, kontrak, surat balasan, notifikasi** (selesai, lihat
       rincian di bawah)
-- [ ] Tahap 5 — Isolasi akses berkas, syarat foto, uji & aktivasi
+- [x] Tahap 5 — Isolasi akses berkas (selesai) — syarat foto & uji T01–T46 masih
+      berjalan, lihat `TEST_CHECKLIST.md`
 
 ---
 
@@ -88,7 +89,8 @@ yang bisa diakses dari sesi ini. **Sebelum menjalankan migrasi di server nyata:*
   dsb).
 - `application/controllers/Analisis.php`: cek saklar aktif (404 bila mati) dan hak akses
   `SES_PRIV` 1–2 (redirect bila bukan). Baru berisi:
-  - `dashboard()` — placeholder, menampilkan daftar departemen.
+  - `dashboard()` — awalnya placeholder (daftar departemen saja), sekarang halaman
+    dashboard HR penuh dengan KPI real (total pelamar, peserta aktif, kuota, dsb).
   - `kuota()` / `kuota_simpan()` — HR mengedit kuota per divisi, tersimpan ke `prk_kuota`,
     tercatat di `prk_audit`.
   - `pengaturan()` / `pengaturan_simpan()` — Admin (SES_PRIV 1) mengatur bobot F1–F4 (HR
@@ -250,12 +252,16 @@ Baru dikerjakan setelah slot dokumen (Tahap 2) terkonfirmasi, karena fixture dat
 Halaman A–E penuh (daftar analisis, detail peserta, kontrak, surat DOCX→PDF, pusat
 notifikasi), mesin status `pending→accept/reject→inactive`, cron harian H-7/H-3.
 
-## Tahap 5 — Isolasi akses berkas, syarat foto, uji & aktivasi (belum dikerjakan)
+## Tahap 5 — Isolasi akses berkas, syarat foto, uji & aktivasi (sebagian selesai)
 
 Rute berkas lewat PHP dengan cek kepemilikan (bagian 7.7 spesifikasi — ini temuan keamanan
 di E-Prakerin lama: pendaftar lain bisa melihat berkas siapa pun lewat folder `gambar/` yang
-ada di web root), pemeriksaan foto otomatis, lalu uji T01–T46 sebelum `analisis_aktif = true`
-di produksi.
+ada di web root) **sudah dikerjakan** — lihat `Pelamar::berkas_lihat()` dan
+`Analisis::berkas_lihat()`, keduanya mengecek kepemilikan sebelum `readfile()`.
+
+Masih terbuka: pemeriksaan foto otomatis (status: lihat catatan `/v1/validasi_foto` di
+`simagang-analyzer/README.md`, perlu diverifikasi ujung-ke-ujung), dan uji T01–T46 sebelum
+`analisis_aktif = true` di produksi — lihat `TEST_CHECKLIST.md` untuk status terkini.
 
 ---
 

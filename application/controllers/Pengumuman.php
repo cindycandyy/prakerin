@@ -51,7 +51,7 @@ class Pengumuman extends CI_Controller {
                     'umum' => $umum
                 );
 
-                    $this->model_umum->update($id, $data);
+                    $this->model_pengumuman->update($id, $data);
             } else if ($path1 == "delete") {
                 $id = $this->input->post("id");
                 $this->model_pengumuman->delete($id);
