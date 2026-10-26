@@ -33,16 +33,16 @@ Dibuat berdasarkan seluruh fitur yang sudah dibangun di modul SIMAGANG/Analisis 
 
 ## D. Keputusan HR (terima/tolak)
 
-- [ ] T20 — Klik "Terima" di detail pelamar memunculkan modal konfirmasi, bukan langsung submit **(PERLU TES BROWSER)**
-- [ ] T21 — Klik "Tolak" tanpa mengisi alasan (≥5 karakter) tidak bisa lanjut ke modal **(PERLU TES BROWSER)**
+- [x] T20 — **OK** (Playwright). Klik `#btn-buka-terima` memunculkan `#modal-terima.tampil`
+- [x] T21 — **OK** (Playwright). Klik `#btn-buka-tolak` tanpa isi alasan TIDAK memunculkan `#modal-tolak.tampil`
 - [ ] T22 — Setelah konfirmasi Terima, redirect ke /analisis/pelamar (daftar), bukan tetap di halaman detail
 - [ ] T23 — Flashdata sukses/error di halaman /analisis/pelamar tampil sekali saja, lalu hilang saat refresh (tidak nyangkut)
 - [ ] T24 — Setelah HR menerima pelamar, mekanisme lanjutan (status berubah ke Accept/kartu magang/dsb) berjalan sesuai alur lama
 
 ## E. Dropdown & filter (duplikasi TomSelect)
 
-- [ ] T25 — Dropdown pilih divisi di halaman detail pelamar hanya muncul SATU kali, bukan dobel **(PERLU TES BROWSER)**
-- [ ] T26 — 4 filter dropdown (periode, jenjang, status_analisis, confidence) di halaman daftar pelamar masing-masing hanya satu widget **(PERLU TES BROWSER)**
+- [x] T25 — **OK** (Playwright). `.ts-wrapper` = 1 di halaman detail pelamar, tidak dobel
+- [x] T26 — **OK** (Playwright). 4 `select.select-mini` → 4 `.ts-wrapper`, rasio 1:1, tidak dobel
 
 ## F. Skor penilaian ("semua jurusan" fairness fix)
 
@@ -66,7 +66,7 @@ Dibuat berdasarkan seluruh fitur yang sudah dibangun di modul SIMAGANG/Analisis 
 
 ## J. Notifikasi
 
-- [ ] T35 — Dropdown notifikasi menampilkan maksimal sejumlah N notifikasi terbaru (cek batas di controller/query, dan UI tidak overflow) **(PERLU TES BROWSER)**
+- [x] T35 — **OK** (Playwright). Dropdown tampil saat diklik, 8 item muncul (lihat screenshot)
 
 ## K. Keamanan file (C6 unlink guard)
 
@@ -94,11 +94,46 @@ login kembali normal (303 redirect + cookie ci_session, bukan body error 0 byte)
 
 ## M. Responsive 480px (D8/B9)
 
-- [ ] T42 — Halaman pelamar/beranda di lebar 375px (iPhone SE/mini) tidak ada scroll horizontal **(PERLU TES BROWSER)**
-- [ ] T43 — Halaman pelamar/daftar (wizard) di lebar 375px tidak ada scroll horizontal, form-grid jadi 1 kolom **(PERLU TES BROWSER)**
-- [ ] T44 — Sidebar di lebar ≤480px berubah jadi topbar horizontal yang bisa digeser, tidak mendorong halaman **(PERLU TES BROWSER)**
-- [ ] T45 — Dropdown notifikasi di lebar ≤480px tidak keluar dari tepi layar **(PERLU TES BROWSER)**
-- [ ] T46 — Halaman dashboard HR (desktop, >480px) tidak berubah sama sekali — breakpoint tidak bocor ke layar besar **(PERLU TES BROWSER)**
+- [x] T42 — **OK** (Playwright, setelah perbaikan). `pelamar/beranda` di 375px: scrollWidth=375=clientWidth, nol overflow
+- [x] T43 — **OK** (Playwright, setelah perbaikan). `pelamar/daftar` di 375px: scrollWidth=375=clientWidth, nol overflow
+- [x] T44 — **OK** (Playwright, direvisi jadi hamburger drawer atas permintaan). Tertutup: `.sidebar` off-canvas (`left: -260px`). Diklik tombol hamburger: drawer 260px muncul dari kiri menutupi konten dengan overlay gelap; tombol X atau klik overlay menutup lagi.
+- [ ] T45 — **PERLU TES MANUAL** (dropdown notifikasi tidak dicoba dibuka di layar 375px pada sesi ini, hanya `right: calc()` sudah di CSS; perlu verifikasi visual)
+- [x] T46 — **OK** (Playwright). Di 1440px, `.sidebar` tetap 224px — breakpoint tidak bocor ke desktop
+
+### Bug kedua ditemukan & diperbaiki selama pengujian Playwright
+Setelah breakpoint 480px pertama kali ditambahkan (sesi sebelumnya), tes otomatis
+menunjukkan overflow horizontal 13-17px yang TIDAK terdeteksi waktu hanya dibaca
+kodenya. Dua akar masalah:
+1. `.sidebar > div { display: flex }` punya spesifisitas CSS lebih tinggi daripada
+   `.sidebar-note { display: none }` (karena `.sidebar-note` adalah div anak langsung
+   dari `.sidebar`), jadi aturan sembunyikan sidebar-note kalah dan tetap tampil,
+   mendorong lebar sidebar jauh di luar 375px. Diperbaiki dengan `!important`.
+2. Sisa sub-pixel overflow (13px) dari flex children di dalam area scroll sidebar
+   bocor ke `document.documentElement.scrollWidth` walau `.sidebar` sendiri sudah
+   dibatasi lebarnya. Diperbaiki dengan `overflow-x: hidden` di `html, body, .layout`
+   pada breakpoint 480px sebagai pengaman tambahan.
+
+Keduanya di [assets/css/analisis-shell.css](assets/css/analisis-shell.css). Ini
+membuktikan kenapa T42/T43 wajib dites beneran di browser (lewat Playwright atau
+manual) -- membaca kode CSS saja tidak cukup untuk menangkap bug spesifisitas
+begini.
+
+### Revisi UX mobile: sidebar topbar horizontal -> hamburger drawer
+Setelah dilihat screenshot, sidebar jadi topbar horizontal yang bisa digeser
+dirasa masih berantakan secara visual (menu terpotong, harus digeser manual).
+Diganti jadi pola hamburger menu standar: tombol ikon garis-tiga di pojok kiri
+atas topbar membuka sidebar sebagai drawer dari kiri (lebar 260px, maksimal
+80vw) menutupi konten dengan overlay gelap transparan; ditutup lewat tombol X
+di pojok sidebar atau klik area overlay. Diimplementasi di:
+- [application/views/pelamar/_topbar.php](application/views/pelamar/_topbar.php) dan [application/views/analisis/_topbar.php](application/views/analisis/_topbar.php) -- tombol `.hamburger`
+- [application/views/pelamar/_sidebar.php](application/views/pelamar/_sidebar.php) dan [application/views/analisis/_sidebar.php](application/views/analisis/_sidebar.php) -- tombol `.sidebar-tutup` + `.sidebar-overlay`
+- [application/views/analisis/_icon.php](application/views/analisis/_icon.php) -- ikon `menu` dan `x` ditambahkan
+- [assets/css/analisis-shell.css](assets/css/analisis-shell.css) -- breakpoint 480px direvisi total, sidebar jadi `position: fixed` + `transform: translateX(-100%)`, class `.sidebar-terbuka` di `.layout` men-toggle tampilannya
+
+Diverifikasi ulang dengan Playwright: drawer tertutup (`left: -260px`, off-canvas,
+tidak ada overflow), drawer terbuka (lebar 260px, overlay tampil), dan dua cara
+tutup (tombol X, klik overlay) sama-sama berfungsi. Screenshot: `hamburger_closed.png`,
+`hamburger_open.png`.
 
 ---
 *Status hasil eksekusi otomatis (curl/php-cli, bagian yang tidak butuh browser) ada di bawah setelah dijalankan.*

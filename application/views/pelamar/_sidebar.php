@@ -6,7 +6,11 @@ if (!defined('BASEPATH'))
 // dengan sidebar HR (_sidebar.php di views/analisis), menu sendiri.
 $halaman_aktif = isset($halaman_aktif) ? $halaman_aktif : '';
 ?>
+<div class="sidebar-overlay" onclick="document.querySelector('.layout').classList.remove('sidebar-terbuka')"></div>
 <aside class="sidebar">
+    <button type="button" class="sidebar-tutup" aria-label="Tutup menu" onclick="document.querySelector('.layout').classList.remove('sidebar-terbuka')">
+        <?php icon_analisis('x', 20, '#fff'); ?>
+    </button>
     <div>
         <div class="brand">
             <div class="brand-logo"><?php icon_analisis('sprout', 22, '#fff'); ?></div>

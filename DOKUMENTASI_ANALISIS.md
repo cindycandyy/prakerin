@@ -164,7 +164,8 @@ diperbaiki memakai nilai salah ini sebelum `Analisis_status` dibuat).
 - `application/models/Model_prk_kontrak.php`: `buatPertama()` (kontrak urutan 1, dipanggil
   otomatis dari `Analisis::terima()` dengan `tgl_mulai`/`tgl_selesai` pengajuan),
   `hitungStatus()`/`perbaruiSemuaStatus()` (status turunan dari tanggal, bagian 6.2).
-  Perpanjangan (kontrak urutan 2 dst) belum dikerjakan.
+  Perpanjangan (kontrak urutan 2 dst) sudah dikerjakan -- lihat bagian "Validasi kuota,
+  perpanjang & akhiri kontrak" di bawah.
 - `Analisis::tolak()` sekarang mewajibkan alasan minimal 5 karakter (bagian 6.1) --
   ditambah field `name="alasan"` di form Tolak pada `detail_pelamar.php` (sebelumnya
   tidak ada field sama sekali, jadi validasi lama tidak pernah tercapai).
@@ -200,7 +201,10 @@ Cron yang disarankan (server aplikasi):
 - Rute baru di `routes.php`: `analisis/kontrak/(:num)/perpanjang` dan `.../akhiri`
   (pola sama dengan `analisis/peserta/(:num)/terima|tolak`).
 
-**Belum dikerjakan:** surat balasan, isolasi akses berkas + syarat foto (Tahap 5).
+**Sudah dikerjakan sejak:** surat balasan (lihat bagian "Surat balasan" di bawah) dan
+isolasi akses berkas (lihat "Tahap 5 — Isolasi akses berkas" di bawah, rute `berkas_lihat`
+dengan cek kepemilikan). Sisa Tahap 5 yang masih terbuka: syarat foto otomatis dan uji
+T01–T46 sebelum produksi -- lihat `TEST_CHECKLIST.md`.
 
 ### Pemetaan slot `doc_1`..`doc_7` (dikonfirmasi 2026-10-12)
 
@@ -232,7 +236,7 @@ memicu analisis ulang.
 
 ---
 
-## Tahap 3 — Layanan analisis Python (belum dikerjakan)
+## Tahap 3 — Layanan analisis Python (selesai)
 
 Layanan FastAPI terpisah, baca PDF dengan PyMuPDF/pdfplumber, hitung skor 4 faktor (bagian 5
 spesifikasi teknis), redaksi data pribadi sebelum opsi LLM. Tidak menyimpan apa pun — PHP
@@ -241,7 +245,7 @@ yang menulis ke `prk_profil`/`prk_rekomendasi`.
 Baru dikerjakan setelah slot dokumen (Tahap 2) terkonfirmasi, karena fixture data uji
 (`fixture/proposal_*.pdf`) perlu dokumen asli dengan slot yang benar.
 
-## Tahap 4 — Keputusan HR, kontrak, surat balasan, notifikasi (belum dikerjakan)
+## Tahap 4 — Keputusan HR, kontrak, surat balasan, notifikasi (selesai)
 
 Halaman A–E penuh (daftar analisis, detail peserta, kontrak, surat DOCX→PDF, pusat
 notifikasi), mesin status `pending→accept/reject→inactive`, cron harian H-7/H-3.

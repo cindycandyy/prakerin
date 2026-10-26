@@ -13,6 +13,9 @@ $jumlah_belum_dibaca = $CI->model_prk_notifikasi->hitungBelumDibaca($id_user_not
 $daftar_notif = $CI->model_prk_notifikasi->listTerbaru($id_user_notif);
 ?>
 <header class="topbar">
+    <button type="button" class="hamburger" aria-label="Buka menu" onclick="document.querySelector('.layout').classList.toggle('sidebar-terbuka')">
+        <?php icon_analisis('menu', 20); ?>
+    </button>
     <div class="breadcrumb">
         <span class="muted">E-Prakerin</span>
         <span class="sep">/</span>
